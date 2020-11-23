@@ -10,6 +10,7 @@ import indexRouter from './routes/index';
 import Models from './models';
 import typeDefs from './graphql/schema/index.graphql';
 import mutation from './graphql/resolver/test';
+import { stream } from './config/winston';
 
 const app: express.Application = express();
 const apolloServer = new ApolloServer({
@@ -19,7 +20,7 @@ const apolloServer = new ApolloServer({
 });
 
 // view engine setup
-app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
+app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined', { stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
