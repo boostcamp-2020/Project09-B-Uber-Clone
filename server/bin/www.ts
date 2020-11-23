@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import app from '../app';
+import { app, apolloServer } from '../app';
 import debugModule from 'debug';
 import http from 'http';
 
@@ -22,6 +22,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
+apolloServer.installSubscriptionHandlers(server);
 
 /**
  * Listen on provided port, on all network interfaces.

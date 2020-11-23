@@ -1,0 +1,7 @@
+type Query {
+  users: String
+}
+
+type Mutation {
+  test(text: String): Boolean
+}
