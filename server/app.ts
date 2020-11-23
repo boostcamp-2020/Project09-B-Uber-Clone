@@ -9,7 +9,7 @@ import indexRouter from './routes/index';
 const app: express.Application = express();
 
 // view engine setup
-app.use(logger('dev'));
+app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -27,4 +27,4 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message });
 });
 
-module.exports = app;
+export default app;
