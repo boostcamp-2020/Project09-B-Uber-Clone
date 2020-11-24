@@ -2,9 +2,10 @@ export interface signupLabelInputProps {
   title: string;
   placeholder: string;
   name: string;
-  type: 'number' | 'text' | 'phone' | 'password';
+  type?: 'number' | 'text' | 'phone' | 'password';
   value: string;
   setFieldValue: any;
+  error: string | undefined;
 }
 
 export interface driverSignupFormValues {
