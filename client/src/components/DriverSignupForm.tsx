@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Button } from 'antd-mobile';
 import { withFormik, FormikProps } from 'formik';
 import SignupLabelInput from './SignupLabelInput';
+import driverSignupValidation from '../utils/driverSignupValidation';
 import { driverSignupFormValues } from '../types';
 import 'antd-mobile/lib/button/style/css';
 
-const InnerForm: React.ElementType = ({ values, handleSubmit, setFieldValue }: FormikProps<driverSignupFormValues>) => {
+const InnerForm: React.ElementType = ({
+  values,
+  handleSubmit,
+  setFieldValue,
+  isSubmitting,
+  errors,
+}: FormikProps<driverSignupFormValues>) => {
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
@@ -18,74 +25,76 @@ const InnerForm: React.ElementType = ({ values, handleSubmit, setFieldValue }: F
       <SignupLabelInput
         title="아이디"
         name="id"
-        placeholder="아이디를 입력해주세요"
-        type="text"
+        placeholder="아이디를 입력해주세요(6자 이상)"
         value={values.id}
         setFieldValue={setFieldValue}
+        error={errors.id}
       />
       <SignupLabelInput
         title="비밀번호"
         name="password"
-        placeholder="비밀번호를 입력해주세요"
+        placeholder="비밀번호를 입력해주세요(6자 이상)"
         type="password"
         value={values.password}
         setFieldValue={setFieldValue}
+        error={errors.password}
       />
       <SignupLabelInput
         title="이름"
         name="userName"
         placeholder="성함을 입력해주세요"
-        type="text"
         value={values.userName}
         setFieldValue={setFieldValue}
+        error={errors.userName}
       />
       <SignupLabelInput
         title="전화번호"
         name="phoneNumber"
         placeholder="전화번호를 입력해주세요"
-        type="text"
         value={values.phoneNumber}
         setFieldValue={setFieldValue}
+        error={errors.phoneNumber}
       />
       <SignupLabelInput
         title="면허번호"
         name="licenseNumber"
         placeholder="면허번호를 입력해주세요"
-        type="text"
         value={values.licenseNumber}
         setFieldValue={setFieldValue}
+        error={errors.licenseNumber}
       />
       <SignupLabelInput
         title="차종"
         name="carName"
         placeholder="차종을 입력해주세요"
-        type="text"
         value={values.carName}
         setFieldValue={setFieldValue}
+        error={errors.carName}
       />
       <SignupLabelInput
         title="차량 번호"
         name="plateNumber"
-        placeholder="차 번호를 입력해주세요"
-        type="text"
+        placeholder="차량 번호를 입력해주세요"
         value={values.plateNumber}
         setFieldValue={setFieldValue}
+        error={errors.plateNumber}
       />
       <SignupLabelInput
         title="차량 색상"
         name="carColor"
         placeholder="차량 색상을 입력해주세요"
-        type="text"
         value={values.carColor}
         setFieldValue={setFieldValue}
+        error={errors.carColor}
       />
       <Button
         type="primary"
+        loading={isSubmitting}
         style={{ margin: '40px 20px' }}
         onClick={(e: any) => {
           handleSubmit(e);
         }}
-        disabled={disabled}
+        disabled={disabled || isSubmitting}
       >
         회원가입
       </Button>
@@ -104,9 +113,13 @@ const DriverSignupForm = withFormik({
     plateNumber: '',
     carColor: '',
   }),
-  handleSubmit: (values, { setSubmitting, setErrors }) => {
-    console.log(values);
+  handleSubmit: (values, { setSubmitting }) => {
+    const { id, password, userName, phoneNumber, licenseNumber, carName, plateNumber, carColor } = values;
+    setSubmitting(true);
+
+    // TODO: 입력값을 토대로 서버에 회원가입 요청
   },
+  validate: driverSignupValidation,
 })(InnerForm);
 
 export default DriverSignupForm;
