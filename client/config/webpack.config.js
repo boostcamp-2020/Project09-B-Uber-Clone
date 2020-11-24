@@ -338,6 +338,18 @@ module.exports = function (webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
+        {
+          test: /\.css$/,
+          include: [/node_modules\/.*antd/],
+          use: [
+            {
+              loader: 'style-loader',
+            },
+            {
+              loader: 'css-loader',
+            },
+          ],
+        },
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
         {
@@ -377,6 +389,7 @@ module.exports = function (webpackEnv) {
                 customize: require.resolve('babel-preset-react-app/webpack-overrides'),
 
                 plugins: [
+                  ['import', { libraryName: 'antd-mobile', style: 'css' }],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
