@@ -3,10 +3,6 @@ import LoginLabel from './LoginLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
 
-export interface FormPropsType {
-  onChange: () => void;
-}
-
 const Form = styled.div`
   padding: 0 20%;
   & .am-button {
