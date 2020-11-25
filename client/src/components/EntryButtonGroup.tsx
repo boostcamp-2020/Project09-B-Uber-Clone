@@ -5,10 +5,26 @@ import { Button, WhiteSpace } from 'antd-mobile';
 const EntryButtonGroup: React.FC = () => {
   return (
     <Div>
-      <Button type="primary">사용자로 시작하기</Button>
+      <Button
+        type="primary"
+        onClick={() => {
+          location.href = '/user';
+          return;
+        }}
+      >
+        사용자로 시작하기
+      </Button>
       <WhiteSpace />
       <br />
-      <Button type="primary">드라이버로 시작하기</Button>
+      <Button
+        type="primary"
+        onClick={() => {
+          location.href = '/driver';
+          return;
+        }}
+      >
+        드라이버로 시작하기
+      </Button>
     </Div>
   );
 };
