@@ -4,16 +4,16 @@ import { Button, WhiteSpace } from 'antd-mobile';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface Props {
-  who: string;
+  userType: string;
 }
 
-const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, who }) => {
+const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, userType }) => {
   return (
     <Div>
       <Button
         type="primary"
         onClick={() => {
-          history.push(`/${who}/signup`);
+          history.push(`/${userType}/signup`);
           return;
         }}
       >
@@ -24,7 +24,7 @@ const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, who }
       <Button
         type="primary"
         onClick={() => {
-          history.push(`/${who}/signin`);
+          history.push(`/${userType}/signin`);
           return;
         }}
       >

@@ -10,7 +10,7 @@ const UserAuthPage: React.FC = () => {
         <p>안녕하세요,</p>
         <p>자버택시 잡으려면 로그인 해주세요.</p>
       </div>
-      <AuthButtonGroup who={'user'} />
+      <AuthButtonGroup userType={'user'} />
     </Div>
   );
 };
