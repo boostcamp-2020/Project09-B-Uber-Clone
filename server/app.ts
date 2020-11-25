@@ -5,6 +5,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import logger from 'morgan';
+import cors from 'cors';
 import 'graphql-import-node';
 
 import indexRouter from './routes/index';
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: process.env.CLIENT_HOST, credentials: true }));
 
 apolloServer.applyMiddleware({ app, path: '/graphql' });
 app.use('/', indexRouter);

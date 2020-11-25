@@ -4,7 +4,10 @@ import authenticateNotRequired from '../utils/authenticateNotRequired';
 const context = ({ req, res }) => {
   const { operationName } = req.body;
 
-  if (authenticateNotRequired.includes(operationName)) return { res };
+  if (authenticateNotRequired.includes(operationName)) {
+    res.set('Access-Control-Allow-Origin', process.env.CLIENT_HOST);
+    return { res };
+  }
 
   /**
    * // TODO: 로그인, 회원가입 외 일반 요청 시 존재하는 유저인지 확인
