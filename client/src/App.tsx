@@ -20,6 +20,7 @@ import 'antd-mobile/lib/button/style/css';
 import 'antd-mobile/lib/list/style/css';
 import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
+import 'antd-mobile/lib/modal/style/css';
 
 const App: React.FC = () => {
   return (
