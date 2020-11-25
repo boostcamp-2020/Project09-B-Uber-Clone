@@ -3,17 +3,6 @@ import LoginLabel from './LoginLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
 
-const Form = styled.div`
-  padding: 0 20%;
-  & .am-button {
-    margin-top: 50px;
-    background-color: #181818;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-  }
-`;
-
 const LoginForm: React.FC = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -38,20 +27,25 @@ const LoginForm: React.FC = () => {
   return (
     <Form>
       <LoginLabel>아이디를 입력하세요</LoginLabel>
-      <InputItem type="text" placeholder="아이디" value={id} onChange={(v) => onChangeId(v)} required />
+      <InputItem type="text" placeholder="아이디" value={id} onChange={onChangeId} required />
       <LoginLabel>비밀번호를 입력하세요</LoginLabel>
-      <InputItem
-        type="password"
-        placeholder="비밀번호"
-        value={password}
-        onChange={(v) => onChangePassword(v)}
-        required
-      />
+      <InputItem type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} required />
       <Button type="primary" onClick={onClickHandler}>
         로그인
       </Button>
     </Form>
   );
 };
+
+const Form = styled.div`
+  padding: 0 20%;
+  & .am-button {
+    margin-top: 50px;
+    background-color: #181818;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+  }
+`;
 
 export default LoginForm;
