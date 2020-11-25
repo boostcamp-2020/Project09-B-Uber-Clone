@@ -9,14 +9,16 @@ import 'graphql-import-node';
 import indexRouter from './routes/index';
 import Models from './models';
 import typeDefs from './graphql/schema/index.graphql';
-import mutation from './graphql/resolver/test';
+import resolvers from './graphql/resolver';
 import { stream } from './config/winston';
+import context from './graphql/context';
 
 const app: express.Application = express();
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers: mutation,
+  resolvers,
   dataSources: () => Models,
+  context,
 });
 
 // view engine setup
