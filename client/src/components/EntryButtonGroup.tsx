@@ -20,7 +20,7 @@ const EntryButtonGroup: React.FC<RouteComponentProps> = ({ history }) => {
       <Button
         type="primary"
         onClick={() => {
-          history.push('/user');
+          history.push('/driver');
           return;
         }}
       >

@@ -3,13 +3,17 @@ import styled from 'styled-components';
 import { Button, WhiteSpace } from 'antd-mobile';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-const AuthButtonGroup: React.FC<RouteComponentProps> = ({ history }) => {
+interface Props {
+  who: string;
+}
+
+const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, who }) => {
   return (
     <Div>
       <Button
         type="primary"
         onClick={() => {
-          history.push('/user/signup');
+          history.push(`/${who}/signup`);
           return;
         }}
       >
@@ -20,7 +24,7 @@ const AuthButtonGroup: React.FC<RouteComponentProps> = ({ history }) => {
       <Button
         type="primary"
         onClick={() => {
-          history.push('/user/signin');
+          history.push(`/${who}/signin`);
           return;
         }}
       >

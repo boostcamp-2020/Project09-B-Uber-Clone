@@ -6,7 +6,11 @@ const UserAuthPage: React.FC = () => {
   return (
     <Div>
       <H1>자버택시</H1>
-      <AuthButtonGroup />
+      <div>
+        <p>안녕하세요,</p>
+        <p>자버택시 잡으려면 로그인 해주세요.</p>
+      </div>
+      <AuthButtonGroup who={'user'} />
     </Div>
   );
 };
