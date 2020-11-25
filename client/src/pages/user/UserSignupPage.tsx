@@ -15,11 +15,9 @@ const UserSignupPage: React.FC = () => {
         환영해요,
         <br /> 자버택시입니다.
       </H2>
-const UserSignupPage: React.FC = () => {
-  return <div>유저 회원가입 페이지</div>;
-      <InputPhoneNum />
-      <InputName />
-      <InputIdPw />
+      <InputPhoneNum displayNo={displayNo} setDisplayNext={setDisplayNext} />
+      <InputName displayNo={displayNo} setDisplayNext={setDisplayNext} />
+      <InputIdPw displayNo={displayNo} setDisplayNext={setDisplayNext} />
     </Div>
   );
 };

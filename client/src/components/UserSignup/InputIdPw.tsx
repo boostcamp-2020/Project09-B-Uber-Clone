@@ -2,9 +2,14 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { List, InputItem, Button, Icon } from 'antd-mobile';
 
-const InputIdPw: React.FC = () => {
+interface TestProps {
+  displayNo: number;
+  setDisplayNext: () => void;
+}
+
+const InputIdPw: React.FC<TestProps> = (props) => {
   return (
-    <Div style={{ display: 'none' }}>
+    <Div style={{ display: props.displayNo === 2 ? 'flex' : 'none' }}>
       <InputGroup>
         <p>
           <img src="https://img.icons8.com/ios-filled/48/000000/security-checked.png" />
@@ -13,7 +18,7 @@ const InputIdPw: React.FC = () => {
         <InputItem clear placeholder="비밀번호를 입력해주세요" type="password" />
       </InputGroup>
       <Button>
-        다음 <Icon type="right" style={{ verticalAlign: 'middle' }} />
+        회원가입 완료 <Icon type="check" style={{ verticalAlign: 'middle' }} />
       </Button>
     </Div>
   );
