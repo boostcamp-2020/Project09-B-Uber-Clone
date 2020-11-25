@@ -1,9 +1,8 @@
 language: node_js
-warnings_are_errors: false
 node_js:
   - node
 jobs:
   include:
     - stage: test
       script:
-        - cd client && npm i && npm run build
+        - cd client && npm i && CI=false npm run build
