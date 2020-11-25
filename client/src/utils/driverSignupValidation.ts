@@ -3,14 +3,14 @@ import { driverSignupFormValues } from '../types';
 const driverSignupValidation: any = (values: driverSignupFormValues) => {
   const necessaryMessage = '필수 항목입니다';
   const wrongFormatMessage = '잘못된 양식입니다';
-  const { id, password, userName, phone, licenseNumber, carType, plateNumber, carColor } = values;
+  const { id, password, userName, phone, licenseNumber, carModel, plateNumber, carColor } = values;
 
   if (!id.length) return { id: necessaryMessage };
   if (!password.length) return { password: necessaryMessage };
   if (!userName.length) return { userName: necessaryMessage };
   if (!phone.length) return { phone: necessaryMessage };
   if (!licenseNumber.length) return { licenseNumber: necessaryMessage };
-  if (!carType.length) return { carType: necessaryMessage };
+  if (!carModel.length) return { carModel: necessaryMessage };
   if (!plateNumber.length) return { plateNumber: necessaryMessage };
   if (!carColor.length) return { carColor: necessaryMessage };
 
