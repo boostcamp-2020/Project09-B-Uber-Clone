@@ -1,3 +1,3 @@
-const authenticateNotRequired = ['userSignin', 'userSignup', 'driverSignin', 'driverSignup'];
+const authenticateNotRequired = ['UserSignin', 'UserSignup', 'DriverSignin', 'DriverSignup'];
 
 export default authenticateNotRequired;
