@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 const Mutation = {
   driverSignup: async (_, args, { dataSources, res }) => {
-    const hashedPassword = await bcrypt.hashSync(args.password, process.env.BCRYPT_SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(args.password, Number(process.env.BCRYPT_SALT_ROUNDS));
 
     const driverSchema = dataSources.model('Driver');
     const newDriver = new driverSchema({ ...args, password: hashedPassword });
