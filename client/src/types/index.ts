@@ -5,6 +5,7 @@ export interface Location {
 
 export interface Marker extends Location {
   color: string;
+}
 
 export interface signupLabelInputProps {
   title: string;
