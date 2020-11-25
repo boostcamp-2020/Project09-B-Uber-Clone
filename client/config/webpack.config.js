@@ -339,16 +339,16 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         // {
-        // test: /\.css$/,
-        // include: [/node_modules\/.*antd/],
-        // use: [
-        //   {
-        //     loader: 'style-loader',
-        //   },
-        //   {
-        //     loader: 'css-loader',
-        //   },
-        // ],
+        //   test: /\.css$/,
+        //   include: [/node_modules\/.*antd/],
+        //   use: [
+        //     {
+        //       loader: 'style-loader',
+        //     },
+        //     {
+        //       loader: 'css-loader',
+        //     },
+        //   ],
         // },
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },

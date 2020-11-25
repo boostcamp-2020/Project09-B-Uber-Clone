@@ -1,7 +1,12 @@
 import React from 'react';
+import DriverSignupForm from '../../components/DriverSignupForm';
 
 const DriverSignupPage: React.FC = () => {
-  return <div>드라이버 회원가입 페이지</div>;
+  return (
+    <>
+      <DriverSignupForm />
+    </>
+  );
 };
 
 export default DriverSignupPage;
