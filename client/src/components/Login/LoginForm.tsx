@@ -28,7 +28,7 @@ const LoginForm: React.FC = () => {
 
   const onClickHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (id.length === 0 || password.length === 0) {
+    if (!id.length || !password.length) {
       alert('아이디와 비밀번호를 모두 입력하세요');
     }
     // Todo
