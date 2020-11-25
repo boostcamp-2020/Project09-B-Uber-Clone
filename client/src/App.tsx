@@ -2,6 +2,7 @@ import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import client from './utils/apolloClient';
+import 'antd-mobile/lib/button/style/css';
 import {
   UserDriverSelectPage,
   UserAuthPage,

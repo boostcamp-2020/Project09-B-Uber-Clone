@@ -1,7 +1,27 @@
 import React from 'react';
+import styled from 'styled-components';
+import EntryButtonGroup from '../components/EntryButtonGroup';
 
 const UserDriverSelectPage: React.FC = () => {
-  return <div>유저, 드라이버 선택 페이지</div>;
+  return (
+    <Div>
+      <H1>자버택시</H1>
+      <EntryButtonGroup />
+    </Div>
+  );
 };
 
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  border: 1px solid;
+  justify-content: space-around;
+`;
+
+const H1 = styled.h1`
+  font-size: 30px;
+  font-weight: 600;
+`;
 export default UserDriverSelectPage;
