@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import AuthButtonGroup from '../../components/UserAuthPage/AuthButtonGroup';
 
-const UserAuthPage: React.FC = () => {
+const DriverAuthPage: React.FC = () => {
   return (
     <Div>
       <H1>자버택시</H1>
@@ -28,4 +28,4 @@ const H1 = styled.h1`
   font-weight: 600;
 `;
 
-export default UserAuthPage;
+export default DriverAuthPage;
