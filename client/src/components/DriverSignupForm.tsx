@@ -64,11 +64,11 @@ const InnerForm: React.ElementType = ({
       />
       <SignupLabelInput
         title="차종"
-        name="carType"
+        name="carModel"
         placeholder="차종을 입력해주세요"
-        value={values.carType}
+        value={values.carModel}
         setFieldValue={setFieldValue}
-        error={errors.carType}
+        error={errors.carModel}
       />
       <SignupLabelInput
         title="차량 번호"
@@ -112,13 +112,28 @@ const DriverSignupForm = withFormik({
     plateNumber: '',
     carColor: '',
   }),
-  handleSubmit: (values, { setSubmitting }) => {
-    const { id, password, userName: name, phone, licenseNumber, carModel, plateNumber, carColor } = values;
-    setSubmitting(true);
+  handleSubmit: async (values, { props, setSubmitting }: any) => {
+    try {
+      const { id, password, userName: name, phone, licenseNumber, carModel, plateNumber, carColor } = values;
+      const variables = { id, password, name, phone, licenseNumber, carModel, plateNumber, carColor };
 
-    // TODO: 입력값을 토대로 서버에 회원가입 요청
+      setSubmitting(true);
+      const {
+        data: {
+          driverSignup: { success, message },
+        },
+      } = await props.addDriver({
+        variables,
+      });
+      setSubmitting(false);
+
+      if (success) props.history.push('/driver/map');
+      else props.showAlert(message);
+    } catch (e) {
+      props.showAlert('오류가 발생했습니다');
+    }
   },
   validate: driverSignupValidation,
 })(InnerForm);
 
-export default DriverSignupForm;
+export default DriverSignupForm as React.ElementType;
