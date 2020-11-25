@@ -48,11 +48,11 @@ const InnerForm: React.ElementType = ({
       />
       <SignupLabelInput
         title="전화번호"
-        name="phoneNumber"
+        name="phone"
         placeholder="전화번호를 입력해주세요"
-        value={values.phoneNumber}
+        value={values.phone}
         setFieldValue={setFieldValue}
-        error={errors.phoneNumber}
+        error={errors.phone}
       />
       <SignupLabelInput
         title="면허번호"
@@ -64,11 +64,11 @@ const InnerForm: React.ElementType = ({
       />
       <SignupLabelInput
         title="차종"
-        name="carName"
+        name="carType"
         placeholder="차종을 입력해주세요"
-        value={values.carName}
+        value={values.carType}
         setFieldValue={setFieldValue}
-        error={errors.carName}
+        error={errors.carType}
       />
       <SignupLabelInput
         title="차량 번호"
@@ -106,14 +106,14 @@ const DriverSignupForm = withFormik({
     id: '',
     password: '',
     userName: '',
-    phoneNumber: '',
+    phone: '',
     licenseNumber: '',
-    carName: '',
+    carModel: '',
     plateNumber: '',
     carColor: '',
   }),
   handleSubmit: (values, { setSubmitting }) => {
-    const { id, password, userName, phoneNumber, licenseNumber, carName, plateNumber, carColor } = values;
+    const { id, password, userName: name, phone, licenseNumber, carModel, plateNumber, carColor } = values;
     setSubmitting(true);
 
     // TODO: 입력값을 토대로 서버에 회원가입 요청
