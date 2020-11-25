@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import Map from '../components/Map';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
 import { Location } from '../types';
 import { Toast } from 'antd-mobile';
 
-const MapContainer: React.FC<{ location: Location; update: (location: Location) => void }> = ({ location, update }) => {
+const MapContainer: React.FC<{ location: Location }> = () => {
+  const location = useSelector((state: { location: Location }) => state.location);
+  const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
   const updateMyLocation = async () => {
     try {
       const myLocation: Location = await getLocation();
-      update(myLocation);
+      dispatch(updateLocation(myLocation));
     } catch (error) {
+      console.log(error);
       Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
     }
   };
@@ -62,12 +65,4 @@ const getLocation = (): Promise<Location> => {
   });
 };
 
-const mapStateToProps = (state: { location: Location }) => ({
-  location: state.location,
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-  update: (location: Location) => dispatch(updateLocation(location)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);
+export default MapContainer;

@@ -11,7 +11,7 @@ const initialState: Location = {
 
 type LocationAction = ReturnType<typeof updateLocation>;
 
-export const location = (state = initialState, action: LocationAction): Location => {
+const location = (state = initialState, action: LocationAction): Location => {
   switch (action.type) {
     case UPDATE:
       return { ...state, ...action.payload };
@@ -19,3 +19,5 @@ export const location = (state = initialState, action: LocationAction): Location
       return state;
   }
 };
+
+export default location;
