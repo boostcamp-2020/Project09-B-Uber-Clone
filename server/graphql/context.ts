@@ -10,7 +10,7 @@ const context = ({ req, res }) => {
    * // TODO: 로그인, 회원가입 외 일반 요청 시 존재하는 유저인지 확인
    * // 있다면 해당 user return, 없다면 오류 발생
    *
-   * const cookie = req.cookies.userToken;
+   * const cookie = req.signedCookies.userToken;
    *
    * // cookie decode
    *

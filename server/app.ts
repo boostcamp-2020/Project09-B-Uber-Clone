@@ -3,6 +3,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
 import logger from 'morgan';
 import 'graphql-import-node';
 
@@ -12,6 +13,8 @@ import typeDefs from './graphql/schema/index.graphql';
 import resolvers from './graphql/resolver';
 import { stream } from './config/winston';
 import context from './graphql/context';
+
+dotenv.config({ path: '../.env' });
 
 const app: express.Application = express();
 const apolloServer = new ApolloServer({
@@ -25,7 +28,7 @@ const apolloServer = new ApolloServer({
 app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined', { stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 apolloServer.applyMiddleware({ app, path: '/graphql' });
