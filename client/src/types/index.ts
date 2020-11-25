@@ -1,5 +1,3 @@
-import { string } from 'yargs';
-
 export interface Location {
   lat: number;
   lng: number;
