@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const Mutation = {
   driverSignup: async (_, args, { dataSources, res }) => {
@@ -10,8 +11,8 @@ const Mutation = {
 
     if (!result) return { success: false, message: '회원가입 중 오류가 발생했습니다' };
 
-    // TODO: 토큰 생성
-    res.cookie('userToken', 'CREATED_TOKEN', { signed: true });
+    const token = jwt.sign({ id: result._id, isUser: false }, process.env.JWT_SECRET);
+    res.cookie('userToken', token, { signed: true });
     return { success: true };
   },
 };
