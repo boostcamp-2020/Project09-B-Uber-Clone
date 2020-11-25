@@ -4,7 +4,6 @@ import { withFormik, FormikProps } from 'formik';
 import SignupLabelInput from './SignupLabelInput';
 import driverSignupValidation from '../utils/driverSignupValidation';
 import { driverSignupFormValues } from '../types';
-import 'antd-mobile/lib/button/style/css';
 
 const InnerForm: React.ElementType = ({
   values,
