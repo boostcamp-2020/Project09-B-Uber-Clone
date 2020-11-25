@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react/types-6-0';
-import { number } from '@storybook/addon-knobs';
+import { number, text } from '@storybook/addon-knobs';
 
 import Marker from '../components/Marker';
 
@@ -9,4 +9,6 @@ export default {
   component: Marker,
 } as Meta;
 
-export const MapMarker = () => <Marker lat={number('위도', 37.5006226)} lng={number('경도', 127.0231786)} />;
+export const MapMarker = () => (
+  <Marker color={text('색상', '#000000')} lat={number('위도', 37.5006226)} lng={number('경도', 127.0231786)} />
+);
