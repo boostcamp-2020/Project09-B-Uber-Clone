@@ -26,9 +26,6 @@ const Map: React.FC<{
           moveCenterMyLocation();
         }}
       >
-        <div>
-          {center.lat}, {center.lng}
-        </div>
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
       </GoogleMapReact>
     </div>
