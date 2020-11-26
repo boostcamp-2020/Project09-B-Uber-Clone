@@ -4,4 +4,22 @@ type Query {
 
 type Mutation {
   test(text: String): Boolean
+  userSignup: AuthResponse
+  userSignin(id: String!, password: String!): AuthResponse
+  driverSignup(
+    id: String!
+    password: String!
+    name: String!
+    phone: String!
+    licenseNumber: String!
+    carModel: String!
+    plateNumber: String!
+    carColor: String!
+  ): AuthResponse
+  driverSignin(id: String!, password: String!): AuthResponse
+}
+
+type AuthResponse {
+  success: Boolean!
+  message: String
 }
