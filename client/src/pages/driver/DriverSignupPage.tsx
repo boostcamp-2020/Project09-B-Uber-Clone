@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { Modal } from 'antd-mobile';
-import DriverSignupForm from '../../components/driverSignup/DriverSignupForm';
+import DriverSignupForm from '@components/driverSignup/DriverSignupForm';
 
 const ADD_DRIVER = gql`
   mutation DriverSignup(

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { List, InputItem, Toast } from 'antd-mobile';
 import styled from 'styled-components';
-import { signupLabelInputProps } from '../types';
+import { signupLabelInputProps } from '@custom-types';
 
 const SignupLabelInput: React.FC<signupLabelInputProps> = ({
   title,
