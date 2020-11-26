@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
 import { InputPhoneProps } from '../../types';
 
 const InputPhoneNum: React.FC<InputPhoneProps> = (props) => {
-  const handleChange = (v: any) => props.setPhone(v);
-
+  const handleChange = (v: any) => {
+    props.setPhone(v);
+    if (v.length === 13) setDisabled(false);
+    else setDisabled(true);
+  };
+  const [isDisabled, setDisabled] = useState(true);
   return (
     <Div style={{ display: props.displayNo === 0 ? 'flex' : 'none' }}>
       <InputGroup>
@@ -20,7 +24,7 @@ const InputPhoneNum: React.FC<InputPhoneProps> = (props) => {
           onChange={handleChange}
         />
       </InputGroup>
-      <Button onClick={props.setDisplayNext}>
+      <Button onClick={props.setDisplayNext} disabled={isDisabled}>
         다음 <Icon type="right" style={{ verticalAlign: 'middle' }} />
       </Button>
     </Div>

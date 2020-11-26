@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
 import { InputNameProps } from '../../types';
 
 const InputName: React.FC<InputNameProps> = (props) => {
-  const handleChange = (v: any) => props.setName(v);
+  const handleChange = (v: any) => {
+    props.setName(v);
+    if (v.length) setDisabled(false);
+    else setDisabled(true);
+  };
+  const [isDisabled, setDisabled] = useState(true);
 
   return (
     <Div style={{ display: props.displayNo === 1 ? 'flex' : 'none' }}>
@@ -14,7 +19,7 @@ const InputName: React.FC<InputNameProps> = (props) => {
         </p>
         <InputItem clear placeholder="이름을 입력해주세요" value={props.name} onChange={handleChange} />
       </InputGroup>
-      <Button onClick={props.setDisplayNext}>
+      <Button onClick={props.setDisplayNext} disabled={isDisabled}>
         다음 <Icon type="right" style={{ verticalAlign: 'middle' }} />
       </Button>
     </Div>
