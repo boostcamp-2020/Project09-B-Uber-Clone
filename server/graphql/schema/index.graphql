@@ -5,7 +5,7 @@ type Query {
 type Mutation {
   test(text: String): Boolean
   userSignup: AuthResponse
-  userSignin: AuthResponse
+  userSignin(id: String!, password: String!): AuthResponse
   driverSignup(
     id: String!
     password: String!

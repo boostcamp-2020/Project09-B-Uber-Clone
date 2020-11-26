@@ -27,3 +27,8 @@ export interface driverSignupFormValues {
   plateNumber: string;
   carColor: string;
 }
+
+export interface LoginFormPropsType {
+  signin: any;
+  history: any;
+}
