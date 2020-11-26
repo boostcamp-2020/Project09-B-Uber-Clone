@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
+import { updateStartPoint } from '../stores/modules/pathPoint';
 import { Location, PathPoint } from '../types';
 import { Toast } from 'antd-mobile';
 
@@ -10,6 +11,12 @@ const MapContainer: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
+  useEffect(() => {
+    (async () => {
+      const startPoint: Location = await getLocation();
+      dispatch(updateStartPoint(startPoint));
+    })();
+  }, []);
 
   const updateMyLocation = async () => {
     try {
@@ -23,7 +30,7 @@ const MapContainer: React.FC = () => {
 
   const moveCenterMyLocation = async () => {
     try {
-      const location = await getLocation();
+      const location: Location = await getLocation();
       setCenter(location);
     } catch (error) {
       console.error(error);
