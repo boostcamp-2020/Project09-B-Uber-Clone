@@ -7,18 +7,16 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   const [id, setId] = useState('');
   const [password, setPw] = useState('');
   const [isDisabled, setDisabled] = useState(true);
-  const handleChangeId = (v: any) => setId(v);
-  const handleChangePw = (v: any) => setPw(v);
-  useEffect(() => {
-    if (id.length >= 6 && password.length >= 8) setDisabled(false);
-    else setDisabled(true);
-  });
+  const handleChangeId = (v: string) => setId(v);
+  const handleChangePw = (v: string) => setPw(v);
+
+  useEffect(() => setDisabled(!(id.length >= 6 && password.length >= 8)));
 
   const handleClick = () => {
     console.log(props.phone, props.name, id, password);
   };
   return (
-    <Div style={{ display: props.displayNo === 2 ? 'flex' : 'none' }}>
+    <Div style={{ display: props.page === 2 ? 'flex' : 'none' }}>
       <InputGroup>
         <p>
           <img src="https://img.icons8.com/ios-filled/48/000000/security-checked.png" />

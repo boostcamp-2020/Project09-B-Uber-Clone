@@ -4,13 +4,11 @@ import InputPhoneNum from '../../components/UserSignup/InputPhoneNum';
 import InputName from '../../components/UserSignup/InputName';
 import InputIdPw from '../../components/UserSignup/InputIdPw';
 const UserSignupPage: React.FC = () => {
-  const [displayNo, setDisplayNo] = useState(0);
+  const [page, setPage] = useState(0);
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
 
-  const setDisplayNext = () => {
-    setDisplayNo(displayNo + 1);
-  };
+  const setNextPage = () => setPage(page + 1);
 
   return (
     <Div>
@@ -18,9 +16,9 @@ const UserSignupPage: React.FC = () => {
         환영해요,
         <br /> 자버택시입니다.
       </H2>
-      <InputPhoneNum displayNo={displayNo} setDisplayNext={setDisplayNext} phone={phone} setPhone={setPhone} />
-      <InputName displayNo={displayNo} setDisplayNext={setDisplayNext} name={name} setName={setName} />
-      <InputIdPw displayNo={displayNo} phone={phone} name={name} />
+      <InputPhoneNum page={page} setNextPage={setNextPage} phone={phone} setPhone={setPhone} />
+      <InputName page={page} setNextPage={setNextPage} name={name} setName={setName} />
+      <InputIdPw page={page} phone={phone} name={name} />
     </Div>
   );
 };

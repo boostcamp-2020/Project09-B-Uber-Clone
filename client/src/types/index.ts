@@ -20,21 +20,21 @@ export interface driverSignupFormValues {
 }
 
 export interface InputPhoneProps {
-  displayNo: number;
+  page: number;
   phone: string;
-  setDisplayNext: () => void;
+  setNextPage: () => void;
   setPhone: (v: string) => void;
 }
 
 export interface InputNameProps {
-  displayNo: number;
+  page: number;
   name: string;
-  setDisplayNext: () => void;
+  setNextPage: () => void;
   setName: (v: string) => void;
 }
 
 export interface InputIdPwProps {
-  displayNo: number;
+  page: number;
   phone: string;
   name: string;
 }
