@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon, Modal } from 'antd-mobile';
-import { InputIdPwProps } from '../../types';
+import { InputIdPwProps } from '@custom-types';
 import { gql, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 

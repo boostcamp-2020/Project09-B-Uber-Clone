@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
-import { InputNameProps } from '../../types';
+import { InputNameProps } from '@custom-types';
 
 const InputName: React.FC<InputNameProps> = (props) => {
   const handleChange = (v: string) => {

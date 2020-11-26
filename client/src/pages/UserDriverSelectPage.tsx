@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import EntryButtonGroup from '../components/UserDriverSelect/EntryButtonGroup';
+import EntryButtonGroup from '@components/UserDriverSelect/EntryButtonGroup';
 
 const UserDriverSelectPage: React.FC = () => {
   return (
