@@ -4,6 +4,18 @@ import Config from '../../config';
 import { logger } from '../../config/winston';
 
 const Mutation = {
+  userSignup: async (_, args, { dataSources, res }) => {
+    const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
+
+    const userSchema = dataSources.model('User');
+    const newUser = new userSchema({ ...args, password: hashedPassword });
+    const result = await newUser.save();
+
+    if (!result) return { success: false, message: '회원가입 중 오류가 발생했습니다' };
+    const token = jwt.sign({ id: result._id, isUser: true }, Config.JWT_SECRET);
+    res.cookie('userToken', token, { signed: true });
+    return { success: true };
+  },
   driverSignup: async (_, args, { dataSources, res }) => {
     const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
 
