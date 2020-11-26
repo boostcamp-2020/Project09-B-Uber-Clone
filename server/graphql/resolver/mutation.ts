@@ -44,7 +44,7 @@ const Mutation = {
         if (await bcrypt.compareSync(args.password, driver.password)) {
           const token = jwt.sign({ id: driver._id, isUser: false }, Config.JWT_SECRET);
           res.cookie('token', token, { httpOnly: true, signed: true });
-
+          logger.info(`${args.id} driver logined!`);
           return { success: true };
         }
         return { success: false, message: '잘못된 비밀번호입니다.' };
