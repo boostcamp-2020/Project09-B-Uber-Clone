@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Config from '../../config';
+import { logger } from '../../config/winston';
 
 const Mutation = {
   driverSignup: async (_, args, { dataSources, res }) => {
@@ -24,13 +25,14 @@ const Mutation = {
         if (await bcrypt.compareSync(args.password, user.password)) {
           const token = jwt.sign({ id: user._id, isUser: true }, Config.JWT_SECRET);
           res.cookie('token', token, { httpOnly: true, signed: true });
-
+          logger.info(`${args.id} user logined!`);
           return { success: true };
         }
         return { success: false, message: '잘못된 비밀번호입니다.' };
       }
       return { success: false, message: '존재하지 않는 아이디입니다.' };
     } catch (err) {
+      logger.info('User login error!');
       return { status: false, message: '유효하지 않은 접근입니다.' };
     }
   },
