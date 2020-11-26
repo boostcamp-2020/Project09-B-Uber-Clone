@@ -12,8 +12,8 @@ export const userResolve = (originalResolve): any => {
       const cookie = req.signedCookies.userToken;
       if (!cookie) authError();
 
-      const { id, isUser } = jwt.verify(cookie, Config.JWT_SECRET);
-      if (!id || !isUser) authError();
+      const { id } = jwt.verify(cookie, Config.JWT_SECRET);
+      if (!id) authError();
 
       const userSchema = dataSources.model('User');
       const user = await userSchema.findById(id);

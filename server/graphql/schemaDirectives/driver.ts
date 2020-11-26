@@ -12,8 +12,8 @@ export const driverResolve = (originalResolve): any => {
       const cookie = req.signedCookies.driverToken;
       if (!cookie) authError();
 
-      const { id, isUser } = jwt.verify(cookie, Config.JWT_SECRET);
-      if (!id || !isUser) authError();
+      const { id } = jwt.verify(cookie, Config.JWT_SECRET);
+      if (!id) authError();
 
       const driverSchema = dataSources.model('Driver');
       const driver = await driverSchema.findById(id);
