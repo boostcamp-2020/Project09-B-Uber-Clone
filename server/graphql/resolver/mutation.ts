@@ -52,7 +52,7 @@ const Mutation = {
       return { success: false, message: '존재하지 않는 아이디입니다.' };
     } catch (err) {
       logger.info('Driver login error!');
-      return { status: false, message: '유효하지 않은 접근입니다.' };
+      return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
 };
