@@ -5,7 +5,7 @@ import { updateLocation } from '../stores/modules/location';
 import { Location } from '../types';
 import { Toast } from 'antd-mobile';
 
-const MapContainer: React.FC<{ location: Location }> = () => {
+const MapContainer: React.FC = () => {
   const location = useSelector((state: { location: Location }) => state.location);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
