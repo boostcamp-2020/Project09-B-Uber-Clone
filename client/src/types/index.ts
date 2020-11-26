@@ -31,4 +31,5 @@ export interface driverSignupFormValues {
 export interface LoginFormPropsType {
   signin: any;
   history: any;
+  userType: string;
 }
