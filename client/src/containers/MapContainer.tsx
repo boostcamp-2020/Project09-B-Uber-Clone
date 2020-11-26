@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import Map from '../components/map/Map';
+import Map from '@components/map/Map';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
-import { Location } from '../types';
+import { Location, PathPoint } from '../types';
 import { Toast } from 'antd-mobile';
 
 const MapContainer: React.FC = () => {
   const location = useSelector((state: { location: Location }) => state.location);
+  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
+
   const updateMyLocation = async () => {
     try {
       const myLocation: Location = await getLocation();
@@ -34,6 +36,7 @@ const MapContainer: React.FC = () => {
     <Map
       center={center}
       location={location}
+      pathPoint={pathPoint}
       zoom={zoom}
       updateMyLocation={updateMyLocation}
       moveCenterMyLocation={moveCenterMyLocation}
