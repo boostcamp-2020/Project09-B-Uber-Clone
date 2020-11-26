@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Map from '../components/Map';
+import Map from '../components/map/Map';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
 import { Location } from '../types';
@@ -14,7 +14,7 @@ const MapContainer: React.FC<{ location: Location }> = () => {
       const myLocation: Location = await getLocation();
       dispatch(updateLocation(myLocation));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
     }
   };
@@ -24,6 +24,7 @@ const MapContainer: React.FC<{ location: Location }> = () => {
       const location = await getLocation();
       setCenter(location);
     } catch (error) {
+      console.error(error);
       Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
     }
   };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta } from '@storybook/react/types-6-0';
 import { number, text } from '@storybook/addon-knobs';
 
-import Marker from '../components/Marker';
+import Marker from '../components/common/Marker';
 
 export default {
   title: 'Map/Map',

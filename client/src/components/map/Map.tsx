@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
-import Marker from './Marker';
-import { Location } from '../types';
-
+import Marker from '../common/Marker';
+import { Location } from '../../types';
 
 const Map: React.FC<{
   center: Location;
@@ -18,7 +17,7 @@ const Map: React.FC<{
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: API_KEY }}
+        bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API || '' }}
         defaultZoom={zoom}
         center={center}
         onTilesLoaded={() => {
