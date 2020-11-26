@@ -1,3 +1,12 @@
+export interface Location {
+  lat: number;
+  lng: number;
+}
+
+export interface Marker extends Location {
+  color: string;
+}
+
 export interface signupLabelInputProps {
   title: string;
   placeholder: string;
@@ -12,9 +21,9 @@ export interface driverSignupFormValues {
   id: string;
   password: string;
   userName: string;
-  phoneNumber: string;
+  phone: string;
   licenseNumber: string;
-  carName: string;
+  carModel: string;
   plateNumber: string;
   carColor: string;
 }
@@ -37,4 +46,9 @@ export interface InputIdPwProps {
   displayNo: number;
   phone: string;
   name: string;
+}
+
+export interface LoginFormPropsType {
+  signin: any;
+  history: any;
 }
