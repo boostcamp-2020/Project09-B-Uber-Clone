@@ -49,7 +49,7 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
 
   return (
     <>
-      <Div style={{ display: props.displayNo === 2 ? 'flex' : 'none' }}>
+      <Div style={{ display: props.page === 2 ? 'flex' : 'none' }}>
         <InputGroup>
           <p>
             <img src="https://img.icons8.com/ios-filled/48/000000/security-checked.png" />

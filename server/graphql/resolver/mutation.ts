@@ -48,6 +48,25 @@ const Mutation = {
       return { status: false, message: '유효하지 않은 접근입니다.' };
     }
   },
+  driverSignin: async (_, args, { dataSources, res }) => {
+    try {
+      const driverSchema = dataSources.model('Driver');
+      const driver = await driverSchema.findOne({ id: args.id });
+      if (driver) {
+        if (await bcrypt.compareSync(args.password, driver.password)) {
+          const token = jwt.sign({ id: driver._id, isUser: false }, Config.JWT_SECRET);
+          res.cookie('token', token, { httpOnly: true, signed: true });
+          logger.info(`${args.id} driver logined!`);
+          return { success: true };
+        }
+        return { success: false, message: '잘못된 비밀번호입니다.' };
+      }
+      return { success: false, message: '존재하지 않는 아이디입니다.' };
+    } catch (err) {
+      logger.info('Driver login error!');
+      return { success: false, message: '유효하지 않은 접근입니다.' };
+    }
+  },
 };
 
 export default Mutation;

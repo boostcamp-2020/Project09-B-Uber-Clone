@@ -1,4 +1,4 @@
-import { Location } from '../../types';
+import { Location } from '@custom-types';
 
 const UPDATE = 'location/UPDATE' as const;
 

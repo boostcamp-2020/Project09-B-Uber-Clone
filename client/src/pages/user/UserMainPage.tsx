@@ -1,7 +1,8 @@
 import React from 'react';
+import MapContainer from '../../containers/MapContainer';
 
 const UserMainPage: React.FC = () => {
-  return <div>유저 메인 페이지</div>;
+  return <MapContainer />;
 };
 
 export default UserMainPage;
