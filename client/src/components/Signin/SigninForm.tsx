@@ -27,7 +27,7 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
         },
       } = await props.signin({ variables });
 
-      if (success) props.history.push('/user/map');
+      if (success) props.history.push(`/${props.userType}/map`);
       else alert(message);
     }
   };
