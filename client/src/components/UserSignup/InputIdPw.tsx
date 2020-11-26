@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
+import { InputIdPwProps } from '../../types';
 
-interface Props {
-  displayNo: number;
-  phone: string;
-  name: string;
-}
-
-const InputIdPw: React.FC<Props> = (props) => {
+const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   const [id, setId] = useState('');
   const [password, setPw] = useState('');
   const handleChangeId = (v: any) => setId(v);

@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
+import { InputNameProps } from '../../types';
 
-interface TestProps {
-  displayNo: number;
-  name: string;
-  setDisplayNext: () => void;
-  setName: (v: string) => void;
-}
-
-const InputName: React.FC<TestProps> = (props) => {
+const InputName: React.FC<InputNameProps> = (props) => {
   const handleChange = (v: any) => props.setName(v);
 
   return (

@@ -18,3 +18,23 @@ export interface driverSignupFormValues {
   plateNumber: string;
   carColor: string;
 }
+
+export interface InputPhoneProps {
+  displayNo: number;
+  phone: string;
+  setDisplayNext: () => void;
+  setPhone: (v: string) => void;
+}
+
+export interface InputNameProps {
+  displayNo: number;
+  name: string;
+  setDisplayNext: () => void;
+  setName: (v: string) => void;
+}
+
+export interface InputIdPwProps {
+  displayNo: number;
+  phone: string;
+  name: string;
+}

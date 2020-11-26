@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
+import { InputPhoneProps } from '../../types';
 
-interface Props {
-  displayNo: number;
-  phone: string;
-  setDisplayNext: () => void;
-  setPhone: (v: string) => void;
-}
-
-const InputPhoneNum: React.FC<Props> = (props) => {
+const InputPhoneNum: React.FC<InputPhoneProps> = (props) => {
   const handleChange = (v: any) => props.setPhone(v);
 
   return (
