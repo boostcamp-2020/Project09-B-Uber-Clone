@@ -28,6 +28,11 @@ export interface driverSignupFormValues {
   carColor: string;
 }
 
+export interface PathPoint {
+  startPoint: Marker;
+  endPoint: Marker;
+}
+
 export interface LoginFormPropsType {
   signin: any;
   history: any;

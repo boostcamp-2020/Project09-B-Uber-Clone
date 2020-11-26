@@ -23,7 +23,7 @@ type Mutation {
     plateNumber: String!
     carColor: String!
   ): AuthResponse
-  driverSignin: AuthResponse
+  driverSignin(id: String!, password: String!): AuthResponse
 }
 
 type AuthResponse {

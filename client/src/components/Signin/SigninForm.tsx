@@ -21,9 +21,10 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
       alert('아이디와 비밀번호를 모두 입력하세요');
     } else {
       const variables = { id, password };
+      const mutation = props.userType === 'user' ? 'userSignin' : 'driverSignin';
       const {
         data: {
-          userSignin: { success, message },
+          [mutation]: { success, message },
         },
       } = await props.signin({ variables });
 
