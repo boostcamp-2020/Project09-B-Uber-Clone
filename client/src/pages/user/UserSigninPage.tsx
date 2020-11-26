@@ -16,7 +16,7 @@ const UserSigninPage: React.FC = () => {
   const [signinUser] = useMutation(SIGNIN_USER);
   const history = useHistory();
 
-  return <LoginForm signin={signinUser} history={history} />;
+  return <LoginForm signin={signinUser} history={history} userType="user" />;
 };
 
 export default UserSigninPage;
