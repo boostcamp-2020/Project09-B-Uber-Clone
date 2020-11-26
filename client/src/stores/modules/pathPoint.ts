@@ -1,10 +1,10 @@
 import { Location, PathPoint } from '@custom-types';
 
-const UPDATE_START = 'pathPoint/UPDATE_START' as const;
-const UPDATE_END = 'pathPoint/UPDATE_END' as const;
+const UPDATE_START_POINT = 'pathPoint/UPDATE_START' as const;
+const UPDATE_END_POINT = 'pathPoint/UPDATE_END' as const;
 
-export const updateStartPoint = (location: Location) => ({ type: UPDATE_START, payload: location });
-export const updateEndPoint = (location: Location) => ({ type: UPDATE_END, payload: location });
+export const updateStartPoint = (location: Location) => ({ type: UPDATE_START_POINT, payload: location });
+export const updateEndPoint = (location: Location) => ({ type: UPDATE_END_POINT, payload: location });
 
 const initialState: PathPoint = {
   startPoint: {
@@ -23,9 +23,9 @@ type ActionType = ReturnType<typeof updateStartPoint> | ReturnType<typeof update
 
 const startPoint = (state = initialState, action: ActionType): PathPoint => {
   switch (action.type) {
-    case UPDATE_START:
+    case UPDATE_START_POINT:
       return { ...state, startPoint: { ...action.payload, color: state.startPoint.color } };
-    case UPDATE_END:
+    case UPDATE_END_POINT:
       return { ...state, endPoint: { ...action.payload, color: state.endPoint.color } };
     default:
       return state;

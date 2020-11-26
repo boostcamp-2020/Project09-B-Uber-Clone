@@ -3,7 +3,7 @@ import Map from '@components/map/Map';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
 import { updateStartPoint } from '../stores/modules/pathPoint';
-import { Location, PathPoint } from '../types';
+import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 
 const MapContainer: React.FC = () => {
