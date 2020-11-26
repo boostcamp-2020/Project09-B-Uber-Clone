@@ -26,7 +26,7 @@ const DriverRouter: React.FC<any> = ({ component, ...rest }) => {
         <ActivityIndicator animating text="로딩 중입니다" />
       </Wrapper>
     );
-  if (error || (!loading && !data.isAuthorizedUser)) return <Redirect to={'/driver'} />;
+  if (error || (!loading && !data.isAuthorizedDriver)) return <Redirect to={'/driver'} />;
   return <Route {...rest} render={(props) => React.createElement(component, props)} />;
 };
 
