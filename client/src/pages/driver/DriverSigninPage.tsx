@@ -15,7 +15,7 @@ const DriverSigninPage: React.FC = () => {
   const [signinDriver] = useMutation(SIGNIN_DRIVER);
   const history = useHistory();
 
-  return <LoginForm signin={signinDriver} history={history} />;
+  return <LoginForm signin={signinDriver} history={history} userType="driver" />;
 };
 
 export default DriverSigninPage;
