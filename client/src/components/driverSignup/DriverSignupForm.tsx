@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd-mobile';
 import { withFormik, FormikProps } from 'formik';
-import SignupLabelInput from './SignupLabelInput';
-import driverSignupValidation from '../utils/driverSignupValidation';
-import { driverSignupFormValues } from '../types';
+import SignupLabelInput from '@components/SignupLabelInput';
+import driverSignupValidation from '@utils/driverSignupValidation';
+import { driverSignupFormValues } from '@custom-types';
 
 const InnerForm: React.ElementType = ({
   values,
@@ -48,11 +48,11 @@ const InnerForm: React.ElementType = ({
       />
       <SignupLabelInput
         title="전화번호"
-        name="phoneNumber"
+        name="phone"
         placeholder="전화번호를 입력해주세요"
-        value={values.phoneNumber}
+        value={values.phone}
         setFieldValue={setFieldValue}
-        error={errors.phoneNumber}
+        error={errors.phone}
       />
       <SignupLabelInput
         title="면허번호"
@@ -64,11 +64,11 @@ const InnerForm: React.ElementType = ({
       />
       <SignupLabelInput
         title="차종"
-        name="carName"
+        name="carModel"
         placeholder="차종을 입력해주세요"
-        value={values.carName}
+        value={values.carModel}
         setFieldValue={setFieldValue}
-        error={errors.carName}
+        error={errors.carModel}
       />
       <SignupLabelInput
         title="차량 번호"
@@ -106,19 +106,34 @@ const DriverSignupForm = withFormik({
     id: '',
     password: '',
     userName: '',
-    phoneNumber: '',
+    phone: '',
     licenseNumber: '',
-    carName: '',
+    carModel: '',
     plateNumber: '',
     carColor: '',
   }),
-  handleSubmit: (values, { setSubmitting }) => {
-    const { id, password, userName, phoneNumber, licenseNumber, carName, plateNumber, carColor } = values;
-    setSubmitting(true);
+  handleSubmit: async (values, { props, setSubmitting }: any) => {
+    try {
+      const { id, password, userName: name, phone, licenseNumber, carModel, plateNumber, carColor } = values;
+      const variables = { id, password, name, phone, licenseNumber, carModel, plateNumber, carColor };
 
-    // TODO: 입력값을 토대로 서버에 회원가입 요청
+      setSubmitting(true);
+      const {
+        data: {
+          driverSignup: { success, message },
+        },
+      } = await props.addDriver({
+        variables,
+      });
+      setSubmitting(false);
+
+      if (success) props.history.push('/driver/map');
+      else props.showAlert(message);
+    } catch (e) {
+      props.showAlert('오류가 발생했습니다');
+    }
   },
   validate: driverSignupValidation,
 })(InnerForm);
 
-export default DriverSignupForm;
+export default DriverSignupForm as React.ElementType;

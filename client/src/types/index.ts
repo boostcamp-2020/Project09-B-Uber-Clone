@@ -12,9 +12,9 @@ export interface driverSignupFormValues {
   id: string;
   password: string;
   userName: string;
-  phoneNumber: string;
+  phone: string;
   licenseNumber: string;
-  carName: string;
+  carModel: string;
   plateNumber: string;
   carColor: string;
 }

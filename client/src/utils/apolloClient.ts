@@ -4,6 +4,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 
 const httpLink = new HttpLink({
   uri: `http://${process.env.REACT_APP_SERVER_HOST}/graphql`,
+  credentials: 'include',
 });
 
 const wsLink = new WebSocketLink({
@@ -26,9 +27,6 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache: new InMemoryCache(),
   link: splitLink,
   connectToDevTools: true,
-  headers: {
-    authorization: window.localStorage.getItem('token') || '',
-  },
 });
 
 export default client;
