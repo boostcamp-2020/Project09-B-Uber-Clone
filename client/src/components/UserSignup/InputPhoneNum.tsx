@@ -1,20 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
 
-interface TestProps {
+interface Props {
   displayNo: number;
   setDisplayNext: () => void;
 }
 
-const InputPhoneNum: React.FC<TestProps> = (props) => {
+const InputPhoneNum: React.FC<Props> = (props) => {
+  const [phone, setPhone] = useState('');
+
+  const handleChange = (v: any) => setPhone(v);
+
   return (
     <Div style={{ display: props.displayNo === 0 ? 'flex' : 'none' }}>
       <InputGroup>
         <p>
           <img src="https://img.icons8.com/ios-filled/48/000000/phone.png" />
         </p>
-        <InputItem type="phone" clear placeholder="전화번호를 입력해주세요" />
+        <InputItem type="phone" clear placeholder="전화번호를 입력해주세요" value={phone} onChange={handleChange} />
       </InputGroup>
       <Button onClick={props.setDisplayNext}>
         다음 <Icon type="right" style={{ verticalAlign: 'middle' }} />
