@@ -9,17 +9,15 @@ export const driverResolve = (originalResolve): any => {
     const { req, dataSources } = args[2];
 
     try {
-      const cookie = req.signedCookies.userToken;
+      const cookie = req.signedCookies.driverToken;
       if (!cookie) authError();
 
       const { id, isUser } = jwt.verify(cookie, Config.JWT_SECRET);
-      console.log(isUser);
-
       if (!id || !isUser) authError();
 
       const driverSchema = dataSources.model('Driver');
-      const user = await driverSchema.findById(id);
-      if (!user) authError();
+      const driver = await driverSchema.findById(id);
+      if (!driver) authError();
 
       return originalResolve.apply(this, args);
     } catch (err) {
