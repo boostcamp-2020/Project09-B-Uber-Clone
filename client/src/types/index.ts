@@ -32,3 +32,9 @@ export interface PathPoint {
   startPoint: Marker;
   endPoint: Marker;
 }
+
+export interface LoginFormPropsType {
+  signin: any;
+  history: any;
+  userType: string;
+}

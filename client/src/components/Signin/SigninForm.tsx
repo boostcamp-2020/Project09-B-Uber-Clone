@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import LoginLabel from './LoginLabel';
+import LoginLabel from './SigninLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
+import { LoginFormPropsType } from '@custom-types';
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<LoginFormPropsType> = (props) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,13 +16,20 @@ const LoginForm: React.FC = () => {
     setPassword(value);
   };
 
-  const onClickHandler = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onClickHandler = async () => {
     if (!id.length || !password.length) {
       alert('아이디와 비밀번호를 모두 입력하세요');
+    } else {
+      const variables = { id, password };
+      const {
+        data: {
+          userSignin: { success, message },
+        },
+      } = await props.signin({ variables });
+
+      if (success) props.history.push(`/${props.userType}/map`);
+      else alert(message);
     }
-    // Todo
-    // 로그인 기능 연동
   };
 
   return (
@@ -30,7 +38,7 @@ const LoginForm: React.FC = () => {
       <InputItem type="text" placeholder="아이디" value={id} onChange={onChangeId} required />
       <LoginLabel>비밀번호를 입력하세요</LoginLabel>
       <InputItem type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} required />
-      <Button type="primary" onClick={onClickHandler}>
+      <Button type="primary" onClick={onClickHandler} {...props}>
         로그인
       </Button>
     </Form>
