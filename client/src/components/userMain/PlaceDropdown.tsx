@@ -48,6 +48,7 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', selectHandl
           selectProps={{
             onChange: onSelect,
             defaultInputValue: defalutPlace,
+            maxMenuHeight: 100,
           }}
         />
       )}
