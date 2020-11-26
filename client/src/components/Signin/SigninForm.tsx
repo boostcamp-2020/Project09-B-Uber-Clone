@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import LoginLabel from './SigninLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
-
-interface LoginFormPropsType {
-  signin: any;
-  history: any;
-}
+import { LoginFormPropsType } from '@custom-types';
 
 const LoginForm: React.FC<LoginFormPropsType> = (props) => {
   const [id, setId] = useState('');
