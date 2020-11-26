@@ -6,14 +6,16 @@ import { logger } from '../../config/winston';
 const Mutation = {
   driverSignup: async (_, args, { dataSources, res }) => {
     const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
-
     const driverSchema = dataSources.model('Driver');
+
+    const driver = await driverSchema.findOne({ id: args.id });
+    if (driver) return { success: false, message: '중복된 아이디입니다. 다른 아이디로 가입해주세요.' };
+
     const newDriver = new driverSchema({ ...args, password: hashedPassword });
     const result = await newDriver.save();
-
     if (!result) return { success: false, message: '회원가입 중 오류가 발생했습니다' };
 
-    const token = jwt.sign({ id: result._id, isUser: false }, Config.JWT_SECRET);
+    const token = jwt.sign({ id: result._id }, Config.JWT_SECRET);
     res.cookie('driverToken', token, { signed: true });
     return { success: true };
   },
@@ -23,8 +25,8 @@ const Mutation = {
       const user = await userSchema.findOne({ id: args.id });
       if (user) {
         if (await bcrypt.compareSync(args.password, user.password)) {
-          const token = jwt.sign({ id: user._id, isUser: true }, Config.JWT_SECRET);
-          res.cookie('token', token, { httpOnly: true, signed: true });
+          const token = jwt.sign({ id: user._id }, Config.JWT_SECRET);
+          res.cookie('userToken', token, { httpOnly: true, signed: true });
           logger.info(`${args.id} user logined!`);
           return { success: true };
         }
@@ -42,8 +44,8 @@ const Mutation = {
       const driver = await driverSchema.findOne({ id: args.id });
       if (driver) {
         if (await bcrypt.compareSync(args.password, driver.password)) {
-          const token = jwt.sign({ id: driver._id, isUser: false }, Config.JWT_SECRET);
-          res.cookie('token', token, { httpOnly: true, signed: true });
+          const token = jwt.sign({ id: driver._id }, Config.JWT_SECRET);
+          res.cookie('driverToken', token, { httpOnly: true, signed: true });
           logger.info(`${args.id} driver logined!`);
           return { success: true };
         }
