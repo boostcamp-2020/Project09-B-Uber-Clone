@@ -4,13 +4,13 @@ import { InputItem, Button, Icon } from 'antd-mobile';
 
 interface Props {
   displayNo: number;
+  phone: string;
   setDisplayNext: () => void;
+  setPhone: (v: string) => void;
 }
 
 const InputPhoneNum: React.FC<Props> = (props) => {
-  const [phone, setPhone] = useState('');
-
-  const handleChange = (v: any) => setPhone(v);
+  const handleChange = (v: any) => props.setPhone(v);
 
   return (
     <Div style={{ display: props.displayNo === 0 ? 'flex' : 'none' }}>
@@ -18,7 +18,13 @@ const InputPhoneNum: React.FC<Props> = (props) => {
         <p>
           <img src="https://img.icons8.com/ios-filled/48/000000/phone.png" />
         </p>
-        <InputItem type="phone" clear placeholder="전화번호를 입력해주세요" value={phone} onChange={handleChange} />
+        <InputItem
+          type="phone"
+          clear
+          placeholder="전화번호를 입력해주세요"
+          value={props.phone}
+          onChange={handleChange}
+        />
       </InputGroup>
       <Button onClick={props.setDisplayNext}>
         다음 <Icon type="right" style={{ verticalAlign: 'middle' }} />

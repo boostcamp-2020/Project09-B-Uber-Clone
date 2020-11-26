@@ -4,16 +4,18 @@ import { InputItem, Button, Icon } from 'antd-mobile';
 
 interface Props {
   displayNo: number;
-  setDisplayNext: () => void;
+  phone: string;
+  name: string;
 }
 
 const InputIdPw: React.FC<Props> = (props) => {
   const [id, setId] = useState('');
   const [password, setPw] = useState('');
-
   const handleChangeId = (v: any) => setId(v);
   const handleChangePw = (v: any) => setPw(v);
-
+  const handleClick = () => {
+    console.log(props.phone, props.name, id, password);
+  };
   return (
     <Div style={{ display: props.displayNo === 2 ? 'flex' : 'none' }}>
       <InputGroup>
@@ -29,7 +31,7 @@ const InputIdPw: React.FC<Props> = (props) => {
           onChange={handleChangePw}
         />
       </InputGroup>
-      <Button>
+      <Button onClick={handleClick}>
         회원가입 완료 <Icon type="check" style={{ verticalAlign: 'middle' }} />
       </Button>
     </Div>
