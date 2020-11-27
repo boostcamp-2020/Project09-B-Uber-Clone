@@ -28,6 +28,26 @@ export interface driverSignupFormValues {
   carColor: string;
 }
 
+export interface InputPhoneProps {
+  page: number;
+  phone: string;
+  setNextPage: () => void;
+  setPhone: (v: string) => void;
+}
+
+export interface InputNameProps {
+  page: number;
+  name: string;
+  setNextPage: () => void;
+  setName: (v: string) => void;
+}
+
+export interface InputIdPwProps {
+  page: number;
+  phone: string;
+  name: string;
+}
+
 export interface PathPoint {
   startPoint: Marker;
   endPoint: Marker;
