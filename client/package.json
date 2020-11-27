@@ -91,7 +91,7 @@
   },
   "scripts": {
     "start": "node -r dotenv/config scripts/start.js dotenv_config_path=../.env",
-    "build": "node scripts/build.js",
+    "build": "node -r dotenv/config scripts/build.js dotenv_config_path=../.env",
     "test": "node scripts/test.js",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
