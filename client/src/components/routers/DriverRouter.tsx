@@ -1,25 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { gql, useQuery } from '@apollo/client';
-import Cookies from 'js-cookie';
+import { useQuery } from '@apollo/client';
 import { ActivityIndicator } from 'antd-mobile';
 import styled from 'styled-components';
-
-const IS_DRIVER_AUTHORIZED = gql`
-  query IsDriverAuthorized {
-    isAuthorizedDriver
-  }
-`;
+import { IS_DRIVER_AUTHORIZED } from '@utils/authGQLString';
 
 const DriverRouter: React.FC<any> = ({ component, ...rest }) => {
-  const hasCookie = Cookies.get('driverToken');
   const { loading, error, data } = useQuery(IS_DRIVER_AUTHORIZED);
 
-  useEffect(() => {
-    if (error) Cookies.remove('driverToken');
-  }, [error]);
-
-  if (!hasCookie) return <Redirect to={'/driver'} />;
   if (loading)
     return (
       <Wrapper>

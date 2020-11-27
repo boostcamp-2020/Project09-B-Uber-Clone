@@ -1,25 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { gql, useQuery } from '@apollo/client';
-import Cookies from 'js-cookie';
+import { useQuery } from '@apollo/client';
 import { ActivityIndicator } from 'antd-mobile';
 import styled from 'styled-components';
-
-const IS_USER_AUTHORIZED = gql`
-  query IsUserAuthorized {
-    isAuthorizedUser
-  }
-`;
+import { IS_USER_AUTHORIZED } from '@utils/authGQLString';
 
 const UserRouter: React.FC<any> = ({ component, ...rest }) => {
-  const hasCookie = Cookies.get('userToken');
   const { loading, error, data } = useQuery(IS_USER_AUTHORIZED);
 
-  useEffect(() => {
-    if (error) Cookies.remove('userToken');
-  }, [error]);
-
-  if (!hasCookie) return <Redirect to={'/user'} />;
   if (loading)
     return (
       <Wrapper>
