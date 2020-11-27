@@ -12,8 +12,8 @@ const Mutation = {
     const result = await newUser.save();
 
     if (!result) return { success: false, message: '회원가입 중 오류가 발생했습니다' };
-    const token = jwt.sign({ id: result._id, isUser: true }, Config.JWT_SECRET);
-    res.cookie('userToken', token, { signed: true });
+    const token = jwt.sign({ id: result._id }, Config.JWT_SECRET);
+    res.cookie('userToken', token, { signed: true, httpOnly: true });
     return { success: true };
   },
   driverSignup: async (_, args, { dataSources, res }) => {
