@@ -17,13 +17,18 @@ import {
   DriverSignupPage,
   NotFoundPage,
 } from './pages';
+
+import { AuthRouter, UserRouter, DriverRouter } from '@components/routers';
+
 import { Provider } from 'react-redux';
 import store from './stores';
+
 import 'antd-mobile/lib/button/style/css';
 import 'antd-mobile/lib/list/style/css';
 import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
+import 'antd-mobile/lib/activity-indicator/style/css';
 
 const App: React.FC = () => {
   return (
@@ -32,16 +37,16 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={UserDriverSelectPage} />
-            <Route exact path="/user" component={UserAuthPage} />
-            <Route path="/user/signup" component={UserSignupPage} />
-            <Route path="/user/signin" component={UserSigninPage} />
-            <Route path="/user/map" component={UserMainPage} />
-            <Route path="/user/matching" component={UserMatchingPage} />
-            <Route exact path="/driver" component={DriverAuthPage} />
-            <Route path="/driver/signup" component={DriverSignupPage} />
-            <Route path="/driver/signin" component={DriverSigninPage} />
-            <Route path="/driver/map" component={DriverMainPage} />
-            <Route path="/driver/matching" component={DriverMatchingPage} />
+            <AuthRouter exact path="/user" component={UserAuthPage} />
+            <AuthRouter path="/user/signup" component={UserSignupPage} />
+            <AuthRouter path="/user/signin" component={UserSigninPage} />
+            <UserRouter path="/user/map" component={UserMainPage} />
+            <UserRouter path="/user/matching" component={UserMatchingPage} />
+            <AuthRouter exact path="/driver" component={DriverAuthPage} />
+            <AuthRouter path="/driver/signup" component={DriverSignupPage} />
+            <AuthRouter path="/driver/signin" component={DriverSigninPage} />
+            <DriverRouter path="/driver/map" component={DriverMainPage} />
+            <DriverRouter path="/driver/matching" component={DriverMatchingPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </BrowserRouter>

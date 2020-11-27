@@ -18,7 +18,7 @@ const Map: React.FC<{
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API || '' }}
+        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '' }}
         defaultZoom={zoom}
         center={center}
         onTilesLoaded={() => {

@@ -11,6 +11,7 @@ import indexRouter from './routes/index';
 import Models from './models';
 import typeDefs from './graphql/schema/index.graphql';
 import resolvers from './graphql/resolver';
+import AuhtDirective from './graphql/schemaDirectives';
 import { stream } from './config/winston';
 import context from './graphql/context';
 import Config from './config';
@@ -19,6 +20,9 @@ const app: express.Application = express();
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  schemaDirectives: {
+    auth: AuhtDirective,
+  },
   dataSources: () => Models,
   context,
 });
