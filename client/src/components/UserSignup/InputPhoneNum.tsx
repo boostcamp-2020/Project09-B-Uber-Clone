@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon } from 'antd-mobile';
-import { InputPhoneProps } from '../../types';
+import { InputPhoneProps } from '@custom-types';
 
 const InputPhoneNum: React.FC<InputPhoneProps> = (props) => {
   const handleChange = (v: string) => {
