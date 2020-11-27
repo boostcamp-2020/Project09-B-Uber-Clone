@@ -3,7 +3,9 @@ export interface Location {
   lng: number;
 }
 
-export interface Marker extends Location {
+export interface Marker {
+  lat: number | undefined;
+  lng: number | undefined;
   color: string;
 }
 

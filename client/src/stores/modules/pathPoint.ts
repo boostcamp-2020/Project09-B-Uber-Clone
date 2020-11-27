@@ -8,13 +8,13 @@ export const updateEndPoint = (location: Location) => ({ type: UPDATE_END_POINT,
 
 const initialState: PathPoint = {
   startPoint: {
-    lat: 9999,
-    lng: 9999,
+    lat: undefined,
+    lng: undefined,
     color: '#4285F4',
   },
   endPoint: {
-    lat: 9999,
-    lng: 9999,
+    lat: undefined,
+    lng: undefined,
     color: '#FBBC04',
   },
 };
