@@ -4,30 +4,39 @@ import { ApolloServer } from 'apollo-server-express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import cors from 'cors';
 import 'graphql-import-node';
 
 import indexRouter from './routes/index';
 import Models from './models';
 import typeDefs from './graphql/schema/index.graphql';
-import mutation from './graphql/resolver/test';
+import resolvers from './graphql/resolver';
+import AuhtDirective from './graphql/schemaDirectives';
 import { stream } from './config/winston';
+import context from './graphql/context';
+import Config from './config';
 
 const app: express.Application = express();
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers: mutation,
+  resolvers,
+  schemaDirectives: {
+    auth: AuhtDirective,
+  },
   dataSources: () => Models,
+  context,
 });
 
 // view engine setup
 app.use(logger(process.env.NODE_ENV === 'development' ? 'dev' : 'combined', { stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(Config.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: Config.CLIENT_HOST, credentials: true }));
 
-app.use('/', indexRouter);
 apolloServer.applyMiddleware({ app, path: '/graphql' });
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - node
+jobs:
+  include:
+    - stage: test
+      script:
+        - cd client && npm i && CI=false npm run build

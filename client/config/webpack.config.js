@@ -306,6 +306,11 @@ module.exports = function (webpackEnv) {
         .map((ext) => `.${ext}`)
         .filter((ext) => useTypeScript || !ext.includes('ts')),
       alias: {
+        '@components': path.resolve(__dirname, '../src/components'),
+        '@pages': path.resolve(__dirname, '../src/pages'),
+        '@custom-types': path.resolve(__dirname, '../src/types'),
+        '@utils': path.resolve(__dirname, '../src/utils'),
+
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
@@ -338,6 +343,18 @@ module.exports = function (webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
+        // {
+        // test: /\.css$/,
+        // include: [/node_modules\/.*antd/],
+        // use: [
+        //   {
+        //     loader: 'style-loader',
+        //   },
+        //   {
+        //     loader: 'css-loader',
+        //   },
+        // ],
+        // },
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
         {
@@ -377,6 +394,7 @@ module.exports = function (webpackEnv) {
                 customize: require.resolve('babel-preset-react-app/webpack-overrides'),
 
                 plugins: [
+                  // ['import', { libraryName: 'antd-mobile', style: 'css' }],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
