@@ -12,7 +12,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
     const isDriverAuth = requiredRole === 'DRIVER';
 
     field.resolve = async (...args) => {
-      const { req, dataSources } = args[2];
+      const { req, res, dataSources } = args[2];
       try {
         const cookie = isDriverAuth ? req.signedCookies.driverToken : req.signedCookies.userToken;
         if (!cookie) authError();
@@ -27,7 +27,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
 
         return originalResolve.apply(this, args);
       } catch (err) {
-        if (err instanceof AuthenticationError) throw err;
+        if (err instanceof AuthenticationError) {
+          if (isDriverAuth) res.clearCookie('driverToken');
+          else res.clearCookie('userToken');
+          throw err;
+        }
         logger.info('Server Error');
         throw new Error('오류가 발생했습니다');
       }
