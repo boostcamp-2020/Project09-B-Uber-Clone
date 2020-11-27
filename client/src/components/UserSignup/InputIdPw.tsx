@@ -11,22 +11,14 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   const [password, setPw] = useState('');
   const [isDisabled, setDisabled] = useState(true);
   const [modalStatus, setModalStatus] = useState({ visible: false, message: '' });
-  const handleChangeId = (v: any) => setId(v);
-  const handleChangePw = (v: any) => setPw(v);
+  const handleChangeId = (v: string) => setId(v);
+  const handleChangePw = (v: string) => setPw(v);
   const showAlert = (message: string) => setModalStatus({ visible: true, message });
   const closeAlert = () => setModalStatus({ visible: false, message: '' });
   useEffect(() => {
     if (id.length >= 6 && password.length >= 8) setDisabled(false);
     else setDisabled(true);
   });
-  const ADD_USER = gql`
-    mutation UserSignup($id: String!, $password: String!, $name: String!, $phone: String!) {
-      userSignup(id: $id, password: $password, name: $name, phone: $phone) {
-        success
-        message
-      }
-    }
-  `;
   const [addUser] = useMutation(ADD_USER);
 
   const handleSubmit = async () => {
@@ -82,6 +74,15 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
     </>
   );
 };
+
+const ADD_USER = gql`
+  mutation UserSignup($id: String!, $password: String!, $name: String!, $phone: String!) {
+    userSignup(id: $id, password: $password, name: $name, phone: $phone) {
+      success
+      message
+    }
+  }
+`;
 
 const InputGroup = styled.div`
   margin: 0 5%;
