@@ -1,10 +1,17 @@
+enum Role {
+  USER
+  DRIVER
+}
+
 type Query {
   users: String
+  isAuthorizedUser: Boolean @auth(requires: USER)
+  isAuthorizedDriver: Boolean @auth(requires: DRIVER)
 }
 
 type Mutation {
   test(text: String): Boolean
-  userSignup: AuthResponse
+  userSignup(id: String!, password: String!, name: String!, phone: String!): AuthResponse
   userSignin(id: String!, password: String!): AuthResponse
   driverSignup(
     id: String!
@@ -16,10 +23,12 @@ type Mutation {
     plateNumber: String!
     carColor: String!
   ): AuthResponse
-  driverSignin: AuthResponse
+  driverSignin(id: String!, password: String!): AuthResponse
 }
 
 type AuthResponse {
   success: Boolean!
   message: String
 }
+
+directive @auth(requires: Role!) on FIELD_DEFINITION
