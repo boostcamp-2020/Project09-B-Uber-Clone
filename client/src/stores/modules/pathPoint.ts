@@ -7,14 +7,16 @@ export const updateStartPoint = (location: Location) => ({ type: UPDATE_START_PO
 export const updateEndPoint = (location: Location) => ({ type: UPDATE_END_POINT, payload: location });
 
 const initialState: PathPoint = {
+  isSetStartPoint: false,
   startPoint: {
-    lat: 9999,
-    lng: 9999,
+    lat: 0,
+    lng: 0,
     color: '#4285F4',
   },
+  isSetEndPoint: false,
   endPoint: {
-    lat: 9999,
-    lng: 9999,
+    lat: 0,
+    lng: 0,
     color: '#FBBC04',
   },
 };
@@ -24,9 +26,9 @@ type ActionType = ReturnType<typeof updateStartPoint> | ReturnType<typeof update
 const startPoint = (state = initialState, action: ActionType): PathPoint => {
   switch (action.type) {
     case UPDATE_START_POINT:
-      return { ...state, startPoint: { ...action.payload, color: state.startPoint.color } };
+      return { ...state, isSetStartPoint: true, startPoint: { ...action.payload, color: state.startPoint.color } };
     case UPDATE_END_POINT:
-      return { ...state, endPoint: { ...action.payload, color: state.endPoint.color } };
+      return { ...state, isSetEndPoint: true, endPoint: { ...action.payload, color: state.endPoint.color } };
     default:
       return state;
   }

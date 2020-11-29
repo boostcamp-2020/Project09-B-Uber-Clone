@@ -36,7 +36,7 @@ const MapContainer: React.FC = () => {
       dispatch(updateLocation(myLocation));
     } catch (error) {
       console.error(error);
-      Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
+      Toast.show('GPS 사용이 불가능합니다.', Toast.SHORT);
     }
   };
 

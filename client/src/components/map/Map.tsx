@@ -22,8 +22,12 @@ const Map: React.FC<{
         center={center}
       >
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
-        <Marker lat={pathPoint.startPoint.lat} lng={pathPoint.startPoint.lng} color="#4285F4" />
-        <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
+        {pathPoint.isSetStartPoint && (
+          <Marker lat={pathPoint.startPoint.lat} lng={pathPoint.startPoint.lng} color="#4285F4" />
+        )}
+        {pathPoint.isSetEndPoint && (
+          <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
+        )}
       </GoogleMapReact>
     </div>
   );

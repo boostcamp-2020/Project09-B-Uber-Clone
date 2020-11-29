@@ -49,6 +49,8 @@ export interface InputIdPwProps {
 }
 
 export interface PathPoint {
+  isSetStartPoint: boolean;
+  isSetEndPoint: boolean;
   startPoint: Marker;
   endPoint: Marker;
 }
