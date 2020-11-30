@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, Marker as MarkerType, PathPoint } from '@custom-types';
+import DataDiv from './DataDiv';
 
 const Map: React.FC<{
   center: Location;
@@ -17,6 +18,7 @@ const Map: React.FC<{
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
+      <DataDiv />
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '' }}
         defaultZoom={zoom}
