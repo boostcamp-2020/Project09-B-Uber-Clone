@@ -3,35 +3,29 @@ import styled from 'styled-components';
 
 interface Props {
   putOn: string;
-  children: React.FC;
 }
 
-const DataDiv: React.FC = () => {
-  return (
-    <Div>
+function DataDiv(Child: React.FC) {
+  return (props: Props) => (
+    <Div putOnDevice={props.putOn}>
       <ChildContainer>
-        <TempChild />
+        <Child />
       </ChildContainer>
     </Div>
   );
-};
+}
 
-const TempChild = styled.div`
-  width: 100%;
-  height: 70px;
-  border: 1px solid #4285f4;
-`;
-const Div = styled.div`
+const Div = styled.div<{ putOnDevice: string }>`
   position: fixed;
   z-index: 2;
-  top: -10px;
+  ${(props) => props.putOnDevice}: -10px;
   width: 100%;
   display: flex;
   justify-content: center;
   height: fit-content;
   border: 1px solid #f3f3f3;
   border-radius: 10px;
-  padding: 20px 0 10px 0;
+  padding: ${(props) => (props.putOnDevice === 'top' ? '20px 0 10px 0' : '10px 0 20px 0')};
   background-color: #ffffff;
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.4);
 `;

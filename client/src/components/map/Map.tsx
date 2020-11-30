@@ -16,9 +16,10 @@ const Map: React.FC<{
     setInterval(updateMyLocation, 1000);
   }, []);
 
+  const DataCompo = dataDiv(); // 인자로 child 가 들어감
   return (
     <div style={{ height: '100vh', width: '100%' }}>
-      <DataDiv />
+      <DataCompo putOn={dataPosition} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '' }}
         defaultZoom={zoom}
