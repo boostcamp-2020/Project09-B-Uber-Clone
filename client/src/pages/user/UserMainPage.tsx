@@ -2,15 +2,15 @@ import React from 'react';
 import MapContainer from '../../containers/MapContainer';
 import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint';
 import { useDispatch } from 'react-redux';
-import { LatLng } from 'react-google-places-autocomplete/build/GooglePlacesAutocomplete.types';
+import { Location } from '@custom-types';
 
 const UserMainPage: React.FC = () => {
   const dispatch = useDispatch();
 
-  const selectStartHandler = (placeName: string, latLng: LatLng) => {
+  const selectStartHandler = (placeName: string, latLng: Location) => {
     dispatch(updateStartPoint(latLng));
   };
-  const selectEndHandler = (placeName: string, latLng: LatLng) => {
+  const selectEndHandler = (placeName: string, latLng: Location) => {
     dispatch(updateEndPoint(latLng));
   };
 
