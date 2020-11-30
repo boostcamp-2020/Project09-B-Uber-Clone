@@ -14,7 +14,7 @@ const UserSignupPage: React.FC = () => {
     <Div>
       <H2>
         환영해요,
-        <br /> 자버택시입니다.
+        <br /> 택시자버입니다.
       </H2>
       <InputPhoneNum page={page} setNextPage={setNextPage} phone={phone} setPhone={setPhone} />
       <InputName page={page} setNextPage={setNextPage} name={name} setName={setName} />
