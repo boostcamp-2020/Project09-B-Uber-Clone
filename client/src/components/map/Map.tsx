@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, Marker as MarkerType, PathPoint } from '@custom-types';
-import DataDiv from './DataDiv';
+import dataDiv from './DataDiv';
+import TempChild from './TempChild';
 
 const Map: React.FC<{
   center: Location;
@@ -16,7 +17,8 @@ const Map: React.FC<{
     setInterval(updateMyLocation, 1000);
   }, []);
 
-  const DataCompo = dataDiv(); // 인자로 child 가 들어감
+  const DataCompo = dataDiv(TempChild);
+  const dataPosition = 'bottom';
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <DataCompo putOn={dataPosition} />
