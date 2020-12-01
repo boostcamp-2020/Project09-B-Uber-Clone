@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import dataDiv from '../userMain/DataDiv';
+import ContentWrapper from './ContentWrapper';
 import RequestButton from './RequsetButton';
 
 // TODO : 입시값입니다 - 데이터 받아오면 지워주세요
 const preCalTime = 20;
 const preCalCost = '15,000';
 
-const PreReqData: React.FC = () => {
+const PreRequestData: React.FC = () => {
   const preReqData = () => {
     return (
       <>
@@ -25,8 +25,8 @@ const PreReqData: React.FC = () => {
     );
   };
 
-  const PreReqDataCompo = dataDiv(preReqData);
-  return <PreReqDataCompo putOn="bottom" />;
+  const PreRequestDataComponent = ContentWrapper(preReqData);
+  return <PreRequestDataComponent putOn="bottom" />;
 };
 
 const Div = styled.div`
@@ -40,4 +40,4 @@ const P = styled.p`
   font-size: 20px;
 `;
 
-export default PreReqData;
+export default PreRequestData;
