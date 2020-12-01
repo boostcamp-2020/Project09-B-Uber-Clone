@@ -1,6 +1,6 @@
 import React from 'react';
 import MapContainer from '../../containers/MapContainer';
-import CallButton from '@components/driverMatching/CallButton';
+import CallButton from '@components/common/CallButton';
 
 const DriverMatchingPage: React.FC = () => {
   return (
