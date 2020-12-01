@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, PathPoint } from '@custom-types';
+import ExpectedInfo from '@components/userMain/ExpectedInfo';
 
 const Map: React.FC<{
   center: Location;
@@ -11,17 +12,21 @@ const Map: React.FC<{
   updateMyLocation: () => void;
 }> = ({ center, location, pathPoint, zoom, updateMyLocation }) => {
   const [maps, setMaps] = useState({ map: null });
-
+  const [check, setCheck] = useState(false);
+  const [time, setTime] = useState('');
+  const [fee, setFee] = useState(3800);
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
     status,
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
       const directionsRenderer = new google.maps.DirectionsRenderer();
-      /**
-       * result.routes[0].legs[0].distance.text => 이동 거리
-       * result.routes[0].legs[0].duration.text => 이동에 필요한 시간
-       */
+      setCheck(true);
+      const distance = result.routes[0].legs[0].distance.value;
+      const duration = result.routes[0].legs[0].duration.value;
+      const calc = 3800 + ((distance - 2000) / 110 + duration / 31) * 100;
+      setFee(Math.ceil(calc));
+      setTime(result.routes[0].legs[0].duration.text);
       directionsRenderer.setMap(maps.map);
       directionsRenderer.setDirections(result);
     }
@@ -62,6 +67,12 @@ const Map: React.FC<{
         )}
         {pathPoint.isSetEndPoint && (
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
+        )}
+        {check && (
+          <>
+            <ExpectedInfo name="예상 시간" value={time} />
+            <ExpectedInfo name="예상 요금" value={`${fee}원`} />
+          </>
         )}
       </GoogleMapReact>
     </div>
