@@ -9,17 +9,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
     const requiredRole = this.args.requires;
     const originalResolve = field.resolve || defaultFieldResolver;
     const isDriverAuth = requiredRole === 'DRIVER';
-
     field.resolve = async (...args) => {
       const { req, res, dataSources, isConnection, cookies } = args[2];
       try {
-        const cookie = isDriverAuth
-          ? isConnection
-            ? cookies.driverToken
-            : req.signedCookies.driverToken
-          : isConnection
-          ? cookies.userToken
-          : req.signedCookies.userToken;
+        const tokenType = `${requiredRole.toLowerCase()}Token`;
+        const cookie = isConnection ? cookies[tokenType] : req.signedCookies[tokenType];
         if (!cookie) authError();
 
         const modelName = isDriverAuth ? 'Driver' : 'User';
