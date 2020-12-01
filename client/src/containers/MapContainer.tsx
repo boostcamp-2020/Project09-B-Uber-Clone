@@ -42,7 +42,7 @@ const MapContainer: React.FC = () => {
 
   return (
     <>
-      {isGPSLoaded === true ? (
+      {isGPSLoaded ? (
         <Map center={center} location={location} pathPoint={pathPoint} zoom={16} updateMyLocation={updateMyLocation} />
       ) : (
         <CenterDIV>
