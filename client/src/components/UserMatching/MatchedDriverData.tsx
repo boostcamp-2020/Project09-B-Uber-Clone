@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ContentWrapper from '../common/ContentWrapper';
 import Taxi from '../common/Taxi';
 const carModel = '제네시스';
-const carColor = 'Black';
+const carColor = '검정';
 const carNumber = '서울 아 8282';
 
 const MatchedDriverData: React.FC = () => {
