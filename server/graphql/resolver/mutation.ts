@@ -95,7 +95,13 @@ const Mutation = {
       });
 
       if (result) {
-        logger.info(`Driver matched: ${possibleDrivers}`);
+        logger.info(
+          `Driver matched: ${Object.entries(possibleDrivers)
+            .map(([_, driver], i) => {
+              return `${driver['_id']}, ${driver['id']}, ${driver['name']}`;
+            })
+            .join('\n')}`,
+        );
         return { success: true };
       }
       logger.error('DATABASE ERROR');
