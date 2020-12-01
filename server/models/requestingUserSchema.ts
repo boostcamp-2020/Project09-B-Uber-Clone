@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
+import pointSchema from './pointSchema';
 
 const requestingUser = new mongoose.Schema({
   user_id: mongoose.Schema.Types.ObjectId,
-  startLocation: { type: { type: String }, coordinates: [Number] },
-  endLocation: { type: { type: String }, coordinates: [Number] },
+  startLocation: pointSchema,
+  endLocation: pointSchema,
+  createdAt: { type: Date, expires: 1000 * 10, default: Date.now },
+  expireTime: { type: Date, default: () => Date.now() + 1000 * 10 },
 });
 
 requestingUser.index({ startLocation: '2dsphere' });
