@@ -29,6 +29,7 @@ import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
 import 'antd-mobile/lib/activity-indicator/style/css';
+import 'antd/lib/switch/style/css';
 
 const App: React.FC = () => {
   return (

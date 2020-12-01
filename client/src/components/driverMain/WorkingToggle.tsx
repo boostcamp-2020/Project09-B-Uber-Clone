@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch } from 'antd';
 import styled from 'styled-components';
-import 'antd/lib/switch/style/css';
 
 const WorkingToggle: React.FC<{ onChange: (checked: boolean, event: Event) => void }> = ({ onChange }) => {
   return (
@@ -17,6 +16,13 @@ const WorkingToggle: React.FC<{ onChange: (checked: boolean, event: Event) => vo
 };
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 30px 0;
+
   .ant-switch-handle {
     top: 0;
     width: 50%;
