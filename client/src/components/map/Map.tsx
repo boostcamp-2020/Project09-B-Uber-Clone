@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, PathPoint } from '@custom-types';
-import ExpectedInfo from '@components/userMain/ExpectedInfo';
+import PreReqData from '@components/userMain/PreReqData';
 
 const Map: React.FC<{
   center: Location;
@@ -21,12 +21,12 @@ const Map: React.FC<{
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
       const directionsRenderer = new google.maps.DirectionsRenderer();
-      setCheck(true);
-      const distance = result.routes[0].legs[0].distance.value;
-      const duration = result.routes[0].legs[0].duration.value;
-      const calc = 3800 + ((distance - 2000) / 110 + duration / 31) * 100;
+      const distance = result.routes[0].legs[0].distance;
+      const duration = result.routes[0].legs[0].duration;
+      const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
       setFee(Math.ceil(calc));
-      setTime(result.routes[0].legs[0].duration.text);
+      setTime(duration.text);
+      setCheck(true);
       directionsRenderer.setMap(maps.map);
       directionsRenderer.setDirections(result);
     }
@@ -68,13 +68,8 @@ const Map: React.FC<{
         {pathPoint.isSetEndPoint && (
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
         )}
-        {check && (
-          <>
-            <ExpectedInfo name="예상 시간" value={time} />
-            <ExpectedInfo name="예상 요금" value={`${fee}원`} />
-          </>
-        )}
       </GoogleMapReact>
+      {check && <PreReqData time={time} fee={fee} />}
     </div>
   );
 };
