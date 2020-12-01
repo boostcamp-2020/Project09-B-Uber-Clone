@@ -17,9 +17,11 @@ const DriverMainPage: React.FC = () => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 4%;
+  width: 100vw;
+  height: 100vh;
 `;
 
 export default DriverMainPage;
