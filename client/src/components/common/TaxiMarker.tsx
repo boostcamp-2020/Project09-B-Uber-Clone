@@ -1,16 +1,10 @@
 import React from 'react';
+import { TaxiMarker as MarkerType } from '@custom-types';
 
-const TaxiMarker: React.FC = () => {
+const TaxiMarker: React.FC<MarkerType> = () => {
   return (
     <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        width="30.000000pt"
-        height="30.000000pt"
-        viewBox="0 0 30.000000 30.000000"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 172 172">
         <g transform="translate(6.966,6.966) scale(0.919,0.919)">
           <g
             fill="none"

@@ -9,6 +9,11 @@ export interface Marker {
   color: string;
 }
 
+export interface TaxiMarker {
+  lat: number;
+  lng: number;
+}
+
 export interface signupLabelInputProps {
   title: string;
   placeholder: string;

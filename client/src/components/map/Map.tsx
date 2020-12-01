@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
+import TaxiMarker from '../common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 
 const Map: React.FC<{
@@ -63,6 +64,7 @@ const Map: React.FC<{
         {pathPoint.isSetEndPoint && (
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
         )}
+        <TaxiMarker lat={location.lat} lng={location.lng} />
       </GoogleMapReact>
     </div>
   );
