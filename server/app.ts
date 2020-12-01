@@ -14,6 +14,7 @@ import resolvers from './graphql/resolver';
 import AuhtDirective from './graphql/schemaDirectives';
 import { stream } from './config/winston';
 import context from './graphql/context';
+import { onConnect } from './graphql/onConnect';
 import Config from './config';
 
 const app: express.Application = express();
@@ -25,6 +26,9 @@ const apolloServer = new ApolloServer({
   },
   dataSources: () => Models,
   context,
+  subscriptions: {
+    onConnect,
+  },
 });
 
 // view engine setup

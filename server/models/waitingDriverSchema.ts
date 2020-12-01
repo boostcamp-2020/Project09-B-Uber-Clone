@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import driverSchema from './driverSchema';
-import geoSchema from './geoSchema';
 
 const waitingDriver = new mongoose.Schema({
   driver: driverSchema,
-  location: geoSchema,
+  location: { type: { type: String }, coordinates: [Number] },
 });
+
+waitingDriver.index({ location: '2dsphere' });
 
 export default waitingDriver;

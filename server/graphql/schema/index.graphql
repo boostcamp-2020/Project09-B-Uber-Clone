@@ -9,10 +9,64 @@ type Query {
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
 }
 
+type Response {
+  success: Boolean!
+  message: String
+}
+type LatLng {
+  lat: Float
+  lng: Float
+}
+type MatchedTaxi {
+  id: String
+  name: String
+  carModel: String
+  carColor: String
+  plateNumber: String
+}
+type LocationInfo {
+  name: String
+  latlng: LatLng
+}
+type UserRequest {
+  startLocation: LocationInfo
+  endLocation: LocationInfo
+}
+type UserRequestToDriver {
+  request: UserRequest
+  uid: String
+  requestTime: String
+}
+
+input LatLngInput {
+  lat: Float
+  lng: Float
+}
+input MatchedTaxiInput {
+  id: String
+  name: String
+  carModel: String
+  carColor: String
+  plateNumber: String
+}
+input LocationInfoInput {
+  name: String
+  latlng: LatLngInput
+}
+input UserRequestInput {
+  startLocation: LocationInfoInput
+  endLocation: LocationInfoInput
+}
+input UserRequestToDriverInput {
+  request: UserRequestInput
+  uid: String
+  requestTime: String
+}
+
 type Mutation {
   test(text: String): Boolean
-  userSignup(id: String!, password: String!, name: String!, phone: String!): AuthResponse
-  userSignin(id: String!, password: String!): AuthResponse
+  userSignup(id: String!, password: String!, name: String!, phone: String!): Response
+  userSignin(id: String!, password: String!): Response
   driverSignup(
     id: String!
     password: String!
@@ -22,13 +76,20 @@ type Mutation {
     carModel: String!
     plateNumber: String!
     carColor: String!
-  ): AuthResponse
-  driverSignin(id: String!, password: String!): AuthResponse
+  ): Response
+  driverSignin(id: String!, password: String!): Response
+  requestMatching(request: UserRequestInput): Response @auth(requires: USER)
+  stopMatching: Response @auth(requires: USER)
+  startService: Response @auth(requires: DRIVER)
+  stopService: Response @auth(requires: DRIVER)
+  updateDriverLocation(location: LatLngInput): Response @auth(requires: DRIVER)
+  approveMatching(uid: String): Response @auth(requires: DRIVER)
 }
 
-type AuthResponse {
-  success: Boolean!
-  message: String
+type Subscription {
+  userMatchingSub: MatchedTaxi @auth(requires: USER)
+  driverLocationSub(taxiId: String): LatLng @auth(requires: USER)
+  driverServiceSub: UserRequestToDriver @auth(requires: DRIVER)
 }
 
 directive @auth(requires: Role!) on FIELD_DEFINITION
