@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
-import { Location, Marker as MarkerType, PathPoint } from '@custom-types';
+import { Location, PathPoint } from '@custom-types';
 
 const Map: React.FC<{
   center: Location;
@@ -9,8 +9,7 @@ const Map: React.FC<{
   pathPoint: PathPoint;
   zoom: number;
   updateMyLocation: () => void;
-  moveCenterMyLocation: () => void;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation, moveCenterMyLocation }) => {
+}> = ({ center, location, pathPoint, zoom, updateMyLocation }) => {
   const [maps, setMaps] = useState({ map: null });
 
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
@@ -34,7 +33,7 @@ const Map: React.FC<{
 
   useEffect(() => {
     const { startPoint, endPoint } = pathPoint;
-    if (maps && startPoint.lat && endPoint.lat) {
+    if (maps && pathPoint.isSetStartPoint && pathPoint.isSetEndPoint) {
       const origin: Location = { lat: startPoint.lat as number, lng: startPoint.lng as number };
       const destination: Location = { lat: endPoint.lat as number, lng: endPoint.lng as number };
       const DirectionsService = new google.maps.DirectionsService();
@@ -55,15 +54,15 @@ const Map: React.FC<{
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '', libraries: ['places'] }}
         defaultZoom={zoom}
         center={center}
-        onTilesLoaded={() => {
-          updateMyLocation();
-          moveCenterMyLocation();
-        }}
         onGoogleApiLoaded={setMaps}
       >
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
-        <Marker lat={pathPoint.startPoint.lat} lng={pathPoint.startPoint.lng} color="#4285F4" />
-        <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
+        {pathPoint.isSetStartPoint && (
+          <Marker lat={pathPoint.startPoint.lat} lng={pathPoint.startPoint.lng} color="#4285F4" />
+        )}
+        {pathPoint.isSetEndPoint && (
+          <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
+        )}
       </GoogleMapReact>
     </div>
   );

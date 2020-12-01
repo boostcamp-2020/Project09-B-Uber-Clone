@@ -4,8 +4,8 @@ export interface Location {
 }
 
 export interface Marker {
-  lat: number | undefined;
-  lng: number | undefined;
+  lat: number;
+  lng: number;
   color: string;
 }
 
@@ -51,6 +51,8 @@ export interface InputIdPwProps {
 }
 
 export interface PathPoint {
+  isSetStartPoint: boolean;
+  isSetEndPoint: boolean;
   startPoint: Marker;
   endPoint: Marker;
 }
