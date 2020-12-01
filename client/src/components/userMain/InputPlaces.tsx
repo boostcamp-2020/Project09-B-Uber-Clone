@@ -1,5 +1,5 @@
 import React from 'react';
-import dataDiv from '../userMain/DataDiv';
+import ContentWrapper from './ContentWrapper';
 import PlaceDropdown from '../userMain/PlaceDropdown';
 import styled from 'styled-components';
 
@@ -23,8 +23,8 @@ const InputPlaces: React.FC = () => {
     );
   };
 
-  const DataCompo = dataDiv(Dropdown);
-  return <DataCompo putOn="top" />;
+  const PlacesInputComponent = ContentWrapper(Dropdown);
+  return <PlacesInputComponent putOn="top" />;
 };
 
 const Div = styled.div`

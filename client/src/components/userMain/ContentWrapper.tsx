@@ -5,7 +5,7 @@ interface Props {
   putOn: string;
 }
 
-function DataDiv(Child: React.FC) {
+function ContentWrapper(Child: React.FC) {
   return (props: Props) => (
     <Div putOnDevice={props.putOn}>
       <ChildContainer>
@@ -35,4 +35,4 @@ const ChildContainer = styled.div`
   flex-direction: column;
   width: 80%;
 `;
-export default DataDiv;
+export default ContentWrapper;
