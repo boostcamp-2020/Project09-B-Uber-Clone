@@ -3,6 +3,7 @@ import Map from '@components/map/Map';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
 import { updateStartPoint } from '../stores/modules/pathPoint';
+import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import { Spin } from 'antd';
@@ -57,30 +58,5 @@ const CenterDIV = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-const getLocation = (): Promise<Location> => {
-  return new Promise<Location>((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          enableHighAccuracy: false,
-          maximumAge: 0,
-          timeout: Infinity,
-        },
-      );
-    } else {
-      reject(new Error('Unable to retrieve your location'));
-    }
-  });
-};
 
 export default MapContainer;
