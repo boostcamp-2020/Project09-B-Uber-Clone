@@ -5,10 +5,10 @@ import AuthButtonGroup from '../../components/UserAuthPage/AuthButtonGroup';
 const DriverAuthPage: React.FC = () => {
   return (
     <Div>
-      <H1>자버택시</H1>
+      <H1>택시자버</H1>
       <div>
         <p>안녕하세요,</p>
-        <p>운전대 잡으려면 로그인 해주세요.</p>
+        <p>운전대를 잡으려면 로그인 해주세요.</p>
       </div>
       <AuthButtonGroup userType={'driver'} />
     </Div>
