@@ -29,6 +29,11 @@ const apolloServer = new ApolloServer({
   subscriptions: {
     onConnect,
   },
+  playground: {
+    settings: {
+      'request.credentials': 'include',
+    },
+  },
 });
 
 // view engine setup
