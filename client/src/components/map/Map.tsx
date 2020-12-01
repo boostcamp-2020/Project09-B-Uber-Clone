@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, Marker as MarkerType, PathPoint } from '@custom-types';
-import dataDiv from './DataDiv';
-import TempChild from './TempChild';
 
 const Map: React.FC<{
   center: Location;
@@ -17,13 +15,10 @@ const Map: React.FC<{
     setInterval(updateMyLocation, 1000);
   }, []);
 
-  const DataCompo = dataDiv(TempChild);
-  const dataPosition = 'bottom';
   return (
     <div style={{ height: '100vh', width: '100%' }}>
-      <DataCompo putOn={dataPosition} />
       <GoogleMapReact
-        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '' }}
+        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '', libraries: ['places'] }}
         defaultZoom={zoom}
         center={center}
         onTilesLoaded={() => {

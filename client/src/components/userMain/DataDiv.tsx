@@ -26,15 +26,13 @@ const Div = styled.div<{ putOnDevice: string }>`
   border: 1px solid #f3f3f3;
   border-radius: 10px;
   padding: ${(props) => (props.putOnDevice === 'top' ? '20px 0 10px 0' : '10px 0 20px 0')};
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.83);
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.4);
 `;
 
 const ChildContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 80%;
-  border: 1px #181818 solid;
 `;
 export default DataDiv;
