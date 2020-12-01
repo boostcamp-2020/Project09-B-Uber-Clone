@@ -1,5 +1,5 @@
 import React from 'react';
-import ContentWrapper from './ContentWrapper';
+import ContentWrapper from '../common/ContentWrapper';
 import PlaceDropdown from '../userMain/PlaceDropdown';
 import styled from 'styled-components';
 

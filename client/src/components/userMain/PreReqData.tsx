@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ContentWrapper from './ContentWrapper';
+import ContentWrapper from '../common/ContentWrapper';
 import RequestButton from './RequsetButton';
 
 // TODO : 입시값입니다 - 데이터 받아오면 지워주세요
