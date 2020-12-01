@@ -10,13 +10,13 @@ const InputPlaces: React.FC = () => {
         <Div>
           <p>출발</p>
           <WrapDropdown>
-            <PlaceDropdown />
+            <PlaceDropdown type={'start'} />
           </WrapDropdown>
         </Div>
         <Div>
           <p>도착</p>
           <WrapDropdown>
-            <PlaceDropdown />
+            <PlaceDropdown type={'end'} />
           </WrapDropdown>
         </Div>
       </>
