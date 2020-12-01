@@ -17,7 +17,8 @@ const CenterDiv = styled.div`
   position: absolute;
   z-index: 2;
   bottom: 8%;
-  left: 35%;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const BackgroundDiv = styled.div`
