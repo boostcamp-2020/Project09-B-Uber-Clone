@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-import geoSchema from './geoSchema';
 
-const requestingUSer = {
+const requestingUser = new mongoose.Schema({
   user_id: mongoose.Schema.Types.ObjectId,
-  startLocation: geoSchema,
-  endLocation: geoSchema,
-};
+  startLocation: { type: { type: String }, coordinates: [Number] },
+  endLocation: { type: { type: String }, coordinates: [Number] },
+});
 
-export default requestingUSer;
+requestingUser.index({ startLocation: '2dsphere' });
+requestingUser.index({ endLocation: '2dsphere' });
+
+export default requestingUser;
