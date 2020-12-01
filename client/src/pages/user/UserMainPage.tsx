@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import MapContainer from '../../containers/MapContainer';
 import InputPlaces from '@components/userMain/InputPlaces';
-import PreReqData from '@components/userMain/PreReqData';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -27,8 +26,6 @@ const UserMainPage: React.FC = () => {
         <>
           <InputPlaces />
           <MapContainer />
-          {/* TODO : 출발/도착지 모두 선택시 노출 */}
-          <PreReqData />;
         </>
       )}
     </>
