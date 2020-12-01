@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
-import driverSchema from './driverSchema';
 
 const waitingDriver = new mongoose.Schema({
-  driver: driverSchema,
+  driver: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver' },
   location: { type: { type: String }, coordinates: [Number] },
 });
 
