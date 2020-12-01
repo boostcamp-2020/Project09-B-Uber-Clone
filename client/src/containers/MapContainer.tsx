@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-const MapContainer: React.FC = ({ children }) => {
+const MapContainer: React.FC = () => {
   const location = useSelector((state: { location: Location }) => state.location);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
@@ -43,16 +43,7 @@ const MapContainer: React.FC = ({ children }) => {
   return (
     <>
       {isGPSLoaded ? (
-        <>
-          <Map
-            center={center}
-            location={location}
-            pathPoint={pathPoint}
-            zoom={16}
-            updateMyLocation={updateMyLocation}
-          />
-          {children && <Overlay>{children}</Overlay>}
-        </>
+        <Map center={center} location={location} pathPoint={pathPoint} zoom={16} updateMyLocation={updateMyLocation} />
       ) : (
         <CenterDIV>
           <Spin indicator={antIcon} />
@@ -65,13 +56,6 @@ const MapContainer: React.FC = ({ children }) => {
 const CenterDIV = styled.div`
   display: flex;
   justify-content: center;
-`;
-
-const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
 `;
 
 const getLocation = (): Promise<Location> => {
