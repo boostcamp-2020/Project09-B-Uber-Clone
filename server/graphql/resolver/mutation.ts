@@ -74,27 +74,22 @@ const Mutation = {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
+      const waitingDriverSchema = dataSources.model('WaitingDriver');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
       const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
       const area = {
-        center: [startLocationLatLng.lat, startLocationLatLng.lng],
-        radius: 3000,
+        center: [startLocationLatLng.lng, startLocationLatLng.lat],
+        radius: 3 / 3963.2, // radian
         unique: true,
+        spherical: true,
       };
+      const possibleDrivers = await waitingDriverSchema.find().where('location').within().circle(area);
 
-      /**
-       * TODO: WaitingDriver 반영 시 possibleDrivers 변경
-       * const waitingDriverSchema = dataSources.model('WaitingDriver');
-       * const possibleDrivers = await waitingDriverSchema.where('location').within().circle(area);
-       */
-      const waitingDriverSchema = dataSources.model('Driver');
-      const possibleDrivers = await waitingDriverSchema.find({});
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, requestTime: new Date() }, // requestTime을 DB에 insert할 때로 변경
+        driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
       });
-
       if (result) {
         logger.info(`Driver matched: ${possibleDrivers}`);
         return { success: true };
@@ -153,7 +148,10 @@ const Mutation = {
     try {
       const { lat, lng } = location;
       const waitingDriverSchema = dataSources.model('WaitingDriver');
-      const result = await waitingDriverSchema.findOneAndUpdate({ driver: uid }, { location: [lat, lng] });
+      const result = await waitingDriverSchema.findOneAndUpdate(
+        { driver: uid },
+        { location: { coordinates: [lng, lat] } },
+      );
       if (result) return { success: true };
 
       logger.error(`UPDATE DRIVER LOCATION ERROR: 해당 드라이버를 찾을 수 없습니다.`);
