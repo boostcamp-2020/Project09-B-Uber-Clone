@@ -4,20 +4,20 @@ import Loading from '@components/common/Loading';
 
 const Matching: React.FC = () => {
   return (
-    <div>
-      <CenterDiv>
-        <BackgroundDiv>
-          <Loading size={20} />
-          <TextWrap>드라이버를 찾는 중입니다..</TextWrap>
-        </BackgroundDiv>
-      </CenterDiv>
-    </div>
+    <CenterDiv>
+      <BackgroundDiv>
+        <Loading size={20} />
+        <TextWrap>드라이버를 찾는 중입니다..</TextWrap>
+      </BackgroundDiv>
+    </CenterDiv>
   );
 };
 
 const CenterDiv = styled.div`
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  z-index: 2;
+  bottom: 8%;
+  left: 35%;
 `;
 
 const BackgroundDiv = styled.div`
