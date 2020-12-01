@@ -11,13 +11,11 @@ const initialState: PathPoint = {
   startPoint: {
     lat: 0,
     lng: 0,
-    color: '#4285F4',
   },
   isSetEndPoint: false,
   endPoint: {
     lat: 0,
     lng: 0,
-    color: '#FBBC04',
   },
 };
 
@@ -26,9 +24,9 @@ type ActionType = ReturnType<typeof updateStartPoint> | ReturnType<typeof update
 const startPoint = (state = initialState, action: ActionType): PathPoint => {
   switch (action.type) {
     case UPDATE_START_POINT:
-      return { ...state, isSetStartPoint: true, startPoint: { ...action.payload, color: state.startPoint.color } };
+      return { ...state, isSetStartPoint: true, startPoint: { ...action.payload } };
     case UPDATE_END_POINT:
-      return { ...state, isSetEndPoint: true, endPoint: { ...action.payload, color: state.endPoint.color } };
+      return { ...state, isSetEndPoint: true, endPoint: { ...action.payload } };
     default:
       return state;
   }

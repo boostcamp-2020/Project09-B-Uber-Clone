@@ -3,12 +3,6 @@ export interface Location {
   lng: number;
 }
 
-export interface Marker {
-  lat: number;
-  lng: number;
-  color: string;
-}
-
 export interface signupLabelInputProps {
   title: string;
   placeholder: string;
@@ -53,8 +47,8 @@ export interface InputIdPwProps {
 export interface PathPoint {
   isSetStartPoint: boolean;
   isSetEndPoint: boolean;
-  startPoint: Marker;
-  endPoint: Marker;
+  startPoint: Location;
+  endPoint: Location;
 }
 
 export interface LoginFormPropsType {
