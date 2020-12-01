@@ -5,7 +5,7 @@ import EntryButtonGroup from '@components/UserDriverSelect/EntryButtonGroup';
 const UserDriverSelectPage: React.FC = () => {
   return (
     <Div>
-      <H1>자버택시</H1>
+      <H1>택시자버</H1>
       <EntryButtonGroup />
     </Div>
   );

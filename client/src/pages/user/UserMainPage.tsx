@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MapContainer from '../../containers/MapContainer';
-import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint';
-import { useDispatch } from 'react-redux';
-import { Location } from '@custom-types';
+import InputPlaces from '@components/userMain/InputPlaces';
+import { Loader } from '@googlemaps/js-api-loader';
+
+const loader = new Loader({
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
+  libraries: ['places'],
+});
 
 const UserMainPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const [apiLoaded, setApiLoaded] = useState(false);
 
-  const selectStartHandler = (placeName: string, latLng: Location) => {
-    dispatch(updateStartPoint(latLng));
+  const initialScriptLoad = async () => {
+    await loader.load();
+    setApiLoaded(true);
   };
-  const selectEndHandler = (placeName: string, latLng: Location) => {
-    dispatch(updateEndPoint(latLng));
-  };
+
+  useEffect(() => {
+    initialScriptLoad();
+  }, []);
 
   return (
-    // Todo: 출발-도착지 입력 탭 컴포넌트
-    // 출발 입력 탭 selectHandler={selectStartHandler}
-    // 도착 입력 탭 selectHandler={selectEndHandler}
-    <MapContainer />
+    <>
+      {apiLoaded && (
+        <>
+          <InputPlaces />
+          <MapContainer />;
+        </>
+      )}
+    </>
   );
 };
 
