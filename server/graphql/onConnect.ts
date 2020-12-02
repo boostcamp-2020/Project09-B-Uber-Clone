@@ -2,6 +2,7 @@ import Models from '../models';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
 import { AuthenticationError } from 'apollo-server-express';
+import jwt from 'jsonwebtoken';
 import Config from '../config';
 
 export const onConnect = (_, webSocket) => {
@@ -14,5 +15,10 @@ export const onConnect = (_, webSocket) => {
   const decoded = cookieParser.signedCookies(cookies, Config.COOKIE_SECRET);
   if (!decoded.userToken && !decoded.driverToken) throw new AuthenticationError('유효하지 않은 사용자입니다');
 
-  return { cookies: decoded, dataSources: Models, isConnection: true };
+  const ids = {
+    userId: jwt.verify(decoded.userToken, Config.JWT_SECRET).id,
+    driverId: jwt.verify(decoded.driverToken, Config.JWT_SECRET).id,
+  };
+
+  return { ...ids, dataSources: Models, isConnection: true };
 };

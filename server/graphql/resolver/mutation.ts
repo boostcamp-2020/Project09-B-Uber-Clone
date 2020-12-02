@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import Config from '../../config';
 import { logger } from '../../config/winston';
 import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
+import mongoose from 'mongoose';
 
 const Mutation = {
   userSignup: async (_, args, { dataSources, res }) => {
@@ -170,20 +171,23 @@ const Mutation = {
       return { success: false, message: '매칭에 실패했습니다.' };
     }
   },
-  approveMatching: async (_, __, { dataSources, uid, pubsub }) => {
+  approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
       const driverModel = dataSources.model('Driver');
-      const driverInfo = await driverModel.findOne({ _id: uid });
+      const driverInfo = await driverModel.findOne({ _id: driverId });
       await pubsub.publish(USER_MATCHED, {
-        id: driverInfo._id,
-        name: driverInfo.name,
-        carModel: driverInfo.carModel,
-        carColor: driverInfo.carColor,
-        plateNumber: driverInfo.plateNumber,
+        uid,
+        userMatchingSub: {
+          id: driverInfo._id,
+          name: driverInfo.name,
+          carModel: driverInfo.carModel,
+          carColor: driverInfo.carColor,
+          plateNumber: driverInfo.plateNumber,
+        },
       });
 
       const requestingUserModel = dataSources.model('RequestingUser');
-      const result = await requestingUserModel.find({ user_id: uid }).remove().exec();
+      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
       if (result) return { success: true };
       return { success: false, message: '매칭에 실패했습니다.' };

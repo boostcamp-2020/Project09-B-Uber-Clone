@@ -10,3 +10,9 @@ export const verifyUserByCookie = async (cookie: string, requestSchema: mongoose
   if (!result) authError();
   return id;
 };
+
+export const verifyUserById = async (id: string, requestSchema: mongoose.SchemaType) => {
+  const result = await requestSchema.findById(id);
+  if (!result) authError();
+  return id;
+};
