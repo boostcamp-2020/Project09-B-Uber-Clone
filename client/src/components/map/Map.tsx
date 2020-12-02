@@ -10,8 +10,9 @@ const Map: React.FC<{
   location: Location;
   pathPoint: PathPoint;
   zoom: number;
+  directionRenderer: any;
   updateMyLocation: () => void;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation }) => {
+}> = ({ center, location, pathPoint, zoom, updateMyLocation, directionRenderer }) => {
   const [maps, setMaps] = useState({ map: null });
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
@@ -19,13 +20,12 @@ const Map: React.FC<{
     status,
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
-      const directionsRenderer = new google.maps.DirectionsRenderer();
       const distance = result.routes[0].legs[0].distance;
       const duration = result.routes[0].legs[0].duration;
       const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
       dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
-      directionsRenderer.setMap(maps.map);
-      directionsRenderer.setDirections(result);
+      directionRenderer.setMap(maps.map);
+      directionRenderer.setDirections(result);
     }
   };
 
