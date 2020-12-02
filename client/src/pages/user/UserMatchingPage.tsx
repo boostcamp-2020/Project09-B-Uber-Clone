@@ -73,7 +73,7 @@ const UserMatchingPage: React.FC = () => {
     <>
       {apiLoaded && (
         <>
-          <MapContainer />
+          <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
       )}

@@ -10,7 +10,9 @@ const Map: React.FC<{
   pathPoint: PathPoint;
   zoom: number;
   updateMyLocation: () => void;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation }) => {
+  isMatched: boolean;
+  taxiLocation: Location;
+}> = ({ center, location, pathPoint, zoom, updateMyLocation, isMatched, taxiLocation }) => {
   const [maps, setMaps] = useState({ map: null });
 
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
@@ -64,7 +66,7 @@ const Map: React.FC<{
         {pathPoint.isSetEndPoint && (
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
         )}
-        <TaxiMarker lat={location.lat} lng={location.lng} />
+        {isMatched && <TaxiMarker lat={taxiLocation.lat} lng={taxiLocation.lng} />}
       </GoogleMapReact>
     </div>
   );
