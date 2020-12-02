@@ -8,7 +8,7 @@ import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
 
-const MapContainer: React.FC = () => {
+const MapContainer: React.FC<{ directionRenderer?: any }> = ({ directionRenderer }) => {
   const location = useSelector((state: { location: Location }) => state.location);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
@@ -40,7 +40,14 @@ const MapContainer: React.FC = () => {
   return (
     <>
       {isGPSLoaded ? (
-        <Map center={center} location={location} pathPoint={pathPoint} zoom={16} updateMyLocation={updateMyLocation} />
+        <Map
+          center={center}
+          location={location}
+          pathPoint={pathPoint}
+          zoom={16}
+          updateMyLocation={updateMyLocation}
+          directionRenderer={directionRenderer}
+        />
       ) : (
         <CenterDIV>
           <Loading />
