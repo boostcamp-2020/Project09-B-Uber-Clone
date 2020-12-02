@@ -47,8 +47,8 @@ const App: React.FC = () => {
             <AuthRouter exact path="/driver" component={DriverAuthPage} />
             <AuthRouter path="/driver/signup" component={DriverSignupPage} />
             <AuthRouter path="/driver/signin" component={DriverSigninPage} />
-            <DriverRouter path="/driver/map" component={DriverMainPage} />
-            <DriverRouter path="/driver/matching" component={DriverMatchingPage} />
+            <DriverRouter path="/driver/main" component={DriverMainPage} />
+            <DriverRouter path="/driver/map" component={DriverMatchingPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </BrowserRouter>
