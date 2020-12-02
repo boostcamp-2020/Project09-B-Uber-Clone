@@ -3,30 +3,32 @@ import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import TaxiMarker from '../common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
+import { updatePath } from '../../stores/modules/preData';
+import { useDispatch } from 'react-redux';
 
 const Map: React.FC<{
   center: Location;
   location: Location;
   pathPoint: PathPoint;
   zoom: number;
+  directionRenderer: any;
   updateMyLocation: () => void;
   isMatched: boolean;
   taxiLocation: Location;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation, isMatched, taxiLocation }) => {
+}> = ({ center, location, pathPoint, zoom, updateMyLocation, isMatched, taxiLocation, directionRenderer }) => {
   const [maps, setMaps] = useState({ map: null });
-
+  const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
     status,
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
-      const directionsRenderer = new google.maps.DirectionsRenderer();
-      /**
-       * result.routes[0].legs[0].distance.text => 이동 거리
-       * result.routes[0].legs[0].duration.text => 이동에 필요한 시간
-       */
-      directionsRenderer.setMap(maps.map);
-      directionsRenderer.setDirections(result);
+      const distance = result.routes[0].legs[0].distance;
+      const duration = result.routes[0].legs[0].duration;
+      const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
+      dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
+      directionRenderer.setMap(maps.map);
+      directionRenderer.setDirections(result);
     }
   };
 

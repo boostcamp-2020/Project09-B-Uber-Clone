@@ -68,10 +68,20 @@ export interface PathPoint {
   isSetEndPoint: boolean;
   startPoint: Marker;
   endPoint: Marker;
+  startPointName?: string;
+  endPointName?: string;
 }
 
 export interface LoginFormPropsType {
   signin: any;
   history: any;
   userType: string;
+}
+export interface Info {
+  time: string;
+  fee: number;
+}
+export interface PreData {
+  isSetPath: boolean;
+  info: Info;
 }

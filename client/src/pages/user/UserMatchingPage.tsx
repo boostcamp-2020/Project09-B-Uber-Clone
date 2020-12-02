@@ -4,6 +4,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/UserMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
 import { Toast } from 'antd-mobile';
+import Matching from '@components/userMatching/Matching';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -34,14 +35,14 @@ const TAXI_LOCATION = gql`
 const UserMatchingPage: React.FC = () => {
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
-  const [apiLoaded, setApiLoaded] = useState(false);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
+  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
 
   const initialScriptLoad = async () => {
     await loader.load();
-    setApiLoaded(true);
+    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
   };
 
   useEffect(() => {
@@ -71,9 +72,14 @@ const UserMatchingPage: React.FC = () => {
 
   return (
     <>
-      {apiLoaded && (
+      {googleMapApi.loaded && (
         <>
-          <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
+          <Matching />
+          <MapContainer
+            isMatched={isMatched}
+            taxiLocation={taxiLocation}
+            directionRenderer={googleMapApi.directionRenderer}
+          />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
       )}
