@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
 import { Location, PathPoint } from '@custom-types';
-import PreReqData from '@components/userMain/PreReqData';
+import { updatePath } from '../../stores/modules/preData';
+import { useDispatch } from 'react-redux';
 
 const Map: React.FC<{
   center: Location;
@@ -12,9 +13,7 @@ const Map: React.FC<{
   updateMyLocation: () => void;
 }> = ({ center, location, pathPoint, zoom, updateMyLocation }) => {
   const [maps, setMaps] = useState({ map: null });
-  const [check, setCheck] = useState(false);
-  const [time, setTime] = useState('');
-  const [fee, setFee] = useState(3800);
+  const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
     status,
@@ -24,9 +23,7 @@ const Map: React.FC<{
       const distance = result.routes[0].legs[0].distance;
       const duration = result.routes[0].legs[0].duration;
       const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
-      setFee(Math.ceil(calc));
-      setTime(duration.text);
-      setCheck(true);
+      dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
       directionsRenderer.setMap(maps.map);
       directionsRenderer.setDirections(result);
     }
@@ -69,7 +66,6 @@ const Map: React.FC<{
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
         )}
       </GoogleMapReact>
-      {check && <PreReqData time={time} fee={fee} />}
     </div>
   );
 };
