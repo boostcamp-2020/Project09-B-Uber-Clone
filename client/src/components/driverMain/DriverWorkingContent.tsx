@@ -1,43 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { gql, useSubscription, useMutation } from '@apollo/client';
+import { useSubscription, useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { Button } from 'antd-mobile';
 import { Progress } from 'antd';
+import { NEW_REQUEST, ACCEPT_REQUEST } from '../../queries/driver/driverMain';
 import { ArrowDownOutlined } from '@ant-design/icons';
-
-const NEW_REQUEST = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      expirationTime
-      request {
-        startLocation {
-          name
-          latlng {
-            lat
-            lng
-          }
-        }
-        endLocation {
-          name
-          latlng {
-            lat
-            lng
-          }
-        }
-      }
-    }
-  }
-`;
-
-const ACCEPT_REQUEST = gql`
-  mutation ApproveMatching($uid: string) {
-    approveMatching(uid: $uid) {
-      success
-      message
-    }
-  }
-`;
 
 const DriverWorkingContent: React.FC = () => {
   const [requestQueue, setRequestQueue]: any = useState([]);

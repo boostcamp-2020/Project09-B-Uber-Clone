@@ -1,35 +1,11 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import getLocation from '@utils/getLocation';
 import styled from 'styled-components';
+import { START_SERVICE, STOP_SERVICE, UPDATE_LOCATION } from '../../queries/driver/driverMain';
 import { ActivityIndicator, Toast } from 'antd-mobile';
 import DriverWorkingContent from './DriverWorkingContent';
-
-const START_SERVICE = gql`
-  mutation {
-    startService {
-      success
-      message
-    }
-  }
-`;
-const STOP_SERVICE = gql`
-  mutation {
-    stopService {
-      success
-      message
-    }
-  }
-`;
-const UPDATE_LOCATION = gql`
-  mutation UpdateDriverLocation($location: LatLngInput) {
-    updateDriverLocation(location: $location) {
-      success
-      message
-    }
-  }
-`;
 
 const DriverMainBody: React.FC<{ isWorking: boolean }> = ({ isWorking }) => {
   const history = useHistory();
