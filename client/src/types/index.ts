@@ -55,8 +55,8 @@ export interface PathPoint {
   isSetEndPoint: boolean;
   startPoint: Marker;
   endPoint: Marker;
-  startPointName: string | undefined;
-  endPointName: string | undefined;
+  startPointName?: string;
+  endPointName?: string;
 }
 
 export interface LoginFormPropsType {
