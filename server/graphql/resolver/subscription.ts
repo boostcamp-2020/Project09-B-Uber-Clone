@@ -6,7 +6,12 @@ import { logger } from '../../config/winston';
 
 const subscription = {
   userMatchingSub: {
-    subscribe: (_, __, { pubsub }) => pubsub.asyncIterator([USER_MATCHED]),
+    subscribe: withFilter(
+      (_, __, { pubsub }) => pubsub.asyncIterator([USER_MATCHED]),
+      ({ uid }, _, { userId }) => {
+        return uid === userId;
+      },
+    ),
   },
   // driverLocationSub: async (_, { taxiId }, context) => {},
   driverServiceSub: {
