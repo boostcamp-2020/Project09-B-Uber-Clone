@@ -1,15 +1,15 @@
-import { Location, PathPoint, IGeocode } from '@custom-types';
+import { Location, PathPoint } from '@custom-types';
 
 const UPDATE_START_POINT = 'pathPoint/UPDATE_START' as const;
 const UPDATE_END_POINT = 'pathPoint/UPDATE_END' as const;
 
-export const updateStartPoint = (location: Location, placeId?: IGeocode) => ({
+export const updateStartPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_START_POINT,
-  payload: { location, placeId },
+  payload: { location, startPointName: placeName, startPlaceId: placeId },
 });
-export const updateEndPoint = (location: Location, placeId?: IGeocode) => ({
+export const updateEndPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_END_POINT,
-  payload: { location, placeId },
+  payload: { location, endPointName: placeName, endPlaceId: placeId },
 });
 
 const initialState: PathPoint = {
@@ -34,14 +34,16 @@ const startPoint = (state = initialState, action: ActionType): PathPoint => {
         ...state,
         isSetStartPoint: true,
         startPoint: { ...action.payload.location },
-        startGeocode: action.payload.placeId,
+        startPointName: action.payload.startPointName,
+        startPlaceId: action.payload.startPlaceId,
       };
     case UPDATE_END_POINT:
       return {
         ...state,
         isSetEndPoint: true,
         endPoint: { ...action.payload.location },
-        endGeocode: action.payload.placeId,
+        endPointName: action.payload.endPointName,
+        endPlaceId: action.payload.endPlaceId,
       };
     default:
       return state;

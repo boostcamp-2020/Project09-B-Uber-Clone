@@ -44,18 +44,15 @@ export interface InputIdPwProps {
   name: string;
 }
 
-export interface IGeocode {
-  PointName: string;
-  placeId?: string;
-}
-
 export interface PathPoint {
   isSetStartPoint: boolean;
   isSetEndPoint: boolean;
   startPoint: Location;
   endPoint: Location;
-  startGeocode?: IGeocode;
-  endGeocode?: IGeocode;
+  startPointName?: string;
+  endPointName?: string;
+  startPlaceId?: string;
+  endPlaceId?: string;
 }
 
 export interface LoginFormPropsType {
