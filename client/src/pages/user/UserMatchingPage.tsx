@@ -1,7 +1,14 @@
 import React from 'react';
+import MapContainer from 'src/containers/MapContainer';
+import Matching from '@components/userMatching/Matching';
 
 const UserMatchingPage: React.FC = () => {
-  return <div>유저 매칭중 페이지</div>;
+  return (
+    <>
+      <Matching />
+      <MapContainer />
+    </>
+  );
 };
 
 export default UserMatchingPage;

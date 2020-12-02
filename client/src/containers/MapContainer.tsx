@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
+import Loading from '@components/common/Loading';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateLocation } from '../stores/modules/location';
 import { updateStartPoint } from '../stores/modules/pathPoint';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
-import { Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const MapContainer: React.FC = () => {
   const location = useSelector((state: { location: Location }) => state.location);
@@ -46,7 +43,7 @@ const MapContainer: React.FC = () => {
         <Map center={center} location={location} pathPoint={pathPoint} zoom={16} updateMyLocation={updateMyLocation} />
       ) : (
         <CenterDIV>
-          <Spin indicator={antIcon} />
+          <Loading />
         </CenterDIV>
       )}
     </>
