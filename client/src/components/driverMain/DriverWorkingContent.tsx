@@ -3,7 +3,7 @@ import { useSubscription, useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { Button } from 'antd-mobile';
 import { Progress } from 'antd';
-import { NEW_REQUEST, ACCEPT_REQUEST } from '../../queries/driver/driverMain';
+import { NEW_REQUEST, ACCEPT_REQUEST } from '@queries/driver/driverMain';
 import { ArrowDownOutlined } from '@ant-design/icons';
 
 const DriverWorkingContent: React.FC = () => {

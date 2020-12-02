@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import getLocation from '@utils/getLocation';
 import styled from 'styled-components';
-import { START_SERVICE, STOP_SERVICE, UPDATE_LOCATION } from '../../queries/driver/driverMain';
+import { START_SERVICE, STOP_SERVICE, UPDATE_LOCATION } from '@queries/driver/driverMain';
 import { ActivityIndicator, Toast } from 'antd-mobile';
 import DriverWorkingContent from './DriverWorkingContent';
 
