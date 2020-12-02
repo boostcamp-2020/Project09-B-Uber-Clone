@@ -2,11 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import ContentWrapper from '../common/ContentWrapper';
 import Taxi from '../common/Taxi';
-const carModel = '제네시스';
-const carColor = '검정';
-const carNumber = '서울 아 8282';
+import { TaxiData } from '@custom-types';
 
-const MatchedDriverData: React.FC = () => {
+interface Props {
+  taxiInfo: TaxiData;
+}
+
+const MatchedDriverData: React.FC<Props> = ({ taxiInfo }) => {
+  const { carModel, carColor, plateNumber } = taxiInfo;
   const matchedDriverData = () => {
     return (
       <>
@@ -24,7 +27,7 @@ const MatchedDriverData: React.FC = () => {
             </Div>
             <Div>
               <Pt>차 번호</Pt>
-              <P>{carNumber}</P>
+              <P>{plateNumber}</P>
             </Div>
           </InnerContainer>
         </Container>

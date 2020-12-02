@@ -21,11 +21,22 @@ const MATCHED_TAXI = gql`
   }
 `;
 
+const TAXI_LOCATION = gql`
+  subscription($id: string) {
+    driverLocationSub(taxiId: $id) {
+      lat
+      lng
+    }
+  }
+`;
+
 const UserMatchingPage: React.FC = () => {
-  const { data, error } = useSubscription(MATCHED_TAXI);
+  const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
+  const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [apiLoaded, setApiLoaded] = useState(false);
   const [isMatched, setMatchState] = useState(false);
-  const [taxiInfo, setTaxiInfo] = useState(undefined);
+  const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
+  const [taxiLocation, setTaxiLocation] = useState(undefined);
 
   const initialScriptLoad = async () => {
     await loader.load();
@@ -37,11 +48,18 @@ const UserMatchingPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (data?.userMatchingSub) {
+    if (taxiData?.userMatchingSub) {
       setMatchState(true);
-      // setTaxiInfo(data);
+      setTaxiInfo(taxiData.userMatchingSub);
     }
-  }, [data]);
+  }, [taxiData]);
+
+  useEffect(() => {
+    if (taxiLatlng?.driverLocationSub) {
+      setTaxiLocation(taxiLatlng);
+    }
+  }, [taxiLatlng]);
+
 
   // TODO : 매칭이 성사되면(드라이버 수락 후) MatchedDriverData 노출
   return (
@@ -49,7 +67,7 @@ const UserMatchingPage: React.FC = () => {
       {apiLoaded && (
         <>
           <MapContainer />
-          {isMatched && <MatchedDriverData />}
+          {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
       )}
     </>
