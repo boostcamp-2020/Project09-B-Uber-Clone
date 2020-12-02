@@ -8,13 +8,14 @@ interface Props {
 const StartLocationInfo: React.FC<Props> = ({ startLocation }) => {
   return (
     <Div>
-      <p>승객 출발지 : {startLocation}</p>
+      <p style={{ margin: 0 }}>승객 출발지 : {startLocation}</p>
     </Div>
   );
 };
 
 const Div = styled.div`
   margin: 10px;
+  padding: 10px;
   width: auto;
   border-radius: 6px;
   background-color: #cccccc;

@@ -8,10 +8,6 @@ import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
-import TaxiMarker from '@components/common/TaxiMarker';
-import { LoadingOutlined } from '@ant-design/icons';
-
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 interface Props {
   isMatched?: boolean;
