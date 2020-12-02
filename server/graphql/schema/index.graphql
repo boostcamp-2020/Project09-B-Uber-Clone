@@ -35,7 +35,7 @@ type UserRequest {
 type UserRequestToDriver {
   request: UserRequest
   uid: String
-  requestTime: String
+  expirationTime: String
 }
 
 input LatLngInput {
@@ -56,11 +56,6 @@ input LocationInfoInput {
 input UserRequestInput {
   startLocation: LocationInfoInput
   endLocation: LocationInfoInput
-}
-input UserRequestToDriverInput {
-  request: UserRequestInput
-  uid: String
-  requestTime: String
 }
 
 type Mutation {
