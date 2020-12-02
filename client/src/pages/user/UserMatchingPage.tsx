@@ -12,20 +12,22 @@ const MATCHING_INTERVAL = 10000;
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
-  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT);
+  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
+  const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
 
   useEffect(() => {
-    const countdown = setInterval(async () => {
+    const timer = setInterval(async () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
+    if (!loading) clearInterval(timer);
     return () => {
-      clearInterval(countdown);
+      clearInterval(timer);
       if (requestCount === 0) {
         history.push('/user/map');
-        Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.LONG);
+        Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.SHORT);
       }
     };
   }, [requestCount]);
@@ -59,21 +61,25 @@ const UserMatchingPage: React.FC = () => {
     }
   };
 
-  const subscription = () => {
-    const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
-    if (loading) return <Matching />;
-    if (error) {
-      Toast.show('알 수 없는 오류가 발생했습니다.');
-      history.push('/user/map');
-      return;
-    }
-    console.log(data);
-    return <p>매칭 성공</p>;
+  useEffect(() => {
+    if (error) onErrorHandler();
+  }, [error]);
+
+  const onErrorHandler = () => {
+    console.log('???');
+    console.log('test', error);
+    Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
+    history.push('/user/map');
+  };
+
+  const onMatchSuccess = () => {
+    return <p>매칭성공</p>;
   };
 
   return (
     <>
-      {subscription()}
+      {loading && <Matching />}
+      {data && onMatchSuccess()}
       <MapContainer />
     </>
   );
