@@ -16,8 +16,8 @@ export const onConnect = (_, webSocket) => {
   if (!decoded.userToken && !decoded.driverToken) throw new AuthenticationError('유효하지 않은 사용자입니다');
 
   const ids = {
-    userId: jwt.verify(decoded.userToken, Config.JWT_SECRET).id,
-    driverId: jwt.verify(decoded.driverToken, Config.JWT_SECRET).id,
+    userId: decoded.userToken && jwt.verify(decoded.userToken, Config.JWT_SECRET).id,
+    driverId: decoded.driverToken && jwt.verify(decoded.driverToken, Config.JWT_SECRET).id,
   };
 
   return { ...ids, dataSources: Models, isConnection: true };
