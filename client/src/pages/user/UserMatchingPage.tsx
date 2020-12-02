@@ -22,10 +22,10 @@ const UserMatchingPage: React.FC = () => {
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
     return () => {
+      clearInterval(countdown);
       if (requestCount === 0) {
         history.push('/user/map');
         Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.LONG);
-        clearInterval(countdown);
       }
     };
   }, [requestCount]);
