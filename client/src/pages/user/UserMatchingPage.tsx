@@ -3,6 +3,7 @@ import { gql, useSubscription } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/UserMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
+import { Toast } from 'antd-mobile';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -55,13 +56,19 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiData]);
 
   useEffect(() => {
+    if (taxiDataError && !taxiLatlngError) Toast.fail('택시 정보를 확인할 수 없습니다.');
+  }, [taxiDataError]);
+
+  useEffect(() => {
     if (taxiLatlng?.driverLocationSub) {
       setTaxiLocation(taxiLatlng);
     }
   }, [taxiLatlng]);
 
+  useEffect(() => {
+    if (taxiData && taxiLatlngError) Toast.fail('택시 위치를 확인할 수 없습니다.');
+  }, [taxiLatlngError]);
 
-  // TODO : 매칭이 성사되면(드라이버 수락 후) MatchedDriverData 노출
   return (
     <>
       {apiLoaded && (
