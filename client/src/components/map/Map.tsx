@@ -17,7 +17,7 @@ const Map: React.FC<{
     status,
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
-      const directionsRenderer = new google.maps.DirectionsRenderer();
+      const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
       /**
        * result.routes[0].legs[0].distance.text => 이동 거리
        * result.routes[0].legs[0].duration.text => 이동에 필요한 시간
