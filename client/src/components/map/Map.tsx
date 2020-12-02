@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '../common/Marker';
+import TaxiMarker from '../common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '../../stores/modules/preData';
 import { useDispatch } from 'react-redux';
@@ -12,7 +13,9 @@ const Map: React.FC<{
   zoom: number;
   directionRenderer: any;
   updateMyLocation: () => void;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation, directionRenderer }) => {
+  isMatched: boolean;
+  taxiLocation: Location;
+}> = ({ center, location, pathPoint, zoom, updateMyLocation, isMatched, taxiLocation, directionRenderer }) => {
   const [maps, setMaps] = useState({ map: null });
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
@@ -65,6 +68,7 @@ const Map: React.FC<{
         {pathPoint.isSetEndPoint && (
           <Marker lat={pathPoint.endPoint.lat} lng={pathPoint.endPoint.lng} color="#FBBC04" />
         )}
+        {isMatched && <TaxiMarker lat={taxiLocation.lat} lng={taxiLocation.lng} />}
       </GoogleMapReact>
     </div>
   );

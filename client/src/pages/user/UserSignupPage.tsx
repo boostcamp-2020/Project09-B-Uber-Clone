@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import InputPhoneNum from '../../components/UserSignup/InputPhoneNum';
-import InputName from '../../components/UserSignup/InputName';
-import InputIdPw from '../../components/UserSignup/InputIdPw';
+import InputPhoneNum from '@components/UserSignup/InputPhoneNum';
+import InputName from '@components/UserSignup/InputName';
+import InputIdPw from '@components/UserSignup/InputIdPw';
 const UserSignupPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [phone, setPhone] = useState('');

@@ -7,8 +7,18 @@ import { updateStartPoint } from '../stores/modules/pathPoint';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
+import TaxiMarker from '@components/common/TaxiMarker';
+import { LoadingOutlined } from '@ant-design/icons';
 
-const MapContainer: React.FC<{ directionRenderer?: any }> = ({ directionRenderer }) => {
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+interface Props {
+  isMatched?: boolean;
+  taxiLocation?: Location;
+  directionRenderer?: any;
+}
+
+const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 }, directionRenderer }) => {
   const location = useSelector((state: { location: Location }) => state.location);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
@@ -46,6 +56,8 @@ const MapContainer: React.FC<{ directionRenderer?: any }> = ({ directionRenderer
           pathPoint={pathPoint}
           zoom={16}
           updateMyLocation={updateMyLocation}
+          isMatched={isMatched}
+          taxiLocation={taxiLocation}
           directionRenderer={directionRenderer}
         />
       ) : (
