@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Meta } from '@storybook/react/types-6-0';
 import { text } from '@storybook/addon-knobs';
 
-import SignupLabelTitle from '../components/SignupLabelInput';
+import SignupLabelTitle from '../components/driverSignup/SignupLabelInput';
 
 export default {
   title: 'SignupLabelTitle',

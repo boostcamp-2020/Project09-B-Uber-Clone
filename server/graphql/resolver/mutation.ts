@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
 import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
@@ -73,27 +74,22 @@ const Mutation = {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
+      const waitingDriverSchema = dataSources.model('WaitingDriver');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
       const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
       const area = {
-        center: [startLocationLatLng.lat, startLocationLatLng.lng],
-        radius: 3000,
+        center: [startLocationLatLng.lng, startLocationLatLng.lat],
+        radius: 3 / 3963.2, // radian
         unique: true,
+        spherical: true,
       };
+      const possibleDrivers = await waitingDriverSchema.find().where('location').within().circle(area);
 
-      /**
-       * TODO: WaitingDriver 반영 시 possibleDrivers 변경
-       * const waitingDriverSchema = dataSources.model('WaitingDriver');
-       * const possibleDrivers = await waitingDriverSchema.where('location').within().circle(area);
-       */
-      const waitingDriverSchema = dataSources.model('Driver');
-      const possibleDrivers = await waitingDriverSchema.find({});
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, requestTime: new Date() }, // requestTime을 DB에 insert할 때로 변경
+        driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
       });
-
       if (result) {
         logger.info(`Driver matched: ${possibleDrivers}`);
         return { success: true };
@@ -123,7 +119,11 @@ const Mutation = {
   startService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const result = await waitingDriver.save({ driver: { _id: uid } });
+      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
+      if (existingWaitingDriver) return { success: true };
+      const newWaitingDriver = new waitingDriver({ driver: uid });
+      const result = await newWaitingDriver.save();
+
       logger.info(`${uid} start service: ${result}`);
       if (result) return { success: true };
       return { success: false, message: '영업을 시작 할 수 없습니다.' };
@@ -135,10 +135,7 @@ const Mutation = {
   stopService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const result = await waitingDriver
-        .find({ driver: { _id: uid } })
-        .remove()
-        .exec();
+      const result = await waitingDriver.findOneAndRemove({ driver: uid });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
       return { sucess: false, message: '영업을 끝낼 수 없습니다' };
@@ -147,16 +144,16 @@ const Mutation = {
       return { success: false, message: '영업을 끝낼 수 없습니다' };
     }
   },
-  updateDriverLocation: async (_, { request }, { dataSources, uid }) => {
+  updateDriverLocation: async (_, { location }, { dataSources, uid }) => {
     try {
-      const { location } = request;
+      const { lat, lng } = location;
       const waitingDriverSchema = dataSources.model('WaitingDriver');
-      const driver = await waitingDriverSchema.findOne({ driver: { _id: uid } });
-      driver.location = location;
-      const result = await driver.save();
-      if (result) {
-        return { success: true };
-      }
+      const result = await waitingDriverSchema.findOneAndUpdate(
+        { driver: uid },
+        { location: { coordinates: [lng, lat] } },
+      );
+      if (result) return { success: true };
+
       logger.error(`UPDATE DRIVER LOCATION ERROR: 해당 드라이버를 찾을 수 없습니다.`);
       return { success: false, message: '해당 드라이버를 찾을 수 없습니다.' };
     } catch (err) {
