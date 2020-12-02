@@ -6,7 +6,8 @@
       "@pages/*": ["./src/pages/*"],
       "@custom-types": ["./src/types"],
       "@custom-types/*": ["./src/types/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@queries/*": ["./src/queries/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
