@@ -12,7 +12,6 @@ const loader = new Loader({
 });
 
 const UserMainPage: React.FC = () => {
-  // const [apiLoaded, setApiLoaded] = useState(false);
   const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const info = preData.info;
@@ -20,7 +19,6 @@ const UserMainPage: React.FC = () => {
   const initialScriptLoad = async () => {
     await loader.load();
     setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
-    // setApiLoaded(true);
   };
 
   useEffect(() => {
