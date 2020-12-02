@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import MapContainer from '../../containers/MapContainer';
 import InputPlaces from '@components/userMain/InputPlaces';
+import PreReqData from '@components/userMain/PreReqData';
+import { PreData } from '@custom-types';
+import { useSelector } from 'react-redux';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -9,11 +12,15 @@ const loader = new Loader({
 });
 
 const UserMainPage: React.FC = () => {
-  const [apiLoaded, setApiLoaded] = useState(false);
+  // const [apiLoaded, setApiLoaded] = useState(false);
+  const preData = useSelector((state: { preData: PreData }) => state.preData);
+  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
+  const info = preData.info;
 
   const initialScriptLoad = async () => {
     await loader.load();
-    setApiLoaded(true);
+    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
+    // setApiLoaded(true);
   };
 
   useEffect(() => {
@@ -22,10 +29,11 @@ const UserMainPage: React.FC = () => {
 
   return (
     <>
-      {apiLoaded && (
+      {googleMapApi.loaded && (
         <>
           <InputPlaces />
-          <MapContainer />
+          <MapContainer directionRenderer={googleMapApi.directionRenderer} />
+          {preData.isSetPath && <PreReqData time={info.time} fee={info.fee} />}
         </>
       )}
     </>
