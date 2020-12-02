@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import React from 'react';
+import { useDispatch } from 'react-redux';
+import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint';
 import { gql, useSubscription } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Toast } from 'antd-mobile';
@@ -26,6 +27,7 @@ const MATCHED_USER = gql`
 `;
 
 const DriverMatchingPage: React.FC = () => {
+  const dispatch = useDispatch();
   const { data, error } = useSubscription(MATCHED_USER);
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [userRequest, setUserRequest] = useState({
@@ -48,6 +50,8 @@ const DriverMatchingPage: React.FC = () => {
       const requsetData = data.userMatchingSub;
       const { startLocation, endLocation } = requsetData.request;
       setUserRequest({ uid: requsetData.uid, startLocation: startLocation, endLocation: endLocation });
+      dispatch(updateStartPoint(startLocation.Latlng));
+      dispatch(updateEndPoint(endLocation.Latlng));
     }
   }, [data]);
 
