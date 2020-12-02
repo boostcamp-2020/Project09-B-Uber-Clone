@@ -9,9 +9,6 @@ const MatchingReqBtn: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
 
   const handlClick = async () => {
-    // const [result, message] = await registMatchingList();
-    // if (result) await history.push('/user/matching');
-    // else Toast.show(message, Toast.LONG);
     if (!pathPoint.isSetStartPoint || !pathPoint.isSetEndPoint) return;
     history.push('/user/matching');
   };
