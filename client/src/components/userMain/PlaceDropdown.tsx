@@ -19,8 +19,8 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
   const [placeValue, setPlaceValue] = useState(defalutPlace);
 
   const selectHandler = (placeName: string, latLng: Location, type: string) => {
-    if (type === 'start') return dispatch(updateStartPoint(latLng));
-    return dispatch(updateEndPoint(latLng));
+    if (type === 'start') return dispatch(updateStartPoint(latLng, placeName));
+    return dispatch(updateEndPoint(latLng, placeName));
   };
 
   const onSelect = async ({ value }: any) => {
