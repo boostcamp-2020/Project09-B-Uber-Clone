@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { USER_ON_BOARD } from '@queries/driver/driverMatching';
 import MapContainer from '../../containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import styled from 'styled-components';
-import { Button } from 'antd-mobile';
+import { Button, Toast } from 'antd-mobile';
+import { Response } from '@custom-types';
 
 const DriverMatchingPage: React.FC = () => {
   const [boarding, setBoarding] = useState(false);
+  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
+
+  const takeUser = async () => {
+    const { success, message }: Response = (await setUserOnBoard({
+      variables: { uid: 'USER_ID_FROM_STORE' },
+    })) as Response;
+    if (success) setBoarding(true);
+    else Toast.show(message);
+  };
 
   return (
     <>
@@ -18,7 +30,7 @@ const DriverMatchingPage: React.FC = () => {
             <CallButton phone="010-0000-0000" />
           </TopOverlay>
           <BottomOverlay>
-            <Button type="primary" onClick={() => setBoarding(true)}>
+            <Button type="primary" onClick={takeUser}>
               승객 탑승 완료
             </Button>
           </BottomOverlay>
