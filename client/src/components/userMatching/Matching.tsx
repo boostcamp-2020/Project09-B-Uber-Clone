@@ -6,7 +6,7 @@ const Matching: React.FC = () => {
   return (
     <CenterDiv>
       <BackgroundDiv>
-        <Loading size={20} />
+        <Loading size={20} color={'#f3f3f3'} />
         <TextWrap>드라이버를 찾는 중입니다..</TextWrap>
       </BackgroundDiv>
     </CenterDiv>
@@ -27,11 +27,12 @@ const BackgroundDiv = styled.div`
   align-items: center;
   padding: 10px 25px;
   border-radius: 50px;
-  background-color: #e4e4e4;
+  background-color: #181818;
 `;
 
 const TextWrap = styled.span`
   margin-left: 15px;
+  color: #f3f3f3;
 `;
 
 export default Matching;

@@ -3,27 +3,24 @@ import { Location, PathPoint } from '@custom-types';
 const UPDATE_START_POINT = 'pathPoint/UPDATE_START' as const;
 const UPDATE_END_POINT = 'pathPoint/UPDATE_END' as const;
 
-export const updateStartPoint = (location: Location, name?: string) => ({
+export const updateStartPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_START_POINT,
-  payload: { location, name },
+  payload: { location, startPointName: placeName, startPlaceId: placeId },
 });
-export const updateEndPoint = (location: Location, name?: string) => ({
+export const updateEndPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_END_POINT,
-  payload: { location, name },
-});
+  payload: { location, endPointName: placeName, endPlaceId: placeId },
 
 const initialState: PathPoint = {
   isSetStartPoint: false,
   startPoint: {
     lat: 0,
     lng: 0,
-    color: '#4285F4',
   },
   isSetEndPoint: false,
   endPoint: {
     lat: 0,
     lng: 0,
-    color: '#FBBC04',
   },
   startPointName: '',
   endPointName: '',
@@ -37,15 +34,17 @@ const startPoint = (state = initialState, action: ActionType): PathPoint => {
       return {
         ...state,
         isSetStartPoint: true,
-        startPoint: { ...action.payload.location, color: state.startPoint.color },
-        startPointName: action.payload.name,
+        startPoint: { ...action.payload.location },
+        startPointName: action.payload.startPointName,
+        startPlaceId: action.payload.startPlaceId,
       };
     case UPDATE_END_POINT:
       return {
         ...state,
         isSetEndPoint: true,
-        endPoint: { ...action.payload.location, color: state.endPoint.color },
-        endPointName: action.payload.name,
+        endPoint: { ...action.payload.location },
+        endPointName: action.payload.endPointName,
+        endPlaceId: action.payload.endPlaceId,
       };
     default:
       return state;

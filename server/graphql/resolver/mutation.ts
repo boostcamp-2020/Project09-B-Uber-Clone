@@ -91,7 +91,13 @@ const Mutation = {
         driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
       });
       if (result) {
-        logger.info(`Driver matched: ${possibleDrivers}`);
+        logger.info(
+          `Driver matched: ${Object.entries(possibleDrivers)
+            .map(([_, driver], i) => {
+              return `${driver['_id']}, ${driver['id']}, ${driver['name']}`;
+            })
+            .join('\n')}`,
+        );
         return { success: true };
       }
       logger.error('DATABASE ERROR');

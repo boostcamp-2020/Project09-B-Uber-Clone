@@ -23,6 +23,7 @@ const Map: React.FC<{
     status,
   ) => {
     if (status === google.maps.DirectionsStatus.OK) {
+      const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
       const distance = result.routes[0].legs[0].distance;
       const duration = result.routes[0].legs[0].duration;
       const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;

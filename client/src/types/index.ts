@@ -3,12 +3,6 @@ export interface Location {
   lng: number;
 }
 
-export interface Marker {
-  lat: number;
-  lng: number;
-  color: string;
-}
-
 export interface TaxiMarker {
   lat: number;
   lng: number;
@@ -66,10 +60,12 @@ export interface InputIdPwProps {
 export interface PathPoint {
   isSetStartPoint: boolean;
   isSetEndPoint: boolean;
-  startPoint: Marker;
-  endPoint: Marker;
+  startPoint: Location;
+  endPoint: Location;
   startPointName?: string;
   endPointName?: string;
+  startPlaceId?: string;
+  endPlaceId?: string;
 }
 
 export interface LoginFormPropsType {

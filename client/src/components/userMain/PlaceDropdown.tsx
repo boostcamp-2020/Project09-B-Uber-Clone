@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import GooglePlacesAutocomplete, { geocodeByPlaceId, getLatLng } from 'react-google-places-autocomplete';
-import { LatLng } from 'react-google-places-autocomplete/build/GooglePlacesAutocomplete.types';
 import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint';
 import { useDispatch } from 'react-redux';
 import { Location } from '@custom-types';
@@ -17,19 +16,19 @@ interface dropdownProps {
 const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dropdownProps) => {
   const dispatch = useDispatch();
   const [placeValue, setPlaceValue] = useState(defalutPlace);
-
-  const selectHandler = (placeName: string, latLng: Location, type: string) => {
-    if (type === 'start') return dispatch(updateStartPoint(latLng, placeName));
-    return dispatch(updateEndPoint(latLng, placeName));
+  
+  const selectHandler = (latLng: Location, placeName: string, type: string, placeId?: string) => {
+    if (type === 'start') return dispatch(updateStartPoint(latLng, placeName, placeId));
+    return dispatch(updateEndPoint(latLng, placeName, placeId));
   };
 
   const onSelect = async ({ value }: any) => {
     setPlaceValue(value);
+    const searchedGeocode = await geocodeByPlaceId(value.place_id);
+    const latLng = (await getLatLng(searchedGeocode[0])) as { lat: number; lng: number };
     const placeName = value.terms[0].value;
-    const geocode = await geocodeByPlaceId(value.place_id);
-    const latLng = (await getLatLng(geocode[0])) as { lat: number; lng: number };
-    console.log(placeName, geocode, latLng);
-    selectHandler(placeName, latLng, type);
+    const placeId = searchedGeocode && searchedGeocode[0].place_id;
+    selectHandler(latLng, placeName, type, placeId);
   };
 
   return (
