@@ -9,19 +9,22 @@ const DriverMatchingPage: React.FC = () => {
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  const arrive = () => {
+    setVisible(true);
+    // TODO: 도착 완료 처리
+  };
+
   return (
     <>
       <MapContainer />
       {boarding ? (
         <>
           <PaymentModal visible={visible} onClose={() => setVisible(false)} />
-          {/* TODO: 목적지 도착 버튼
-          ex) 
           <BottomOverlay>
-            <Button type="primary" onClick={() => setVisible(true)}>
+            <Button type="primary" onClick={() => arrive()}>
               목적지 도착
             </Button>
-          </BottomOverlay> */}
+          </BottomOverlay>
         </>
       ) : (
         <>
