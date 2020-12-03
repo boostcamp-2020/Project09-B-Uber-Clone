@@ -22,7 +22,7 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
   const [isGPSLoaded, setGPSLoaded] = useState(false);
-  const [isSetNearPlace, setNearPlace] = useState(false);
+  // const [isSetNearPlace, setNearPlace] = useState(false);
 
   useEffect(() => {
     initializeLocation();
@@ -38,8 +38,9 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
   };
 
   const findNearPlace = (map: any) => {
-    if (isSetNearPlace) return;
-    setNearPlace(true);
+    if (pathPoint.isSetStartPoint) return;
+    // if (isSetNearPlace) return;
+    // setNearPlace(true);
 
     const service = new google.maps.places.PlacesService(map);
 
