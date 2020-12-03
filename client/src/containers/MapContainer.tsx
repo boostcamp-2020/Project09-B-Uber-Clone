@@ -8,7 +8,6 @@ import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
-import TaxiMarker from '@components/common/TaxiMarker';
 
 interface Props {
   isMatched?: boolean;
