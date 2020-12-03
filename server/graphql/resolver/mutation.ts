@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
 import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
-import mongoose from 'mongoose';
 
 const Mutation = {
   userSignup: async (_, args, { dataSources, res }) => {
