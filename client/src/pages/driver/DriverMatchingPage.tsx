@@ -5,12 +5,12 @@ import styled from 'styled-components';
 import { Button } from 'antd-mobile';
 
 const DriverMatchingPage: React.FC = () => {
-  const [state, setState] = useState(false);
+  const [boarding, setBoarding] = useState(false);
 
   return (
     <>
       <MapContainer />
-      {state ? (
+      {boarding ? (
         <> // TODO: 승객 탑승 후 컴포넌트</>
       ) : (
         <>
@@ -18,7 +18,7 @@ const DriverMatchingPage: React.FC = () => {
             <CallButton phone="010-0000-0000" />
           </TopOverlay>
           <BottomOverlay>
-            <Button type="primary" onClick={() => setState(true)}>
+            <Button type="primary" onClick={() => setBoarding(true)}>
               승객 탑승 완료
             </Button>
           </BottomOverlay>
