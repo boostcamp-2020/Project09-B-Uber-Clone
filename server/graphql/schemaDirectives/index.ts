@@ -1,6 +1,6 @@
 import { SchemaDirectiveVisitor, AuthenticationError } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
-import { verifyUserByCookie } from '../../utils/verifyUserByCookie';
+import { verifyUserByCookie, verifyUserById } from '../../utils/verifyUserByCookie';
 import { authError } from './authError';
 import { logger } from '../../config/winston';
 
@@ -10,15 +10,22 @@ class AuthDirective extends SchemaDirectiveVisitor {
     const originalResolve = field.resolve || defaultFieldResolver;
     const isDriverAuth = requiredRole === 'DRIVER';
     field.resolve = async (...args) => {
-      const { req, res, dataSources, isConnection, cookies } = args[2];
+      const { req, res, dataSources, isConnection, userId, driverId } = args[2];
+      const modelName = isDriverAuth ? 'Driver' : 'User';
+      const requestSchema = dataSources.model(modelName);
       try {
-        const tokenType = `${requiredRole.toLowerCase()}Token`;
-        const cookie = isConnection ? cookies[tokenType] : req.signedCookies[tokenType];
-        if (!cookie) authError();
+        let id = '';
 
-        const modelName = isDriverAuth ? 'Driver' : 'User';
-        const requestSchema = dataSources.model(modelName);
-        const id = await verifyUserByCookie(cookie, requestSchema);
+        if (isConnection) {
+          id = isDriverAuth ? driverId : userId;
+          if (!id) authError();
+          await verifyUserById(id, requestSchema);
+        } else {
+          const tokenType = `${modelName.toLowerCase()}Token`;
+          const cookie = req.signedCookies[tokenType];
+          if (!cookie) authError();
+          id = await verifyUserByCookie(cookie, requestSchema);
+        }
 
         args[2] = { ...args[2], uid: id };
         return originalResolve.apply(this, args);

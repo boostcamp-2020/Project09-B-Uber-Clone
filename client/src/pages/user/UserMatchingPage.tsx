@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { gql, useSubscription } from '@apollo/client';
+import { gql, useSubscription, useMutation } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
 import { Toast } from 'antd-mobile';
 import Matching from '@components/userMatching/Matching';
-import { gql, useSubscription, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import { Toast } from 'antd-mobile';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
 
@@ -42,9 +40,10 @@ const TAXI_LOCATION = gql`
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
-  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT);
+  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
+  const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [isMatched, setMatchState] = useState(false);
@@ -54,11 +53,12 @@ const UserMatchingPage: React.FC = () => {
 
   const initialScriptLoad = async () => {
     await loader.load();
-    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
+    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer({ suppressMarkers: true }) });
   };
-    
+
   useEffect(() => {
     initialScriptLoad();
+    (async () => await registMatchingList())();
   }, []);
 
   useEffect(() => {
@@ -83,15 +83,16 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiLatlngError]);
 
   useEffect(() => {
-    const countdown = setInterval(async () => {
+    const timer = setInterval(async () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
+    if (!loading) clearInterval(timer);
     return () => {
-      clearInterval(countdown);
+      clearInterval(timer);
       if (requestCount === 0) {
         history.push('/user/map');
-        Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.LONG);
+        Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.SHORT);
       }
     };
   }, [requestCount]);
@@ -105,7 +106,7 @@ const UserMatchingPage: React.FC = () => {
         },
       },
       endLocation: {
-        name: pathPoint.startPointName,
+        name: pathPoint.endPointName,
         latlng: {
           ...pathPoint.endPoint,
         },
@@ -125,23 +126,25 @@ const UserMatchingPage: React.FC = () => {
     }
   };
 
-  const subscription = () => {
-    const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
-    if (loading) return <Matching />;
-    if (error) {
-      Toast.show('알 수 없는 오류가 발생했습니다.');
-      history.push('/user/map');
-      return;
-    }
-    console.log(data);
-    return <p>매칭 성공</p>;
+  useEffect(() => {
+    if (error) onErrorHandler();
+  }, [error]);
+
+  const onErrorHandler = () => {
+    Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
+    history.push('/user/map');
+  };
+
+  const onMatchSuccess = () => {
+    return <p>매칭성공</p>;
   };
 
   return (
     <>
       {googleMapApi.loaded && (
         <>
-          <Matching />
+          {loading && <Matching />}
+          {data && onMatchSuccess()}
           <MapContainer
             isMatched={isMatched}
             taxiLocation={taxiLocation}
