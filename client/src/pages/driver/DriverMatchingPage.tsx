@@ -5,7 +5,7 @@ import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint
 import { gql, useSubscription } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import { USER_ON_BOARD } from '@queries/driver/driverMatching';
-import MapContainer from '../../containers/MapContainer';
+import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';

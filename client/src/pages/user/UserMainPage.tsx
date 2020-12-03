@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
-import MapContainer from '../../containers/MapContainer';
+import MapContainer from '@containers/MapContainer';
 import InputPlaces from '@components/userMain/InputPlaces';
 import PreReqData from '@components/userMain/PreReqData';
 import { PreData } from '@custom-types';
