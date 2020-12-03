@@ -60,23 +60,27 @@ const DriverWorkingContent: React.FC = () => {
       <ContentWrapper>
         {currentRequest ? (
           <RequestWrapper>
-            <p>{currentRequest.request.startLocation.name}</p>
-            <ArrowDownOutlined style={{ fontSize: '3rem' }} />
-            <p>{currentRequest.request.endLocation.name}</p>
+            <RequestDisplay>
+              <p>{currentRequest.request.startLocation.name}</p>
+              <ArrowDownOutlined style={{ fontSize: '3rem' }} />
+              <p>{currentRequest.request.endLocation.name}</p>
+            </RequestDisplay>
+            <BottomLayout>
+              {currentRequest && <Progress percent={progressPercent} showInfo={false} style={{ width: '100%' }} />}
+              <ButtonGroup>
+                <Button type="primary" onClick={onAccept}>
+                  수락하기
+                </Button>
+                <Button onClick={onReject} style={{ backgroundColor: 'rgba(120,120,120,0.4)' }}>
+                  거절하기
+                </Button>
+              </ButtonGroup>
+            </BottomLayout>
           </RequestWrapper>
         ) : (
           <WaitingRequest>콜 대기중</WaitingRequest>
         )}
       </ContentWrapper>
-      {currentRequest && <Progress percent={progressPercent} showInfo={false} style={{ width: '100%' }} />}
-      <ButtonGroup>
-        <Button type="primary" onClick={onAccept}>
-          수락하기
-        </Button>
-        <Button onClick={onReject} style={{ backgroundColor: 'rgba(120,120,120,0.4)' }}>
-          거절하기
-        </Button>
-      </ButtonGroup>
     </>
   );
 };
@@ -92,9 +96,18 @@ const ContentWrapper = styled.div`
 const RequestWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+`;
+
+const RequestDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+  padding-top: 15%;
   > p {
     margin: 1.5rem 0;
     font-size: 3rem;
@@ -107,6 +120,13 @@ const WaitingRequest = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 3rem;
+`;
+
+const BottomLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  bottom: 0;
 `;
 
 const ButtonGroup = styled.div`
