@@ -81,3 +81,8 @@ export interface PreData {
   isSetPath: boolean;
   info: Info;
 }
+
+export interface Response {
+  success: boolean;
+  message: string;
+}

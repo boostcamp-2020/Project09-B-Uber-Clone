@@ -1,6 +1,6 @@
 import React from 'react';
-import ContentWrapper from '../common/ContentWrapper';
-import PlaceDropdown from '../userMain/PlaceDropdown';
+import ContentWrapper from '@components/common/ContentWrapper';
+import PlaceDropdown from '@components/userMain/PlaceDropdown';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';

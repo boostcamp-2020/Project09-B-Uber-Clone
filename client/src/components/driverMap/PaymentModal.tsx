@@ -2,7 +2,11 @@ import React from 'react';
 import { Modal } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 
-const PaymentModal: React.FC<{ visible: boolean }> = ({ visible }) => {
+interface PaymentModalPropsType {
+  visible: boolean;
+}
+
+const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible }) => {
   const history = useHistory();
 
   return (
