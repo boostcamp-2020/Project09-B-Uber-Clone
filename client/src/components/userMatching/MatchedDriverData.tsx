@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ContentWrapper from '../common/ContentWrapper';
-import Taxi from '../common/Taxi';
+import ContentWrapper from '@components/common/ContentWrapper';
+import Taxi from '@components/common/Taxi';
 import { TaxiData } from '@custom-types';
 
 interface Props {

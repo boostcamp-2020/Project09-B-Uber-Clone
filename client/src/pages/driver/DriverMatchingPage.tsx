@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MapContainer from '../../containers/MapContainer';
+import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import styled from 'styled-components';
 import { Button } from 'antd-mobile';

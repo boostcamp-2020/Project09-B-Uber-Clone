@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
 import Loading from '@components/common/Loading';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateLocation } from '../stores/modules/location';
-import { updateStartPoint } from '../stores/modules/pathPoint';
+import { updateLocation } from '@stores/modules/location';
+import { updateStartPoint } from '@stores/modules/pathPoint';
 import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
-import TaxiMarker from '@components/common/TaxiMarker';
-import { LoadingOutlined } from '@ant-design/icons';
-
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 interface Props {
   isMatched?: boolean;
