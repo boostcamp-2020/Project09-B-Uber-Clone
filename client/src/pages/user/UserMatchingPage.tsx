@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useSubscription } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
-import MatchedDriverData from '@components/UserMatching/MatchedDriverData';
+import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
 import { Toast } from 'antd-mobile';
 import Matching from '@components/userMatching/Matching';
