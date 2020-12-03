@@ -75,7 +75,7 @@ const DriverMatchingPage: React.FC = () => {
           <MapContainer directionRenderer={googleMapApi.directionRenderer} />
           {boarding ? (
             <>
-              <PaymentModal visible={visible} onClose={() => setVisible(false)} />
+              <PaymentModal visible={visible} />
               <BottomOverlay>
                 <Button type="primary" onClick={() => arrive()}>
                   목적지 도착

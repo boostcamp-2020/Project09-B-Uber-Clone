@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 
-interface PaymentModalPropsType {
-  visible: boolean;
-  onClose: any;
-}
-
-const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible, onClose }) => {
+const PaymentModal: React.FC<{ visible: boolean }> = ({ visible }) => {
   const history = useHistory();
-  const afterClose = () => {
-    history.push('/driver/main');
-  };
 
   return (
     <Modal
@@ -22,10 +14,7 @@ const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible, onClose }) => 
       footer={[
         {
           text: '결제 완료',
-          onPress: () => {
-            onClose();
-            afterClose();
-          },
+          onPress: () => history.push('/driver/main'),
         },
       ]}
     />
