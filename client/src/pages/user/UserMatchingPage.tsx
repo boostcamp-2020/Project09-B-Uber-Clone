@@ -4,10 +4,10 @@ import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
 import { Toast } from 'antd-mobile';
-import Matching from '@components/userMatching/Matching';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
+import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 10000;
@@ -50,6 +50,7 @@ const UserMatchingPage: React.FC = () => {
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
+  const [isMatchCanceled, setMatchCancel] = useState(false);
 
   const initialScriptLoad = async () => {
     await loader.load();
@@ -87,7 +88,7 @@ const UserMatchingPage: React.FC = () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
-    if (!loading) clearInterval(timer);
+    if (!loading || isMatchCanceled) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -139,11 +140,16 @@ const UserMatchingPage: React.FC = () => {
     return <p>매칭성공</p>;
   };
 
+  const onClickHandler = () => {
+    setMatchCancel(true);
+    history.push('/user/map');
+  };
+
   return (
     <>
       {googleMapApi.loaded && (
         <>
-          {loading && <Matching />}
+          {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
           {data && onMatchSuccess()}
           <MapContainer
             isMatched={isMatched}
