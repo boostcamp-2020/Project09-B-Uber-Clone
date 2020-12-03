@@ -9,9 +9,6 @@ import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
 import styled from 'styled-components';
 import TaxiMarker from '@components/common/TaxiMarker';
-import { LoadingOutlined } from '@ant-design/icons';
-
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 interface Props {
   isMatched?: boolean;
@@ -25,6 +22,7 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
   const [isGPSLoaded, setGPSLoaded] = useState(false);
+  const [isSetNearPlace, setNearPlace] = useState(false);
 
   useEffect(() => {
     initializeLocation();
@@ -34,10 +32,32 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
     const startLocation: Location = await getLocation();
     dispatch(updateLocation(startLocation));
     if (!pathPoint.isSetStartPoint) {
-      dispatch(updateStartPoint(startLocation));
       setCenter(startLocation);
     }
     setGPSLoaded(true);
+  };
+
+  const findNearPlace = (map: any) => {
+    if (isSetNearPlace) return;
+    setNearPlace(true);
+
+    const service = new google.maps.places.PlacesService(map);
+
+    const request = {
+      location: center,
+      type: 'store',
+      rankBy: google.maps.places.RankBy.DISTANCE,
+    };
+
+    service.nearbySearch(request, (results, status) => {
+      const result = results && results[0];
+      if (status === google.maps.places.PlacesServiceStatus.OK && result) {
+        const { geometry, name, place_id } = result;
+        dispatch(
+          updateStartPoint({ lat: geometry?.location.lat() || 0, lng: geometry?.location.lng() || 0 }, name, place_id),
+        );
+      }
+    });
   };
 
   const updateMyLocation = async () => {
@@ -62,6 +82,7 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
           isMatched={isMatched}
           taxiLocation={taxiLocation}
           directionRenderer={directionRenderer}
+          findNearPlace={findNearPlace}
         />
       ) : (
         <CenterDIV>
