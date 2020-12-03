@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import AuthButtonGroup from '../../components/UserAuthPage/AuthButtonGroup';
+import AuthButtonGroup from '@components/UserAuthPage/AuthButtonGroup';
 
 const DriverAuthPage: React.FC = () => {
   return (

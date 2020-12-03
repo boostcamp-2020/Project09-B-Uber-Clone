@@ -1,22 +1,25 @@
 import React from 'react';
-import ContentWrapper from './ContentWrapper';
+import ContentWrapper from '../common/ContentWrapper';
 import PlaceDropdown from '../userMain/PlaceDropdown';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { PathPoint } from '@custom-types';
 
 const InputPlaces: React.FC = () => {
+  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const Dropdown = () => {
     return (
       <>
         <Div>
           <p>출발</p>
           <WrapDropdown>
-            <PlaceDropdown type={'start'} />
+            <PlaceDropdown type={'start'} defalutPlace={pathPoint.startPointName} />
           </WrapDropdown>
         </Div>
         <Div>
           <p>도착</p>
           <WrapDropdown>
-            <PlaceDropdown type={'end'} />
+            <PlaceDropdown type={'end'} defalutPlace={pathPoint.endPointName} />
           </WrapDropdown>
         </Div>
       </>

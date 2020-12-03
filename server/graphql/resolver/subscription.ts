@@ -1,8 +1,5 @@
-import { withFilter, AuthenticationError } from 'apollo-server-express';
+import { withFilter } from 'apollo-server-express';
 import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
-import jwt from 'jsonwebtoken';
-import Config from '../../config';
-import { logger } from '../../config/winston';
 
 const subscription = {
   userMatchingSub: {

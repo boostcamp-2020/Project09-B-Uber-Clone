@@ -310,6 +310,7 @@ module.exports = function (webpackEnv) {
         '@pages': path.resolve(__dirname, '../src/pages'),
         '@custom-types': path.resolve(__dirname, '../src/types'),
         '@utils': path.resolve(__dirname, '../src/utils'),
+        '@queries': path.resolve(__dirname, '../src/queries'),
 
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/

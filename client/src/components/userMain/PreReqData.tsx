@@ -1,23 +1,25 @@
+import { timeStamp } from 'console';
 import React from 'react';
 import styled from 'styled-components';
-import ContentWrapper from './ContentWrapper';
+import ContentWrapper from '../common/ContentWrapper';
 import RequestButton from './RequsetButton';
 
-// TODO : 입시값입니다 - 데이터 받아오면 지워주세요
-const preCalTime = 20;
-const preCalCost = '15,000';
+interface PreRequestDataPropsType {
+  time: string;
+  fee: number;
+}
 
-const PreRequestData: React.FC = () => {
+const PreRequestData: React.FC<PreRequestDataPropsType> = ({ time, fee }) => {
   const preReqData = () => {
     return (
       <>
         <Div>
           <p>예상시간</p>
-          <P>{preCalTime}분</P>
+          <P>{time}</P>
         </Div>
         <Div>
           <p>예상요금</p>
-          <P>{preCalCost}원</P>
+          <P>{fee}원</P>
         </Div>
         <hr />
         <RequestButton />
