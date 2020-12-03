@@ -27,11 +27,8 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
     const searchedGeocode = await geocodeByPlaceId(value.place_id);
     const latLng = (await getLatLng(searchedGeocode[0])) as { lat: number; lng: number };
     const placeName = value.terms[0].value;
-    const geocode = await geocodeByPlaceId(value.place_id);
-    const latLng = (await getLatLng(geocode[0])) as { lat: number; lng: number };
     const placeId = searchedGeocode && searchedGeocode[0].place_id;
     selectHandler(latLng, placeName, type, placeId);
-
   };
 
   return (
