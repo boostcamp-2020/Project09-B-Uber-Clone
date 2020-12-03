@@ -15,7 +15,7 @@ const subscription = {
     subscribe: withFilter(
       (_, __, { pubsub }) => pubsub.asyncIterator([REQUEST_ADDED]),
       ({ possibleDrivers }, _, { driverId }) => {
-        return possibleDrivers.some((openDriver) => openDriver._id.toString() === driverId);
+        return possibleDrivers.some(({ driver }) => driver.toString() === driverId);
       },
     ),
   },
