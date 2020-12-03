@@ -10,7 +10,7 @@ const CallButton: React.FC<CallButtonPropsType> = ({ phone }) => {
   };
   return (
     <Button
-      style={{ backgroundColor: '#cccccc', cursor: 'pointer', position: 'relative' }}
+      style={{ backgroundColor: '#fbbc04', cursor: 'pointer', position: 'relative' }}
       icon={<img src="https://img.icons8.com/ios-filled/48/000000/phone.png" />}
       onClick={onClick}
     />
