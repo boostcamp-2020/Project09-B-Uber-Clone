@@ -3,14 +3,16 @@ import { gql, useSubscription, useMutation } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '../../containers/MapContainer';
-import { Toast } from 'antd-mobile';
+import { Modal, Toast } from 'antd-mobile';
 import Matching from '@components/userMatching/Matching';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
 
+const alertModal = Modal.alert;
+
 const MAX_REQUEST_COUNT = 6;
-const MATCHING_INTERVAL = 10000;
+const MATCHING_INTERVAL = 1000;
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -40,16 +42,26 @@ const TAXI_LOCATION = gql`
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
-  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
+  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
-  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
+  const [boarding, setBoarding] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  // TODO : DELETE THIS METHOD
+  const setBoardingAfterTenSecToTest = () => {
+    setTimeout(() => {
+      setBoarding(true);
+      setMatchState(false);
+    }, 3000);
+  };
 
   const initialScriptLoad = async () => {
     await loader.load();
@@ -65,6 +77,7 @@ const UserMatchingPage: React.FC = () => {
     if (taxiData?.userMatchingSub) {
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
+      setBoardingAfterTenSecToTest();
     }
   }, [taxiData]);
 
@@ -87,7 +100,8 @@ const UserMatchingPage: React.FC = () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
-    if (!loading) clearInterval(timer);
+
+    if (!loading || isMatched || boarding) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -96,6 +110,10 @@ const UserMatchingPage: React.FC = () => {
       }
     };
   }, [requestCount]);
+
+  useEffect(() => {
+    if (!modal && boarding) showAlert();
+  }, [modal, boarding]);
 
   const registMatchingList = async () => {
     const request = {
@@ -135,8 +153,26 @@ const UserMatchingPage: React.FC = () => {
     history.push('/user/map');
   };
 
-  const onMatchSuccess = () => {
-    return <p>매칭성공</p>;
+  const showAlert = () => {
+    setModal(true);
+    const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
+      {
+        text: '홈으로',
+        onPress: () => {
+          setBoarding(false);
+          setModal(false);
+          history.push('/user');
+        },
+        style: 'default',
+      },
+    ]);
+
+    setTimeout(() => {
+      alertInstance.close();
+      setBoarding(false);
+      setModal(false);
+      history.push('/user');
+    }, 5000);
   };
 
   return (
@@ -144,7 +180,6 @@ const UserMatchingPage: React.FC = () => {
       {googleMapApi.loaded && (
         <>
           {loading && <Matching />}
-          {data && onMatchSuccess()}
           <MapContainer
             isMatched={isMatched}
             taxiLocation={taxiLocation}
