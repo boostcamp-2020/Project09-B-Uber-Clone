@@ -43,6 +43,7 @@ const UserMatchingPage: React.FC = () => {
   const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
+  const [stopMatching] = useMutation(STOP_MATCHING);
   const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
@@ -92,8 +93,10 @@ const UserMatchingPage: React.FC = () => {
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
-        history.push('/user/map');
-        Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.SHORT);
+        (async () => {
+          await cancelMatching();
+          Toast.show('매칭할 수 있는 드라이버가 없습니다.', Toast.SHORT);
+        })();
       }
     };
   }, [requestCount]);
@@ -140,9 +143,26 @@ const UserMatchingPage: React.FC = () => {
     return <p>매칭성공</p>;
   };
 
-  const onClickHandler = () => {
-    setMatchCancel(true);
-    history.push('/user/map');
+  const cancelMatching = async () => {
+    try {
+      const {
+        data: {
+          stopMatching: { success, message },
+        },
+      } = await stopMatching();
+      if (!success) console.error(message);
+      console.log(success, message);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setMatchCancel(true);
+      history.push('/user/map');
+    }
+  };
+
+  const onClickHandler = async () => {
+    await cancelMatching();
+    Toast.show('호출을 취소했습니다.', Toast.SHORT);
   };
 
   return (
@@ -180,6 +200,15 @@ const MATCHING_SUBSCRIPTION = gql`
       carModel
       carColor
       plateNumber
+    }
+  }
+`;
+
+const STOP_MATCHING = gql`
+  mutation {
+    stopMatching {
+      success
+      message
     }
   }
 `;
