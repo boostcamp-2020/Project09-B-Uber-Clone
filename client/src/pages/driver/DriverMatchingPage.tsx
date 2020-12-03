@@ -3,15 +3,26 @@ import MapContainer from '../../containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import styled from 'styled-components';
 import { Button } from 'antd-mobile';
+import PaymentModal from '@components/driverMap/PaymentModal';
 
 const DriverMatchingPage: React.FC = () => {
   const [boarding, setBoarding] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   return (
     <>
       <MapContainer />
       {boarding ? (
-        <> // TODO: 승객 탑승 후 컴포넌트</>
+        <>
+          <PaymentModal visible={visible} onClose={() => setVisible(false)} />
+          {/* TODO: 목적지 도착 버튼
+          ex) 
+          <BottomOverlay>
+            <Button type="primary" onClick={() => setVisible(true)}>
+              목적지 도착
+            </Button>
+          </BottomOverlay> */}
+        </>
       ) : (
         <>
           <TopOverlay>
