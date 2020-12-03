@@ -58,6 +58,7 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     initialScriptLoad();
+    (async () => await registMatchingList())();
   }, []);
 
   useEffect(() => {
@@ -105,7 +106,7 @@ const UserMatchingPage: React.FC = () => {
         },
       },
       endLocation: {
-        name: pathPoint.startPointName,
+        name: pathPoint.endPointName,
         latlng: {
           ...pathPoint.endPoint,
         },
