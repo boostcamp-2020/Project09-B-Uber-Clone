@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setDriverMatchingInfo } from '../../stores/modules/driverMatchingInfo';
 import styled from 'styled-components';
-import { Button } from 'antd-mobile';
+import { Button, Toast } from 'antd-mobile';
 import { Progress } from 'antd';
 import { NEW_REQUEST, ACCEPT_REQUEST } from '@queries/driver/driverMain';
 import { ArrowDownOutlined } from '@ant-design/icons';
 
 const DriverWorkingContent: React.FC = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [requestQueue, setRequestQueue]: any = useState([]);
   const [currentRequest, setCurrentRequest]: any = useState(undefined);
   const [timers, setTimers] = useState({ percentInterval: 0, requestTimeout: 0 });
@@ -14,11 +19,27 @@ const DriverWorkingContent: React.FC = () => {
   const [acceptRequest] = useMutation(ACCEPT_REQUEST);
   const { data, error } = useSubscription(NEW_REQUEST);
 
-  const onAccept = () => {
-    acceptRequest({ variables: currentRequest.uid });
+  const onAccept = async () => {
+    const { uid, request } = currentRequest;
+    const {
+      data: {
+        approveMatching: { success, message },
+      },
+    } = await acceptRequest({ variables: { uid } });
+    if (!success) Toast.show(message);
+    else {
+      dispatch(setDriverMatchingInfo({ uid, request }));
+      clearCurrentStatus();
+      history.push('/driver/map');
+    }
   };
   const onReject = () => {
     setCurrentRequest(undefined);
+  };
+  const clearCurrentStatus = () => {
+    clearInterval(timers.percentInterval);
+    clearTimeout(timers.requestTimeout);
+    setProgressPercent(0);
   };
   const changeCurrentRequest = (newIndex: number) => {
     const newRequest = requestQueue[newIndex];
@@ -34,12 +55,9 @@ const DriverWorkingContent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (error) location.reload();
-  }, [error]);
-
-  useEffect(() => {
     if (data?.driverServiceSub) setRequestQueue([...requestQueue, data.driverServiceSub]);
-  }, [data]);
+    if (error) location.reload();
+  }, [data, error]);
 
   useEffect(() => {
     if (!currentRequest && requestQueue.length) {
@@ -47,12 +65,7 @@ const DriverWorkingContent: React.FC = () => {
       changeCurrentRequest(nextIndex);
       setRequestQueue(requestQueue.filter((_: any, index: number): boolean => index > nextIndex));
     }
-    if (!currentRequest)
-      return () => {
-        clearInterval(timers.percentInterval);
-        clearTimeout(timers.requestTimeout);
-        setProgressPercent(0);
-      };
+    if (!currentRequest) return clearCurrentStatus;
   }, [currentRequest, requestQueue]);
 
   return (
