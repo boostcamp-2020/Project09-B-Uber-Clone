@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setDriverMatchingInfo } from '../../stores/modules/driverMatchingInfo';
+import { setDriverMatchingInfo } from '@stores/modules/driverMatchingInfo';
 import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
 import { Progress } from 'antd';
