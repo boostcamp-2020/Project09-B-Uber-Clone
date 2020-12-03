@@ -29,8 +29,10 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
   const initializeLocation = async () => {
     const startLocation: Location = await getLocation();
     dispatch(updateLocation(startLocation));
-    dispatch(updateStartPoint(startLocation));
-    setCenter(startLocation);
+    if (!pathPoint.isSetStartPoint) {
+      dispatch(updateStartPoint(startLocation));
+      setCenter(startLocation);
+    }
     setGPSLoaded(true);
   };
 

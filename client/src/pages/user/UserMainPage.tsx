@@ -18,7 +18,7 @@ const UserMainPage: React.FC = () => {
 
   const initialScriptLoad = async () => {
     await loader.load();
-    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
+    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer({ suppressMarkers: true }) });
   };
 
   useEffect(() => {

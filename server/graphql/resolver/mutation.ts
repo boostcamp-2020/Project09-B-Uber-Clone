@@ -91,7 +91,13 @@ const Mutation = {
         driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
       });
       if (result) {
-        logger.info(`Driver matched: ${possibleDrivers}`);
+        logger.info(
+          `Driver matched: ${Object.entries(possibleDrivers)
+            .map(([_, driver], i) => {
+              return `${driver['_id']}, ${driver['id']}, ${driver['name']}`;
+            })
+            .join('\n')}`,
+        );
         return { success: true };
       }
       logger.error('DATABASE ERROR');
@@ -161,20 +167,23 @@ const Mutation = {
       return { success: false, message: '매칭에 실패했습니다.' };
     }
   },
-  approveMatching: async (_, __, { dataSources, uid, pubsub }) => {
+  approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
       const driverModel = dataSources.model('Driver');
-      const driverInfo = await driverModel.findOne({ _id: uid });
+      const driverInfo = await driverModel.findOne({ _id: driverId });
       await pubsub.publish(USER_MATCHED, {
-        id: driverInfo._id,
-        name: driverInfo.name,
-        carModel: driverInfo.carModel,
-        carColor: driverInfo.carColor,
-        plateNumber: driverInfo.plateNumber,
+        uid,
+        userMatchingSub: {
+          id: driverInfo._id,
+          name: driverInfo.name,
+          carModel: driverInfo.carModel,
+          carColor: driverInfo.carColor,
+          plateNumber: driverInfo.plateNumber,
+        },
       });
 
       const requestingUserModel = dataSources.model('RequestingUser');
-      const result = await requestingUserModel.find({ user_id: uid }).remove().exec();
+      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
       if (result) return { success: true };
       return { success: false, message: '매칭에 실패했습니다.' };

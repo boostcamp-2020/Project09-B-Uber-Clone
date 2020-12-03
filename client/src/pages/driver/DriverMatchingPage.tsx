@@ -8,6 +8,7 @@ import MapContainer from '../../containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';
+import { Button } from 'antd-mobile';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
@@ -30,6 +31,7 @@ const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
   const { data, error } = useSubscription(MATCHED_USER);
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
+  const [boarding, setBoarding] = useState(false);
   const [userRequest, setUserRequest] = useState({
     uid: '',
     startLocation: { name: '', Latlng: { lat: '', lng: '' } },
@@ -64,21 +66,41 @@ const DriverMatchingPage: React.FC = () => {
       {googleMapApi.loaded && (
         <>
           <MapContainer directionRenderer={googleMapApi.directionRenderer} />
-          <Overlay>
-            <StartLocationInfo startLocation={userRequest.startLocation.name} />
-            <CallButton phone="010-0000-0000" />
-          </Overlay>
+          {boarding ? (
+            <> // TODO: 승객 탑승 후 컴포넌트</>
+          ) : (
+            <>
+              <TopOverlay>
+                <StartLocationInfo startLocation={userRequest.startLocation.name} />
+                <CallButton phone="010-0000-0000" />
+              </TopOverlay>
+              <BottomOverlay>
+                <Button type="primary" onClick={() => setBoarding(true)}>
+                  승객 탑승 완료
+                </Button>
+              </BottomOverlay>
+            </>
+          )}
         </>
       )}
     </>
   );
 };
 
-const Overlay = styled.div`
+const TopOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  margin: 10px;
+`;
+
+const BottomOverlay = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 10px;
 `;
 
 export default DriverMatchingPage;
