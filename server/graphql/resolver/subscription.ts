@@ -14,12 +14,12 @@ const subscription = {
       (_, __, { pubsub }) => pubsub.asyncIterator([REQUEST_ADDED]),
       ({ possibleDrivers }, _, { cookies }) => {
         try {
-          if (cookies) throw new Error();
+          if (!cookies) throw new Error();
           const { driverToken } = cookies;
           if (!driverToken) throw new Error();
           const { id } = jwt.verify(driverToken.trim(), Config.JWT_SECRET);
           if (!id) throw new Error();
-          return possibleDrivers.some((driver) => driver._id.toString() === id);
+          return possibleDrivers.some(({ driver }) => driver.toString() === id);
         } catch (err) {
           logger.error(`DRIVERSERVICESUB ERROR: ${err}`);
           throw new AuthenticationError('유효하지 않은 사용자입니다');

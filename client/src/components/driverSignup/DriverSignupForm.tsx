@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd-mobile';
 import { withFormik, FormikProps } from 'formik';
-import SignupLabelInput from '@components/SignupLabelInput';
+import SignupLabelInput from '@components/driverSignup/SignupLabelInput';
 import driverSignupValidation from '@utils/driverSignupValidation';
 import { driverSignupFormValues } from '@custom-types';
 

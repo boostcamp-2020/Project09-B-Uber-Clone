@@ -10,7 +10,6 @@ export const updateStartPoint = (location: Location, placeName?: string, placeId
 export const updateEndPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_END_POINT,
   payload: { location, endPointName: placeName, endPlaceId: placeId },
-});
 
 const initialState: PathPoint = {
   isSetStartPoint: false,
@@ -23,6 +22,8 @@ const initialState: PathPoint = {
     lat: 0,
     lng: 0,
   },
+  startPointName: '',
+  endPointName: '',
 };
 
 type ActionType = ReturnType<typeof updateStartPoint> | ReturnType<typeof updateEndPoint>;

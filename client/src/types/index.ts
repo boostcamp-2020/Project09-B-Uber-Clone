@@ -3,6 +3,19 @@ export interface Location {
   lng: number;
 }
 
+export interface TaxiMarker {
+  lat: number;
+  lng: number;
+}
+
+export interface TaxiData {
+  id: string;
+  name: string;
+  carModel: string;
+  carColor: string;
+  plateNumber: string;
+}
+
 export interface signupLabelInputProps {
   title: string;
   placeholder: string;
@@ -59,4 +72,12 @@ export interface LoginFormPropsType {
   signin: any;
   history: any;
   userType: string;
+}
+export interface Info {
+  time: string;
+  fee: number;
+}
+export interface PreData {
+  isSetPath: boolean;
+  info: Info;
 }
