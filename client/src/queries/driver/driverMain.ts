@@ -26,7 +26,7 @@ export const NEW_REQUEST = gql`
 `;
 
 export const ACCEPT_REQUEST = gql`
-  mutation ApproveMatching($uid: string) {
+  mutation ApproveMatching($uid: String) {
     approveMatching(uid: $uid) {
       success
       message

@@ -14,7 +14,10 @@ const Matching: React.FC = () => {
 };
 
 const CenterDiv = styled.div`
+  display: flex;
+  justify-content: center;
   position: absolute;
+  width: 80%;
   z-index: 2;
   bottom: 8%;
   left: 50%;

@@ -187,7 +187,7 @@ const Mutation = {
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
       if (result) return { success: true };
-      return { success: false, message: '매칭에 실패했습니다.' };
+      return { success: false, message: '이미 배차가 완료된 요청입니다.' };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
       return { sucess: false, message: '매칭에 실패했습니다.' };
