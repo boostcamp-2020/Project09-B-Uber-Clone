@@ -81,3 +81,22 @@ export interface PreData {
   isSetPath: boolean;
   info: Info;
 }
+
+export interface Response {
+  success: boolean;
+  message: string;
+}
+
+export interface DriverMatchingInfo {
+  uid?: string;
+  request?: {
+    startLocation: {
+      name: string;
+      latlng: Location;
+    };
+    endLocation: {
+      name: string;
+      latlng: Location;
+    };
+  };
+}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
-import Marker from '../common/Marker';
-import TaxiMarker from '../common/TaxiMarker';
+import Marker from '@components/common/Marker';
+import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
-import { updatePath } from '../../stores/modules/preData';
+import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
 
 const Map: React.FC<{

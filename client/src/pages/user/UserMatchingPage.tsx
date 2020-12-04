@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { gql, useSubscription, useMutation } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
-import MapContainer from '../../containers/MapContainer';
+import MapContainer from '@containers/MapContainer';
 import { Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';

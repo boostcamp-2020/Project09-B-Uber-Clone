@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import GooglePlacesAutocomplete, { geocodeByPlaceId, getLatLng } from 'react-google-places-autocomplete';
-import { updateStartPoint, updateEndPoint } from '../../stores/modules/pathPoint';
+import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { useDispatch } from 'react-redux';
 import { Location } from '@custom-types';
 

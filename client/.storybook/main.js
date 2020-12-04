@@ -15,6 +15,8 @@ module.exports = {
       '@custom-types': path.resolve(__dirname, '../src/types'),
       '@utils': path.resolve(__dirname, '../src/utils'),
       '@queries': path.resolve(__dirname, '../src/queries'),
+      '@stores': path.resolve(__dirname, '../src/stores'),
+      '@containers': path.resolve(__dirname, '../src/containers'),
     };
     // config.resolve.extensions.push('.js', '.jsx');
     return config;
