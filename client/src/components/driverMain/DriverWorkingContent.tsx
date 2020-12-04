@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setDriverMatchingInfo } from '@stores/modules/driverMatchingInfo';
 import styled from 'styled-components';
-import { Button } from 'antd-mobile';
+import { Button, Toast } from 'antd-mobile';
 import { Progress } from 'antd';
 import { NEW_REQUEST, ACCEPT_REQUEST } from '@queries/driver/driverMain';
 import { ArrowDownOutlined } from '@ant-design/icons';
 
 const DriverWorkingContent: React.FC = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [requestQueue, setRequestQueue]: any = useState([]);
   const [currentRequest, setCurrentRequest]: any = useState(undefined);
   const [timers, setTimers] = useState({ percentInterval: 0, requestTimeout: 0 });
@@ -14,11 +19,27 @@ const DriverWorkingContent: React.FC = () => {
   const [acceptRequest] = useMutation(ACCEPT_REQUEST);
   const { data, error } = useSubscription(NEW_REQUEST);
 
-  const onAccept = () => {
-    acceptRequest({ variables: currentRequest.uid });
+  const onAccept = async () => {
+    const { uid, request } = currentRequest;
+    const {
+      data: {
+        approveMatching: { success, message },
+      },
+    } = await acceptRequest({ variables: { uid } });
+    if (!success) Toast.show(message);
+    else {
+      dispatch(setDriverMatchingInfo({ uid, request }));
+      clearCurrentStatus();
+      history.push('/driver/map');
+    }
   };
   const onReject = () => {
     setCurrentRequest(undefined);
+  };
+  const clearCurrentStatus = () => {
+    clearInterval(timers.percentInterval);
+    clearTimeout(timers.requestTimeout);
+    setProgressPercent(0);
   };
   const changeCurrentRequest = (newIndex: number) => {
     const newRequest = requestQueue[newIndex];
@@ -34,12 +55,9 @@ const DriverWorkingContent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (error) location.reload();
-  }, [error]);
-
-  useEffect(() => {
     if (data?.driverServiceSub) setRequestQueue([...requestQueue, data.driverServiceSub]);
-  }, [data]);
+    if (error) location.reload();
+  }, [data, error]);
 
   useEffect(() => {
     if (!currentRequest && requestQueue.length) {
@@ -47,12 +65,7 @@ const DriverWorkingContent: React.FC = () => {
       changeCurrentRequest(nextIndex);
       setRequestQueue(requestQueue.filter((_: any, index: number): boolean => index > nextIndex));
     }
-    if (!currentRequest)
-      return () => {
-        clearInterval(timers.percentInterval);
-        clearTimeout(timers.requestTimeout);
-        setProgressPercent(0);
-      };
+    if (!currentRequest) return clearCurrentStatus;
   }, [currentRequest, requestQueue]);
 
   return (
@@ -60,23 +73,27 @@ const DriverWorkingContent: React.FC = () => {
       <ContentWrapper>
         {currentRequest ? (
           <RequestWrapper>
-            <p>{currentRequest.request.startLocation.name}</p>
-            <ArrowDownOutlined style={{ fontSize: '3rem' }} />
-            <p>{currentRequest.request.endLocation.name}</p>
+            <RequestDisplay>
+              <p>{currentRequest.request.startLocation.name}</p>
+              <ArrowDownOutlined style={{ fontSize: '3rem' }} />
+              <p>{currentRequest.request.endLocation.name}</p>
+            </RequestDisplay>
+            <BottomLayout>
+              {currentRequest && <Progress percent={progressPercent} showInfo={false} style={{ width: '100%' }} />}
+              <ButtonGroup>
+                <Button type="primary" onClick={onAccept}>
+                  수락하기
+                </Button>
+                <Button onClick={onReject} style={{ backgroundColor: 'rgba(120,120,120,0.4)' }}>
+                  거절하기
+                </Button>
+              </ButtonGroup>
+            </BottomLayout>
           </RequestWrapper>
         ) : (
           <WaitingRequest>콜 대기중</WaitingRequest>
         )}
       </ContentWrapper>
-      {currentRequest && <Progress percent={progressPercent} showInfo={false} style={{ width: '100%' }} />}
-      <ButtonGroup>
-        <Button type="primary" onClick={onAccept}>
-          수락하기
-        </Button>
-        <Button onClick={onReject} style={{ backgroundColor: 'rgba(120,120,120,0.4)' }}>
-          거절하기
-        </Button>
-      </ButtonGroup>
     </>
   );
 };
@@ -92,9 +109,18 @@ const ContentWrapper = styled.div`
 const RequestWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+`;
+
+const RequestDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+  padding-top: 15%;
   > p {
     margin: 1.5rem 0;
     font-size: 3rem;
@@ -107,6 +133,13 @@ const WaitingRequest = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 3rem;
+`;
+
+const BottomLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  bottom: 0;
 `;
 
 const ButtonGroup = styled.div`

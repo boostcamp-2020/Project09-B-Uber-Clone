@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Toast } from 'antd-mobile';
+import { Button } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';

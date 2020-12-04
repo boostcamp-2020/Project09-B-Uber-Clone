@@ -7,7 +7,9 @@
       "@custom-types": ["./src/types"],
       "@custom-types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
-      "@queries/*": ["./src/queries/*"]
+      "@queries/*": ["./src/queries/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@containers/*": ["./src/containers/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

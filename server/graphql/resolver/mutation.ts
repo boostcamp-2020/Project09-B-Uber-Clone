@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
+import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
   userSignup: async (_, args, { dataSources, res }) => {
@@ -150,14 +150,15 @@ const Mutation = {
       return { success: false, message: '영업을 끝낼 수 없습니다' };
     }
   },
-  updateDriverLocation: async (_, { location }, { dataSources, uid }) => {
+  updateDriverLocation: async (_, { location, uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
       const { lat, lng } = location;
       const waitingDriverSchema = dataSources.model('WaitingDriver');
       const result = await waitingDriverSchema.findOneAndUpdate(
-        { driver: uid },
+        { driver: driverId },
         { location: { coordinates: [lng, lat] } },
       );
+      if (uid) await pubsub(UPDATE_LOCATION, { uid, driverLocationSub: { location } });
       if (result) return { success: true };
 
       logger.error(`UPDATE DRIVER LOCATION ERROR: 해당 드라이버를 찾을 수 없습니다.`);
@@ -186,10 +187,18 @@ const Mutation = {
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
       if (result) return { success: true };
-      return { success: false, message: '매칭에 실패했습니다.' };
+      return { success: false, message: '이미 배차가 완료된 요청입니다.' };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
       return { sucess: false, message: '매칭에 실패했습니다.' };
+    }
+  },
+  userOnBoard: async (_, { uid }, { pubsub }) => {
+    try {
+      await pubsub.publish(USER_ON_BOARD, { uid, driverLocationSub: { board: true } });
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: '오류가 발생했습니다' };
     }
   },
 };

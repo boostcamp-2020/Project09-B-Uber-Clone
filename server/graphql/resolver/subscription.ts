@@ -1,5 +1,5 @@
 import { withFilter } from 'apollo-server-express';
-import { REQUEST_ADDED, USER_MATCHED } from './subscriptionType';
+import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const subscription = {
   userMatchingSub: {
@@ -10,7 +10,14 @@ const subscription = {
       },
     ),
   },
-  // driverLocationSub: async (_, { taxiId }, context) => {},
+  driverLocationSub: {
+    subscribe: withFilter(
+      (_, __, { pubsub }) => pubsub.asyncIterator([USER_ON_BOARD, UPDATE_LOCATION]),
+      ({ uid }, _, { userId }) => {
+        return uid === userId;
+      },
+    ),
+  },
   driverServiceSub: {
     subscribe: withFilter(
       (_, __, { pubsub }) => pubsub.asyncIterator([REQUEST_ADDED]),

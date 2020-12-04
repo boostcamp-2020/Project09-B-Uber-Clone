@@ -1,7 +1,6 @@
-import { timeStamp } from 'console';
 import React from 'react';
 import styled from 'styled-components';
-import ContentWrapper from '../common/ContentWrapper';
+import ContentWrapper from '@components/common/ContentWrapper';
 import RequestButton from './RequsetButton';
 
 interface PreRequestDataPropsType {
