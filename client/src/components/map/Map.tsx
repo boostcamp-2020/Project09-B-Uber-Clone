@@ -15,8 +15,19 @@ const Map: React.FC<{
   updateMyLocation: () => void;
   isMatched: boolean;
   taxiLocation: Location;
-}> = ({ center, location, pathPoint, zoom, updateMyLocation, isMatched, taxiLocation, directionRenderer }) => {
-  const [maps, setMaps] = useState({ map: null });
+  findNearPlace: (map: any) => void;
+}> = ({
+  center,
+  location,
+  pathPoint,
+  zoom,
+  updateMyLocation,
+  isMatched,
+  taxiLocation,
+  directionRenderer,
+  findNearPlace,
+}) => {
+  const [maps, setMaps]: any = useState({ map: null });
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
@@ -60,6 +71,9 @@ const Map: React.FC<{
         defaultZoom={zoom}
         center={center}
         onGoogleApiLoaded={setMaps}
+        onTilesLoaded={() => {
+          findNearPlace(maps.map);
+        }}
       >
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
         {pathPoint.isSetStartPoint && (
