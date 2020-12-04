@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginForm from '@components/Signin/SigninForm';
+import LoginForm from '@components/signin/SigninForm';
 import { useMutation, gql } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 

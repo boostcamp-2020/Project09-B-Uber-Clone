@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import client from './utils/apolloClient';
+import client from '@utils/apolloClient';
 import 'antd-mobile/lib/button/style/css';
 import {
   UserDriverSelectPage,
@@ -29,6 +29,8 @@ import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
 import 'antd-mobile/lib/activity-indicator/style/css';
+import 'antd/lib/switch/style/css';
+import 'antd/lib/progress/style/css';
 
 const App: React.FC = () => {
   return (
@@ -45,8 +47,8 @@ const App: React.FC = () => {
             <AuthRouter exact path="/driver" component={DriverAuthPage} />
             <AuthRouter path="/driver/signup" component={DriverSignupPage} />
             <AuthRouter path="/driver/signin" component={DriverSigninPage} />
-            <DriverRouter path="/driver/map" component={DriverMainPage} />
-            <DriverRouter path="/driver/matching" component={DriverMatchingPage} />
+            <DriverRouter path="/driver/main" component={DriverMainPage} />
+            <DriverRouter path="/driver/map" component={DriverMatchingPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </BrowserRouter>

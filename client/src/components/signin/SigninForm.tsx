@@ -21,14 +21,15 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
       alert('아이디와 비밀번호를 모두 입력하세요');
     } else {
       const variables = { id, password };
-      const mutation = props.userType === 'user' ? 'userSignin' : 'driverSignin';
+      const isUser = props.userType === 'user';
+      const mutation = isUser ? 'userSignin' : 'driverSignin';
       const {
         data: {
           [mutation]: { success, message },
         },
       } = await props.signin({ variables });
 
-      if (success) props.history.push(`/${props.userType}/map`);
+      if (success) props.history.push(isUser ? '/user/map' : '/driver/main');
       else alert(message);
     }
   };

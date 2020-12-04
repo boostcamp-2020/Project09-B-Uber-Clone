@@ -1,7 +1,6 @@
 import { SchemaDirectiveVisitor, AuthenticationError } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
-import jwt from 'jsonwebtoken';
-import Config from '../../config';
+import { verifyUserByCookie, verifyUserById } from '../../utils/verifyUserByCookie';
 import { authError } from './authError';
 import { logger } from '../../config/winston';
 
@@ -10,24 +9,29 @@ class AuthDirective extends SchemaDirectiveVisitor {
     const requiredRole = this.args.requires;
     const originalResolve = field.resolve || defaultFieldResolver;
     const isDriverAuth = requiredRole === 'DRIVER';
-
     field.resolve = async (...args) => {
-      const { req, res, dataSources } = args[2];
+      const { req, res, dataSources, isConnection, userId, driverId } = args[2];
+      const modelName = isDriverAuth ? 'Driver' : 'User';
+      const requestSchema = dataSources.model(modelName);
       try {
-        const cookie = isDriverAuth ? req.signedCookies.driverToken : req.signedCookies.userToken;
-        if (!cookie) authError();
+        let id = '';
 
-        const { id } = jwt.verify(cookie, Config.JWT_SECRET);
-        if (!id) authError();
+        if (isConnection) {
+          id = isDriverAuth ? driverId : userId;
+          if (!id) authError();
+          await verifyUserById(id, requestSchema);
+        } else {
+          const tokenType = `${modelName.toLowerCase()}Token`;
+          const cookie = req.signedCookies[tokenType];
+          if (!cookie) authError();
+          id = await verifyUserByCookie(cookie, requestSchema);
+        }
 
-        const modelName = isDriverAuth ? 'Driver' : 'User';
-        const requestSchema = dataSources.model(modelName);
-        const result = await requestSchema.findById(id);
-        if (!result) authError();
-
+        args[2] = { ...args[2], uid: id };
         return originalResolve.apply(this, args);
       } catch (err) {
         if (err instanceof AuthenticationError) {
+          if (isConnection) throw err;
           if (isDriverAuth) res.clearCookie('driverToken');
           else res.clearCookie('userToken');
           throw err;

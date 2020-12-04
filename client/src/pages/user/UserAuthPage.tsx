@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import AuthButtonGroup from '@components/UserAuthPage/AuthButtonGroup';
+import AuthButtonGroup from '@components/userAuthPage/AuthButtonGroup';
 
 const UserAuthPage: React.FC = () => {
   return (
     <Div>
-      <H1>자버택시</H1>
+      <H1>택시자버</H1>
       <div>
         <p>안녕하세요,</p>
-        <p>자버택시 잡으려면 로그인 해주세요.</p>
+        <p>택시를 잡으려면 로그인 해주세요.</p>
       </div>
       <AuthButtonGroup userType={'user'} />
     </Div>

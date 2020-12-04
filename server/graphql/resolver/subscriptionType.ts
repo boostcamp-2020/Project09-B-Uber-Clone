@@ -1,0 +1,4 @@
+export const REQUEST_ADDED = 'REQUEST_ADDED';
+export const USER_MATCHED = 'USER_MATCHED';
+export const USER_ON_BOARD = 'USER_ON_BOARD';
+export const UPDATE_LOCATION = 'UPDATE_LOCATION';

@@ -3,8 +3,17 @@ export interface Location {
   lng: number;
 }
 
-export interface Marker extends Location {
-  color: string;
+export interface TaxiMarker {
+  lat: number;
+  lng: number;
+}
+
+export interface TaxiData {
+  id: string;
+  name: string;
+  carModel: string;
+  carColor: string;
+  plateNumber: string;
 }
 
 export interface signupLabelInputProps {
@@ -49,12 +58,45 @@ export interface InputIdPwProps {
 }
 
 export interface PathPoint {
-  startPoint: Marker;
-  endPoint: Marker;
+  isSetStartPoint: boolean;
+  isSetEndPoint: boolean;
+  startPoint: Location;
+  endPoint: Location;
+  startPointName?: string;
+  endPointName?: string;
+  startPlaceId?: string;
+  endPlaceId?: string;
 }
 
 export interface LoginFormPropsType {
   signin: any;
   history: any;
   userType: string;
+}
+export interface Info {
+  time: string;
+  fee: number;
+}
+export interface PreData {
+  isSetPath: boolean;
+  info: Info;
+}
+
+export interface Response {
+  success: boolean;
+  message: string;
+}
+
+export interface DriverMatchingInfo {
+  uid?: string;
+  request?: {
+    startLocation: {
+      name: string;
+      latlng: Location;
+    };
+    endLocation: {
+      name: string;
+      latlng: Location;
+    };
+  };
 }

@@ -1,22 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
+import Loading from '@components/common/Loading';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateLocation } from '../stores/modules/location';
-import { updateStartPoint } from '../stores/modules/pathPoint';
+import { updateLocation } from '@stores/modules/location';
+import { updateStartPoint } from '@stores/modules/pathPoint';
+import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
+import styled from 'styled-components';
 
-const MapContainer: React.FC = () => {
+interface Props {
+  isMatched?: boolean;
+  taxiLocation?: Location;
+  directionRenderer?: any;
+}
+
+const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 }, directionRenderer }) => {
   const location = useSelector((state: { location: Location }) => state.location);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
+  const [isGPSLoaded, setGPSLoaded] = useState(false);
+  // const [isSetNearPlace, setNearPlace] = useState(false);
+
   useEffect(() => {
-    (async () => {
-      const startPoint: Location = await getLocation();
-      dispatch(updateStartPoint(startPoint));
-    })();
+    initializeLocation();
   }, []);
+
+  const initializeLocation = async () => {
+    const startLocation: Location = await getLocation();
+    dispatch(updateLocation(startLocation));
+    if (!pathPoint.isSetStartPoint) {
+      setCenter(startLocation);
+    }
+    setGPSLoaded(true);
+  };
+
+  const findNearPlace = (map: any) => {
+    if (pathPoint.isSetStartPoint) return;
+    // if (isSetNearPlace) return;
+    // setNearPlace(true);
+
+    const service = new google.maps.places.PlacesService(map);
+
+    const request = {
+      location: center,
+      type: 'store',
+      rankBy: google.maps.places.RankBy.DISTANCE,
+    };
+
+    service.nearbySearch(request, (results, status) => {
+      const result = results && results[0];
+      if (status === google.maps.places.PlacesServiceStatus.OK && result) {
+        const { geometry, name, place_id } = result;
+        dispatch(
+          updateStartPoint({ lat: geometry?.location.lat() || 0, lng: geometry?.location.lng() || 0 }, name, place_id),
+        );
+      }
+    });
+  };
 
   const updateMyLocation = async () => {
     try {
@@ -24,56 +66,36 @@ const MapContainer: React.FC = () => {
       dispatch(updateLocation(myLocation));
     } catch (error) {
       console.error(error);
-      Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
+      Toast.show('GPS 사용이 불가능합니다.', Toast.SHORT);
     }
   };
 
-  const moveCenterMyLocation = async () => {
-    try {
-      const location: Location = await getLocation();
-      setCenter(location);
-    } catch (error) {
-      console.error(error);
-      Toast.show('GPS가 사용이 불가능합니다.', Toast.SHORT);
-    }
-  };
-
-  const zoom = 16;
   return (
-    <Map
-      center={center}
-      location={location}
-      pathPoint={pathPoint}
-      zoom={zoom}
-      updateMyLocation={updateMyLocation}
-      moveCenterMyLocation={moveCenterMyLocation}
-    />
+    <>
+      {isGPSLoaded ? (
+        <Map
+          center={center}
+          location={location}
+          pathPoint={pathPoint}
+          zoom={16}
+          updateMyLocation={updateMyLocation}
+          isMatched={isMatched}
+          taxiLocation={taxiLocation}
+          directionRenderer={directionRenderer}
+          findNearPlace={findNearPlace}
+        />
+      ) : (
+        <CenterDIV>
+          <Loading />
+        </CenterDIV>
+      )}
+    </>
   );
 };
 
-const getLocation = (): Promise<Location> => {
-  return new Promise<Location>((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          enableHighAccuracy: false,
-          maximumAge: 0,
-          timeout: Infinity,
-        },
-      );
-    } else {
-      reject(new Error('Unable to retrieve your location'));
-    }
-  });
-};
+const CenterDIV = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default MapContainer;

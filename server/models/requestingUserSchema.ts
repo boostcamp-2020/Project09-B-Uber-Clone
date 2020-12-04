@@ -1,10 +1,15 @@
 import mongoose from 'mongoose';
-import geoSchema from './geoSchema';
+import pointSchema from './pointSchema';
 
-const requestingUSer = {
+const requestingUser = new mongoose.Schema({
   user_id: mongoose.Schema.Types.ObjectId,
-  startLocation: geoSchema,
-  endLocation: geoSchema,
-};
+  startLocation: pointSchema,
+  endLocation: pointSchema,
+  createdAt: { type: Date, expires: 1000 * 10, default: Date.now },
+  expireTime: { type: Date, default: () => Date.now() + 1000 * 10 },
+});
 
-export default requestingUSer;
+requestingUser.index({ startLocation: '2dsphere' });
+requestingUser.index({ endLocation: '2dsphere' });
+
+export default requestingUser;

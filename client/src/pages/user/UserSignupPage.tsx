@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import InputPhoneNum from '../../components/UserSignup/InputPhoneNum';
-import InputName from '../../components/UserSignup/InputName';
-import InputIdPw from '../../components/UserSignup/InputIdPw';
+import InputPhoneNum from '@components/userSignup/InputPhoneNum';
+import InputName from '@components/userSignup/InputName';
+import InputIdPw from '@components/userSignup/InputIdPw';
 const UserSignupPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [phone, setPhone] = useState('');
@@ -14,7 +14,7 @@ const UserSignupPage: React.FC = () => {
     <Div>
       <H2>
         환영해요,
-        <br /> 자버택시입니다.
+        <br /> 택시자버입니다.
       </H2>
       <InputPhoneNum page={page} setNextPage={setNextPage} phone={phone} setPhone={setPhone} />
       <InputName page={page} setNextPage={setNextPage} name={name} setName={setName} />

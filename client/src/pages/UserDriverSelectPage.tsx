@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import EntryButtonGroup from '@components/UserDriverSelect/EntryButtonGroup';
+import EntryButtonGroup from '@components/userDriverSelect/EntryButtonGroup';
 
 const UserDriverSelectPage: React.FC = () => {
   return (
     <Div>
-      <H1>자버택시</H1>
+      <H1>택시자버</H1>
       <EntryButtonGroup />
     </Div>
   );

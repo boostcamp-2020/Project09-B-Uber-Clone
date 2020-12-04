@@ -15,9 +15,9 @@ const AuthRouter: React.FC<any> = ({ component, ...rest }) => {
         <ActivityIndicator animating text="로딩 중입니다" />
       </Wrapper>
     );
-  if (error || !data.isAuthorizedDriver)
+  if (error || !(isDriver ? data.isAuthorizedDriver : data.isAuthorizedUser))
     return <Route {...rest} render={(props) => React.createElement(component, props)} />;
-  return <Redirect to={`/${isDriver ? 'driver' : 'user'}/map`} />;
+  return <Redirect to={isDriver ? '/driver/main' : '/user/map'} />;
 };
 
 const Wrapper = styled.div`
