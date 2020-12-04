@@ -1,5 +1,5 @@
 import React from 'react';
-import { Location } from '../../types';
+import { Location } from '@custom-types';
 import styled from 'styled-components';
 
 const markerSVG =
