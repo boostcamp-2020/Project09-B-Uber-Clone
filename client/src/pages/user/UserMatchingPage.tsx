@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
-import Path from '@components/userMatching/RequestInfo';
+import RequestInfo from '@components/userMatching/RequestInfo';
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 10000;
@@ -170,7 +170,7 @@ const UserMatchingPage: React.FC = () => {
     <>
       {googleMapApi.loaded && (
         <>
-          <Path startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
+          <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
           {data && onMatchSuccess()}
           <MapContainer
