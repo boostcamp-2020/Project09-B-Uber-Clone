@@ -3,12 +3,12 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 
 const httpLink = new HttpLink({
-  uri: `http://${process.env.REACT_APP_SERVER_HOST}/graphql`,
+  uri: `${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.REACT_APP_SERVER_HOST}/graphql`,
   credentials: 'include',
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${process.env.REACT_APP_SERVER_HOST}/graphql`,
+  uri: `${process.env.NODE_ENV === 'production' ? 'wss' : 'ws'}://${process.env.REACT_APP_SERVER_HOST}/graphql`,
   options: {
     reconnect: true,
   },
