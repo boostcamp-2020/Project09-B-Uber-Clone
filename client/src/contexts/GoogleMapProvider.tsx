@@ -3,10 +3,10 @@ import { Loader } from '@googlemaps/js-api-loader';
 
 interface State {
   loaded: boolean;
-  directionRenderer: any;
+  directionRenderer: google.maps.DirectionsRenderer | null;
 }
 
-type Action = { type: 'updateApiState'; loaded: boolean; directionRenderer: any };
+type Action = { type: 'updateApiState'; loaded: boolean; directionRenderer: google.maps.DirectionsRenderer };
 
 type IDispatch = Dispatch<Action>;
 
