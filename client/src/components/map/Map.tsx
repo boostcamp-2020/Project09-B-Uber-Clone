@@ -5,29 +5,19 @@ import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
+import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const Map: React.FC<{
   center: Location;
   location: Location;
   pathPoint: PathPoint;
-  zoom: number;
-  directionRenderer: any;
   updateMyLocation: () => void;
   isMatched: boolean;
   taxiLocation: Location;
   findNearPlace: (map: any) => void;
-}> = ({
-  center,
-  location,
-  pathPoint,
-  zoom,
-  updateMyLocation,
-  isMatched,
-  taxiLocation,
-  directionRenderer,
-  findNearPlace,
-}) => {
+}> = ({ center, location, pathPoint, updateMyLocation, isMatched, taxiLocation, findNearPlace }) => {
   const [maps, setMaps]: any = useState({ map: null });
+  const { directionRenderer } = useGoogleMapApiState();
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
@@ -68,7 +58,7 @@ const Map: React.FC<{
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '', libraries: ['places'] }}
-        defaultZoom={zoom}
+        defaultZoom={16}
         center={center}
         onGoogleApiLoaded={setMaps}
         onTilesLoaded={() => {
@@ -86,14 +76,6 @@ const Map: React.FC<{
       </GoogleMapReact>
     </div>
   );
-};
-
-Map.defaultProps = {
-  center: {
-    lat: 37.5006226,
-    lng: 127.0231786,
-  },
-  zoom: 16,
 };
 
 export default Map;

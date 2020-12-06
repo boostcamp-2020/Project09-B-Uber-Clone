@@ -12,16 +12,14 @@ import styled from 'styled-components';
 interface Props {
   isMatched?: boolean;
   taxiLocation?: Location;
-  directionRenderer?: any;
 }
 
-const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 }, directionRenderer }) => {
+const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 } }) => {
   const location = useSelector((state: { location: Location }) => state.location);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
   const [isGPSLoaded, setGPSLoaded] = useState(false);
-  // const [isSetNearPlace, setNearPlace] = useState(false);
 
   useEffect(() => {
     initializeLocation();
@@ -38,9 +36,6 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
 
   const findNearPlace = (map: any) => {
     if (pathPoint.isSetStartPoint) return;
-    // if (isSetNearPlace) return;
-    // setNearPlace(true);
-
     const service = new google.maps.places.PlacesService(map);
 
     const request = {
@@ -77,11 +72,9 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
           center={center}
           location={location}
           pathPoint={pathPoint}
-          zoom={16}
           updateMyLocation={updateMyLocation}
           isMatched={isMatched}
           taxiLocation={taxiLocation}
-          directionRenderer={directionRenderer}
           findNearPlace={findNearPlace}
         />
       ) : (
