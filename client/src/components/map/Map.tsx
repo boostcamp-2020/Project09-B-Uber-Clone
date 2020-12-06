@@ -5,19 +5,17 @@ import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
-import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import { useGoogleMapApiState, useGoogleMapApiDispatch } from 'src/contexts/GoogleMapProvider';
 
 const Map: React.FC<{
   center: Location;
   location: Location;
   pathPoint: PathPoint;
-  updateMyLocation: () => void;
   isMatched: boolean;
   taxiLocation: Location;
-  findNearPlace: (map: any) => void;
-}> = ({ center, location, pathPoint, updateMyLocation, isMatched, taxiLocation, findNearPlace }) => {
-  const [maps, setMaps]: any = useState({ map: null });
-  const { directionRenderer } = useGoogleMapApiState();
+}> = ({ center, location, pathPoint, isMatched, taxiLocation }) => {
+  const { directionRenderer, maps } = useGoogleMapApiState();
+  const mapDispatch = useGoogleMapApiDispatch();
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
@@ -28,7 +26,7 @@ const Map: React.FC<{
       const duration = result.routes[0].legs[0].duration;
       const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
       dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
-      directionRenderer.setMap(maps.map);
+      directionRenderer.setMap(maps);
       directionRenderer.setDirections(result);
     }
   };
@@ -50,16 +48,17 @@ const Map: React.FC<{
     }
   }, [pathPoint]);
 
+  const onGoogleApiLoaded = ({ map }: any) => {
+    mapDispatch({ type: 'setMaps', maps: map });
+  };
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '', libraries: ['places'] }}
         defaultZoom={16}
         center={center}
-        onGoogleApiLoaded={setMaps}
-        onTilesLoaded={() => {
-          findNearPlace(maps.map);
-        }}
+        onGoogleApiLoaded={onGoogleApiLoaded}
       >
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
         {pathPoint.isSetStartPoint && (

@@ -35,27 +35,6 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
     setGPSLoaded(true);
   };
 
-  const findNearPlace = (map: any) => {
-    if (pathPoint.isSetStartPoint) return;
-    const service = new google.maps.places.PlacesService(map);
-
-    const request = {
-      location: center,
-      type: 'store',
-      rankBy: google.maps.places.RankBy.DISTANCE,
-    };
-
-    service.nearbySearch(request, (results, status) => {
-      const result = results && results[0];
-      if (status === google.maps.places.PlacesServiceStatus.OK && result) {
-        const { geometry, name, place_id } = result;
-        dispatch(
-          updateStartPoint({ lat: geometry?.location.lat() || 0, lng: geometry?.location.lng() || 0 }, name, place_id),
-        );
-      }
-    });
-  };
-
   const updateMyLocation = async () => {
     try {
       const myLocation: Location = await getLocation();
@@ -73,10 +52,8 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
           center={center}
           location={location}
           pathPoint={pathPoint}
-          updateMyLocation={updateMyLocation}
           isMatched={isMatched}
           taxiLocation={taxiLocation}
-          findNearPlace={findNearPlace}
         />
       ) : (
         <CenterDIV>
