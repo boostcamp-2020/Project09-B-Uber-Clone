@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
 import Loading from '@components/common/Loading';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { updateLocation } from '@stores/modules/location';
-import { updateStartPoint } from '@stores/modules/pathPoint';
 import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
@@ -15,7 +14,7 @@ interface Props {
 }
 
 const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 } }) => {
-  const location = useSelector((state: { location: Location }) => state.location);
+  const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
@@ -23,6 +22,8 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
 
   useEffect(() => {
     initializeLocation();
+    const gpsInterval = setInterval(updateMyLocation, 1000);
+    return () => clearInterval(gpsInterval);
   }, []);
 
   const initializeLocation = async () => {

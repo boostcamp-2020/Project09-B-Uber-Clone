@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '@components/common/Marker';
 import TaxiMarker from '@components/common/TaxiMarker';
@@ -32,10 +32,6 @@ const Map: React.FC<{
       directionRenderer.setDirections(result);
     }
   };
-
-  useEffect(() => {
-    setInterval(updateMyLocation, 1000);
-  }, []);
 
   useEffect(() => {
     const { startPoint, endPoint } = pathPoint;
