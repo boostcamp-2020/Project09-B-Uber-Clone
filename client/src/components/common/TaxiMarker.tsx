@@ -1,9 +1,10 @@
 import React from 'react';
 import { TaxiMarker as MarkerType } from '@custom-types';
+import styled from 'styled-components';
 
 const TaxiMarker: React.FC<MarkerType> = () => {
   return (
-    <div>
+    <Wrapper>
       <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 172 172">
         <g transform="translate(6.966,6.966) scale(0.919,0.919)">
           <g
@@ -68,8 +69,12 @@ const TaxiMarker: React.FC<MarkerType> = () => {
           </g>
         </g>
       </svg>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  transform: translate(-15px, -15px);
+`;
 
 export default TaxiMarker;

@@ -26,8 +26,8 @@ const MATCHED_TAXI = gql`
 `;
 
 const TAXI_LOCATION = gql`
-  subscription($id: string) {
-    driverLocationSub(taxiId: $id) {
+  subscription {
+    driverLocationSub {
       lat
       lng
     }
@@ -66,7 +66,7 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     if (taxiLatlng?.driverLocationSub) {
-      setTaxiLocation(taxiLatlng);
+      setTaxiLocation(taxiLatlng.driverLocationSub);
     }
   }, [taxiLatlng]);
 
@@ -129,10 +129,6 @@ const UserMatchingPage: React.FC = () => {
     history.push('/user/map');
   };
 
-  const onMatchSuccess = () => {
-    return <p>매칭성공</p>;
-  };
-
   const cancelMatching = async () => {
     try {
       const {
@@ -161,7 +157,6 @@ const UserMatchingPage: React.FC = () => {
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
-          {data && onMatchSuccess()}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
