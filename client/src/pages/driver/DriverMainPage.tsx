@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import WorkingToggle from '@components/driverMain/WorkingToggle';
 import DriverMainBody from '@components/driverMain/DriverMainBody';
 import styled from 'styled-components';
+import Menu from '@components/userMain/Menu';
 
 const DriverMainPage: React.FC = () => {
   const [isWorking, setIsWorking] = useState(false);
@@ -10,6 +11,7 @@ const DriverMainPage: React.FC = () => {
     <Wrapper>
       <WorkingToggle onChange={setIsWorking} />
       <DriverMainBody isWorking={isWorking} />
+      <Menu type="driver" />
     </Wrapper>
   );
 };
