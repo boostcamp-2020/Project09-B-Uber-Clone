@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RightOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 
 const Path: React.FC<{ startPoint: string; endPoint: string }> = ({ startPoint, endPoint }) => {
   return (
@@ -9,9 +9,9 @@ const Path: React.FC<{ startPoint: string; endPoint: string }> = ({ startPoint, 
         <PointText>{startPoint}</PointText>
       </FlexDiv>
       <FlexDiv>
-        <RightOutlined
+        <DownOutlined
           style={{
-            margin: '0 10px',
+            margin: '8px',
             color: '#f3f3f3',
           }}
         />
@@ -28,14 +28,15 @@ const CenterDiv = styled.div`
   z-index: 2;
   top: 8%;
   left: 50%;
-  max-width: 50%;
+  width: 90%;
   transform: translateX(-50%);
   display: inline-flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 10px 40px;
   border-radius: 50px;
-  background-color: #181818;
+  background-color: #2e2e2e;
 `;
 
 const PointText = styled.div`

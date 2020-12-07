@@ -14,7 +14,7 @@ const StartLocationInfo: React.FC<Props> = ({ startLocation }) => {
 };
 
 const Div = styled.div`
-  margin: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   width: auto;
   border-radius: 6px;
