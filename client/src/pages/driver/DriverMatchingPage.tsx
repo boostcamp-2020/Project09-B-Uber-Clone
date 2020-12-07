@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { useMutation } from '@apollo/client';
@@ -24,10 +24,10 @@ const DriverMatchingPage: React.FC = () => {
     uid: undefined,
     request: undefined,
   });
-  const arrive = () => {
+  const arrive = useCallback(() => {
     setVisible(true);
     // TODO: 도착 완료 처리
-  };
+  }, []);
 
   const takeUser = async () => {
     const { uid } = userRequest;

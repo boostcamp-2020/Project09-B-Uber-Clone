@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import InputPhoneNum from '@components/userSignup/InputPhoneNum';
 import InputName from '@components/userSignup/InputName';
@@ -8,7 +8,7 @@ const UserSignupPage: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
 
-  const setNextPage = () => setPage(page + 1);
+  const setNextPage = useCallback(() => setPage(page + 1), []);
 
   return (
     <Div>

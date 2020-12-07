@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { ActivityIndicator } from 'antd-mobile';
-import { IS_DRIVER_AUTHORIZED, IS_USER_AUTHORIZED } from '@utils/authGQLString';
+import { IS_DRIVER_AUTHORIZED, IS_USER_AUTHORIZED } from '@queries/authQueries';
 
 const AuthRouter: React.FC<any> = ({ component, ...rest }) => {
   const isDriver = rest.path.startsWith('/driver');

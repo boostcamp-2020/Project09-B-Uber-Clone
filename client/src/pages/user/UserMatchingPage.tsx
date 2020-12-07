@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { gql, useSubscription, useMutation } from '@apollo/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
 import { Modal, Toast } from 'antd-mobile';
@@ -20,7 +20,7 @@ import {
 const alertModal = Modal.alert;
 
 const MAX_REQUEST_COUNT = 6;
-const MATCHING_INTERVAL = 1000;
+const MATCHING_INTERVAL = 10000;
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
@@ -121,10 +121,10 @@ const UserMatchingPage: React.FC = () => {
     if (error) onErrorHandler();
   }, [error]);
 
-  const onErrorHandler = () => {
+  const onErrorHandler = useCallback(() => {
     Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
     history.push('/user/map');
-  };
+  }, []);
 
   const showAlert = () => {
     setModal(true);
