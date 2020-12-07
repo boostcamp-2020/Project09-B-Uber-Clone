@@ -6,8 +6,6 @@ import PreReqData from '@components/userMain/PreReqData';
 import { PreData } from '@custom-types';
 import { useSelector } from 'react-redux';
 import Menu from '@components/userMain/Menu';
-import styled from 'styled-components';
-import { Button, WhiteSpace } from 'antd-mobile';
 
 const loader = new Loader({
   apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
