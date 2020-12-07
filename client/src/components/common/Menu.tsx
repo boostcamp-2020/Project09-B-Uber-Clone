@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Toast } from 'antd-mobile';
@@ -22,13 +22,13 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
   const history = useHistory();
   const [foldable, setFoldable] = useState(true);
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     setFoldable(!foldable);
-  };
+  }, [foldable]);
 
   const [signout] = useMutation(SIGNOUT);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const variables = { type: `${type}` };
     const {
       data: {
@@ -39,7 +39,7 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
       alert('로그아웃 되었습니다.');
       window.location.replace(`/${type}`);
     } else alert(message);
-  };
+  }, []);
 
   const historyHandler = () => {
     history.push('/user/history');
