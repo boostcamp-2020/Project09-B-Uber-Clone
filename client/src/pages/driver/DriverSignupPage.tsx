@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import { Modal } from 'antd-mobile';
@@ -36,13 +36,13 @@ const DriverSignupPage: React.FC = () => {
   const [addDriver] = useMutation(ADD_DRIVER);
   const history = useHistory();
 
-  const showAlert = (message: string) => {
+  const showAlert = useCallback((message: string) => {
     setModalStatus({ visible: true, message });
-  };
+  }, []);
 
-  const closeAlert = () => {
+  const closeAlert = useCallback(() => {
     setModalStatus({ visible: false, message: '' });
-  };
+  }, []);
 
   return (
     <>

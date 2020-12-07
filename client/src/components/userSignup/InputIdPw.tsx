@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon, Modal } from 'antd-mobile';
 import { InputIdPwProps } from '@custom-types';
@@ -11,10 +11,10 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   const [password, setPw] = useState('');
   const [isDisabled, setDisabled] = useState(true);
   const [modalStatus, setModalStatus] = useState({ visible: false, message: '' });
-  const handleChangeId = (v: string) => setId(v);
-  const handleChangePw = (v: string) => setPw(v);
-  const showAlert = (message: string) => setModalStatus({ visible: true, message });
-  const closeAlert = () => setModalStatus({ visible: false, message: '' });
+  const handleChangeId = useCallback((v: string) => setId(v), []);
+  const handleChangePw = useCallback((v: string) => setPw(v), []);
+  const showAlert = useCallback((message: string) => setModalStatus({ visible: true, message }), []);
+  const closeAlert = useCallback(() => setModalStatus({ visible: false, message: '' }), []);
   useEffect(() => {
     if (id.length >= 6 && password.length >= 8) setDisabled(false);
     else setDisabled(true);
