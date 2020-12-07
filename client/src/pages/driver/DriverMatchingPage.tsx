@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { gql, useSubscription } from '@apollo/client';
 import { Loader } from '@googlemaps/js-api-loader';
-import { USER_ON_BOARD } from '@queries/driver/driverMatching';
+import { USER_ON_BOARD, ARRIVE_DESTINATION } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
@@ -36,10 +37,13 @@ const DriverMatchingPage: React.FC = () => {
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
+  const history = useHistory();
+  const [arriveDestination] = useMutation(ARRIVE_DESTINATION);
 
   const arrive = () => {
     setVisible(true);
-    // TODO: 도착 완료 처리
+    arriveDestination();
+    history.push('/driver/main');
   };
 
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);

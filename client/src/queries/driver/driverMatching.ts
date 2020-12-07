@@ -8,3 +8,12 @@ export const USER_ON_BOARD = gql`
     }
   }
 `;
+
+export const ARRIVE_DESTINATION = gql`
+  mutation ArriveDestination {
+    arriveDestination {
+      success
+      message
+    }
+  }
+`;
