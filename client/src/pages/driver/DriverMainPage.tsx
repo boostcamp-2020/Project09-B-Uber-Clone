@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import WorkingToggle from '@components/driverMain/WorkingToggle';
 import DriverMainBody from '@components/driverMain/DriverMainBody';
 import styled from 'styled-components';
-import Menu from '@components/userMain/Menu';
+import Menu from '@components/common/Menu';
 
 const DriverMainPage: React.FC = () => {
   const [isWorking, setIsWorking] = useState(false);
