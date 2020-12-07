@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Card, WhiteSpace, List } from 'antd-mobile';
+import { Card, List } from 'antd-mobile';
 import { LocationWithName } from '@custom-types';
 import styled from 'styled-components';
 
@@ -20,10 +20,10 @@ const HistoryBox: React.FC<HistoryType> = ({
       <Card full>
         <Card.Body>
           <List renderHeader={() => moment(startTime).format('YYYY/MM/DD')}>
-            <Item extra={startLocation} wrap>
+            <Item extra={startLocation.name} wrap>
               출발
             </Item>
-            <Item extra={endLocation} wrap>
+            <Item extra={endLocation.name} wrap>
               도착
             </Item>
             <Item extra={`${moment(startTime).format('HH:mm')} - ${moment(endTime).format('HH:mm')}`} wrap>
@@ -36,7 +36,6 @@ const HistoryBox: React.FC<HistoryType> = ({
           </List>
         </Card.Body>
       </Card>
-      <WhiteSpace size="lg" />
     </Wrapper>
   );
 };

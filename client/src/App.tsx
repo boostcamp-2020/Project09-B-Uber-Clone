@@ -31,9 +31,9 @@ import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
 import 'antd-mobile/lib/activity-indicator/style/css';
 import 'antd-mobile/lib/card/style/css';
-import 'antd-mobile/lib/white-space/style/css';
 import 'antd/lib/switch/style/css';
 import 'antd/lib/progress/style/css';
+import 'antd/lib/button/style/css';
 
 const App: React.FC = () => {
   return (
