@@ -44,6 +44,7 @@ type DriverStatus {
   board: Boolean
 }
 type UserHistoryResult {
+  id: String
   request: UserRequest
   fee: Int
   startTime: String
