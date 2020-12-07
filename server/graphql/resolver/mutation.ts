@@ -71,6 +71,16 @@ const Mutation = {
       return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
+  signout: async (_, args, { __, res }) => {
+    try {
+      const result = res.clearCookie(`${args.type}Token`);
+      if (result) return { success: true };
+      return { success: false, message: '잘못된 접근입니다.' };
+    } catch (err) {
+      logger.info('Logout error!');
+      return { success: false, message: '유효하지 않은 접근입니다.' };
+    }
+  },
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
