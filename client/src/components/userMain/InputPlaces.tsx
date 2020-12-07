@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ContentWrapper from '@components/common/ContentWrapper';
 import PlaceDropdown from '@components/userMain/PlaceDropdown';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import { PathPoint } from '@custom-types';
+import { shallowEqual, useSelector } from 'react-redux';
+import { PathPoint, Location } from '@custom-types';
+import setStartToNearPlace from '@utils/setStartToNearPlace';
+import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import { useDispatch } from 'react-redux';
 
 const InputPlaces: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
+  const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
+  const { maps } = useGoogleMapApiState();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (maps && !pathPoint.isSetStartPoint) {
+      setStartToNearPlace(dispatch, location, maps);
+    }
+  }, [maps, location]);
+
   const Dropdown = () => {
     return (
       <>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Map from '@components/map/Map';
 import Loading from '@components/common/Loading';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { updateLocation } from '@stores/modules/location';
-import { updateStartPoint } from '@stores/modules/pathPoint';
 import getLocation from '@utils/getLocation';
 import { Location, PathPoint } from '@custom-types';
 import { Toast } from 'antd-mobile';
@@ -12,19 +11,19 @@ import styled from 'styled-components';
 interface Props {
   isMatched?: boolean;
   taxiLocation?: Location;
-  directionRenderer?: any;
 }
 
-const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 }, directionRenderer }) => {
-  const location = useSelector((state: { location: Location }) => state.location);
+const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat: 0, lng: 0 } }) => {
+  const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const dispatch = useDispatch();
   const [center, setCenter] = useState(location);
   const [isGPSLoaded, setGPSLoaded] = useState(false);
-  // const [isSetNearPlace, setNearPlace] = useState(false);
 
   useEffect(() => {
     initializeLocation();
+    const gpsInterval = setInterval(updateMyLocation, 1000);
+    return () => clearInterval(gpsInterval);
   }, []);
 
   const initializeLocation = async () => {
@@ -34,30 +33,6 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
       setCenter(startLocation);
     }
     setGPSLoaded(true);
-  };
-
-  const findNearPlace = (map: any) => {
-    if (pathPoint.isSetStartPoint) return;
-    // if (isSetNearPlace) return;
-    // setNearPlace(true);
-
-    const service = new google.maps.places.PlacesService(map);
-
-    const request = {
-      location: center,
-      type: 'store',
-      rankBy: google.maps.places.RankBy.DISTANCE,
-    };
-
-    service.nearbySearch(request, (results, status) => {
-      const result = results && results[0];
-      if (status === google.maps.places.PlacesServiceStatus.OK && result) {
-        const { geometry, name, place_id } = result;
-        dispatch(
-          updateStartPoint({ lat: geometry?.location.lat() || 0, lng: geometry?.location.lng() || 0 }, name, place_id),
-        );
-      }
-    });
   };
 
   const updateMyLocation = async () => {
@@ -77,12 +52,8 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
           center={center}
           location={location}
           pathPoint={pathPoint}
-          zoom={16}
-          updateMyLocation={updateMyLocation}
           isMatched={isMatched}
           taxiLocation={taxiLocation}
-          directionRenderer={directionRenderer}
-          findNearPlace={findNearPlace}
         />
       ) : (
         <CenterDIV>

@@ -42,8 +42,4 @@ const Div = styled.div`
   margin-bottom: 20px;
 `;
 
-const H3 = styled.h3`
-  font-size: 18px;
-`;
-
 export default InputPhoneNum;

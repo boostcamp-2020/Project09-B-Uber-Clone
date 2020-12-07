@@ -1,51 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from '@components/common/Marker';
 import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
+import { useGoogleMapApiState, useGoogleMapApiDispatch } from 'src/contexts/GoogleMapProvider';
 
 const Map: React.FC<{
   center: Location;
   location: Location;
   pathPoint: PathPoint;
-  zoom: number;
-  directionRenderer: any;
-  updateMyLocation: () => void;
   isMatched: boolean;
   taxiLocation: Location;
-  findNearPlace: (map: any) => void;
-}> = ({
-  center,
-  location,
-  pathPoint,
-  zoom,
-  updateMyLocation,
-  isMatched,
-  taxiLocation,
-  directionRenderer,
-  findNearPlace,
-}) => {
-  const [maps, setMaps]: any = useState({ map: null });
+}> = ({ center, location, pathPoint, isMatched, taxiLocation }) => {
+  const { directionRenderer, maps } = useGoogleMapApiState();
+  const mapDispatch = useGoogleMapApiDispatch();
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
     result,
     status,
   ) => {
-    if (status === google.maps.DirectionsStatus.OK) {
+    if (status === google.maps.DirectionsStatus.OK && directionRenderer) {
       const distance = result.routes[0].legs[0].distance;
       const duration = result.routes[0].legs[0].duration;
       const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
       dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
-      directionRenderer.setMap(maps.map);
+      directionRenderer.setMap(maps);
       directionRenderer.setDirections(result);
     }
   };
-
-  useEffect(() => {
-    setInterval(updateMyLocation, 1000);
-  }, []);
 
   useEffect(() => {
     const { startPoint, endPoint } = pathPoint;
@@ -64,16 +48,17 @@ const Map: React.FC<{
     }
   }, [pathPoint]);
 
+  const onGoogleApiLoaded = ({ map }: any) => {
+    mapDispatch({ type: 'setMaps', maps: map });
+  };
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '', libraries: ['places'] }}
-        defaultZoom={zoom}
+        defaultZoom={16}
         center={center}
-        onGoogleApiLoaded={setMaps}
-        onTilesLoaded={() => {
-          findNearPlace(maps.map);
-        }}
+        onGoogleApiLoaded={onGoogleApiLoaded}
       >
         <Marker lat={location.lat} lng={location.lng} color="#95A5A6" />
         {pathPoint.isSetStartPoint && (
@@ -86,14 +71,6 @@ const Map: React.FC<{
       </GoogleMapReact>
     </div>
   );
-};
-
-Map.defaultProps = {
-  center: {
-    lat: 37.5006226,
-    lng: 127.0231786,
-  },
-  zoom: 16,
 };
 
 export default Map;
