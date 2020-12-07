@@ -30,7 +30,6 @@ const UserMatchingPage: React.FC = () => {
   const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
-  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
@@ -133,8 +132,6 @@ const UserMatchingPage: React.FC = () => {
       {
         text: '홈으로',
         onPress: () => {
-          setBoarding(false);
-          setModal(false);
           history.push('/user');
         },
         style: 'default',
@@ -143,8 +140,6 @@ const UserMatchingPage: React.FC = () => {
 
     setTimeout(() => {
       alertInstance.close();
-      setBoarding(false);
-      setModal(false);
       history.push('/user');
     }, 5000);
   };
