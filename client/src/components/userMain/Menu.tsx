@@ -69,18 +69,24 @@ const Menu: React.FC<MenuPropsType> = ({ type }) => {
 
 const Overlay = styled.div`
   position: absolute;
-  top: 130px;
-  right: 0;
+  top: 120px;
+  right: 10px;
   margin: 10px;
   & .am-button > .am-button-icon {
     margin: 0;
   }
+  z-index: 999;
 `;
 
 const SubOverlay = styled.div`
   position: absolute;
   top: 170px;
-  right: 0;
+  right: 10px;
   margin: 10px;
+  z-index: 999;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
 `;
 export default Menu;
