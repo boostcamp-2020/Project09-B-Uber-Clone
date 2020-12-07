@@ -34,7 +34,7 @@ const Menu: React.FC<MenuPropsType> = ({ type }) => {
     } = await signout({ variables });
     if (success) {
       alert('로그아웃 되었습니다.');
-      window.location.replace('/');
+      window.location.replace(`/${type}`);
     } else alert(message);
   };
 
@@ -69,7 +69,7 @@ const Menu: React.FC<MenuPropsType> = ({ type }) => {
 
 const Overlay = styled.div`
   position: absolute;
-  top: 100px;
+  top: 130px;
   right: 0;
   margin: 10px;
   & .am-button > .am-button-icon {
@@ -79,7 +79,7 @@ const Overlay = styled.div`
 
 const SubOverlay = styled.div`
   position: absolute;
-  top: 140px;
+  top: 170px;
   right: 0;
   margin: 10px;
 `;
