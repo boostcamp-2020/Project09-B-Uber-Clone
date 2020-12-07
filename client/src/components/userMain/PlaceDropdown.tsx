@@ -17,10 +17,10 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
   const dispatch = useDispatch();
   const [placeValue, setPlaceValue] = useState(defalutPlace);
 
-  const selectHandler = useCallback((latLng: Location, placeName: string, type: string, placeId?: string) => {
+  const selectHandler = (latLng: Location, placeName: string, type: string, placeId?: string) => {
     if (type === 'start') return dispatch(updateStartPoint(latLng, placeName, placeId));
     return dispatch(updateEndPoint(latLng, placeName, placeId));
-  }, []);
+  };
 
   const onSelect = useCallback(
     async ({ value }: any) => {
