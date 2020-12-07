@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { InputItem, Button, Icon, Modal } from 'antd-mobile';
 import { InputIdPwProps } from '@custom-types';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import { ADD_USER } from '@queries/user/userSignup';
 
 const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   const history = useHistory();
@@ -74,15 +75,6 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
     </>
   );
 };
-
-const ADD_USER = gql`
-  mutation UserSignup($id: String!, $password: String!, $name: String!, $phone: String!) {
-    userSignup(id: $id, password: $password, name: $name, phone: $phone) {
-      success
-      message
-    }
-  }
-`;
 
 const InputGroup = styled.div`
   margin: 0 5%;

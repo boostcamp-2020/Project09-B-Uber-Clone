@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import { USER_ON_BOARD } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
@@ -12,18 +12,7 @@ import { Button, Toast } from 'antd-mobile';
 import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
-
-const MATCHED_USER = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      request {
-        startLocation
-        endLocation
-      }
-    }
-  }
-`;
+import { MATCHED_USER } from '@queries/driver/driverMatching';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
