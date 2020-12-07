@@ -9,32 +9,18 @@ import { PathPoint } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import {
+  MATCHED_TAXI,
+  TAXI_LOCATION,
+  REQUEST_MATCH,
+  MATCHING_SUBSCRIPTION,
+  STOP_MATCHING,
+} from '@queries/user/userMatching';
 
 const alertModal = Modal.alert;
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 1000;
-
-const MATCHED_TAXI = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const TAXI_LOCATION = gql`
-  subscription($id: string) {
-    driverLocationSub(taxiId: $id) {
-      lat
-      lng
-    }
-  }
-`;
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
@@ -211,35 +197,5 @@ const UserMatchingPage: React.FC = () => {
     </>
   );
 };
-
-const REQUEST_MATCH = gql`
-  mutation requestMatching($request: UserRequestInput) {
-    requestMatching(request: $request) {
-      success
-      message
-    }
-  }
-`;
-
-const MATCHING_SUBSCRIPTION = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const STOP_MATCHING = gql`
-  mutation {
-    stopMatching {
-      success
-      message
-    }
-  }
-`;
 
 export default UserMatchingPage;

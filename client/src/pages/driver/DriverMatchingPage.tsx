@@ -13,18 +13,6 @@ import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
-const MATCHED_USER = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      request {
-        startLocation
-        endLocation
-      }
-    }
-  }
-`;
-
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
   const { data, error } = useSubscription(MATCHED_USER);
