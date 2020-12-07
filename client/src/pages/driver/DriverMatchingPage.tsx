@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
-import { USER_ON_BOARD, UPDATE_DRIVER_UPDATE } from '@queries/driver/driverMatching';
+import { USER_ON_BOARD, UPDATE_DRIVER_LOCATION } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
@@ -27,7 +27,7 @@ const DriverMatchingPage: React.FC = () => {
   };
 
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);
-  const [updateDriverLocation] = useMutation(UPDATE_DRIVER_UPDATE);
+  const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
 
   const takeUser = async () => {
     try {

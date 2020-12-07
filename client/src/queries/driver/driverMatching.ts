@@ -9,7 +9,7 @@ export const USER_ON_BOARD = gql`
   }
 `;
 
-export const UPDATE_DRIVER_UPDATE = gql`
+export const UPDATE_DRIVER_LOCATION = gql`
   mutation updateDriverLocation($location: LatLngInput, $uid: String) {
     updateDriverLocation(location: $location, uid: $uid) {
       success
