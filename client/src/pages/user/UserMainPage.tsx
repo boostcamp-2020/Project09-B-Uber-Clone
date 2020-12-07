@@ -35,7 +35,7 @@ const UserMainPage: React.FC = () => {
           <InputPlaces />
           <MapContainer directionRenderer={googleMapApi.directionRenderer} />
           {preData.isSetPath && <PreReqData time={info.time} fee={info.fee} />}
-          <Menu />
+          <Menu type="user" />
         </>
       )}
     </>
