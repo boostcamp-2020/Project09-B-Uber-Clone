@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
+import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION, ARRIVE_DESTINATION } from './subscriptionType';
 
 const Mutation = {
   userSignup: async (_, args, { dataSources, res }) => {
@@ -186,7 +186,12 @@ const Mutation = {
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
-      if (result) return { success: true };
+      if (result) {
+        const waitingDriver = dataSources.model('WaitingDriver');
+        const res = await waitingDriver.findOneAndRemove({ _id: driverId });
+        if (res) return { success: true };
+        return { success: false, message: '대기 중인 드라이버 정보를 찾을 수 없습니다.' };
+      }
       return { success: false, message: '이미 배차가 완료된 요청입니다.' };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
@@ -199,6 +204,18 @@ const Mutation = {
       return { success: true };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다' };
+    }
+  },
+
+  arriveDestination: async (_, { uid }, { dataSources, uid: driverId }) => {
+    try {
+      const waitingDriver = await dataSources.model('WaitingDriver');
+      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
+      if (existingWaitingDriver) return { success: true };
+      const newWaitingDriver = new waitingDriver({ driver: uid });
+      const result = await newWaitingDriver.save();
+    } catch (err) {
+      return { success: true, message: '오류가 발생했습니다.' };
     }
   },
 };
