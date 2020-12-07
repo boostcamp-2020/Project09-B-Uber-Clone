@@ -12,14 +12,19 @@ import { Button, Toast } from 'antd-mobile';
 import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import { useSelector } from 'react-redux';
+import { DriverMatchingInfo } from '@custom-types';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { data, error } = useSubscription(MATCHED_USER);
+  const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
   const { loaded } = useGoogleMapApiState();
-
+  const [userRequest, setUserRequest] = useState<DriverMatchingInfo>({
+    uid: undefined,
+    request: undefined,
+  });
   const arrive = () => {
     setVisible(true);
     // TODO: 도착 완료 처리
@@ -34,24 +39,17 @@ const DriverMatchingPage: React.FC = () => {
     if (success) setBoarding(true);
     else Toast.show(message);
   };
-  const [userRequest, setUserRequest] = useState({
-    uid: '',
-    startLocation: { name: '', Latlng: { lat: '', lng: '' } },
-    endLocation: { name: '', Latlng: { lat: '', lng: '' } },
-  });
-  useEffect(() => {
-    if (data?.driverServiceSub) {
-      const requsetData = data.userMatchingSub;
-      const { startLocation, endLocation } = requsetData.request;
-      setUserRequest({ uid: requsetData.uid, startLocation: startLocation, endLocation: endLocation });
-      dispatch(updateStartPoint(startLocation.Latlng));
-      dispatch(updateEndPoint(endLocation.Latlng));
-    }
-  }, [data]);
 
   useEffect(() => {
-    if (error) Toast.fail('유저 정보를 확인할 수 없습니다.');
-  }, [error]);
+    if (matchingInfo) {
+      const { uid, request } = matchingInfo;
+      setUserRequest({ uid, request });
+      if (request) {
+        dispatch(updateStartPoint(request.startLocation.latlng));
+        dispatch(updateEndPoint(request.endLocation.latlng));
+      }
+    } else Toast.fail('유저 정보를 확인할 수 없습니다.');
+  }, [matchingInfo]);
 
   return (
     <>
@@ -71,7 +69,7 @@ const DriverMatchingPage: React.FC = () => {
           ) : (
             <>
               <TopOverlay>
-                <StartLocationInfo startLocation={userRequest.startLocation.name} />
+                <StartLocationInfo startLocation={userRequest.request ? userRequest.request.startLocation.name : ''} />
                 <CallButton phone="010-0000-0000" />
               </TopOverlay>
               <BottomOverlay>
