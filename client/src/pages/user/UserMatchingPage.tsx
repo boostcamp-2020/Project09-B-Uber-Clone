@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useSubscription, useMutation } from '@apollo/client';
-import { Loader } from '@googlemaps/js-api-loader';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
 import { Toast } from 'antd-mobile';
@@ -8,15 +7,11 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
-import Path from '@components/userMatching/RequestInfo';
+import RequestInfo from '@components/userMatching/RequestInfo';
+import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 10000;
-
-const loader = new Loader({
-  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
-  libraries: ['places'],
-});
 
 const MATCHED_TAXI = gql`
   subscription {
@@ -51,16 +46,10 @@ const UserMatchingPage: React.FC = () => {
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
-  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [isMatchCanceled, setMatchCancel] = useState(false);
-
-  const initialScriptLoad = async () => {
-    await loader.load();
-    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer({ suppressMarkers: true }) });
-  };
+  const { loaded } = useGoogleMapApiState();
 
   useEffect(() => {
-    initialScriptLoad();
     (async () => await registMatchingList())();
   }, []);
 
@@ -168,16 +157,12 @@ const UserMatchingPage: React.FC = () => {
 
   return (
     <>
-      {googleMapApi.loaded && (
+      {loaded && (
         <>
-          <Path startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
+          <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
           {data && onMatchSuccess()}
-          <MapContainer
-            isMatched={isMatched}
-            taxiLocation={taxiLocation}
-            directionRenderer={googleMapApi.directionRenderer}
-          />
+          <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
       )}

@@ -127,7 +127,7 @@ const DriverSignupForm = withFormik({
       });
       setSubmitting(false);
 
-      if (success) props.history.push('/driver/map');
+      if (success) props.history.push('/driver/main');
       else props.showAlert(message);
     } catch (e) {
       props.showAlert('오류가 발생했습니다');
