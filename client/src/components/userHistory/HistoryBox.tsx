@@ -42,11 +42,12 @@ const HistoryBox: React.FC<HistoryType> = ({
 
 const Wrapper = styled.div`
   .am-card-body {
-    padding: 6px 15px;
+    padding: 0 15px;
   }
   .am-list-item {
-    min-height: 0.8rem !important;
+    min-height: 0.6rem !important;
     div {
+      padding: 0.1rem !important;
       font-size: 0.9rem !important;
       border-bottom: none !important;
     }
