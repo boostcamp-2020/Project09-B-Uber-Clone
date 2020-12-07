@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button } from 'antd-mobile';
+import { Toast } from 'antd-mobile';
 import { useMutation, gql } from '@apollo/client';
+import { Menu, Button } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined, HistoryOutlined } from '@ant-design/icons';
 
 interface MenuPropsType {
   type: string;
@@ -15,12 +17,11 @@ const SIGNOUT = gql`
   }
 `;
 
-const Menu: React.FC<MenuPropsType> = ({ type }) => {
-  const [visible, setVisible] = useState(false);
+const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
+  const [foldable, setFoldable] = useState(true);
 
   const toggle = () => {
-    if (visible) setVisible(false);
-    else setVisible(true);
+    setFoldable(!foldable);
   };
 
   const [signout] = useMutation(SIGNOUT);
@@ -39,54 +40,31 @@ const Menu: React.FC<MenuPropsType> = ({ type }) => {
   };
 
   const historyHandler = () => {
-    alert('개발 중입니다. 🙏');
+    Toast.show('개발 중입니다. 🙏', Toast.SHORT);
   };
 
   return (
-    <>
-      <Overlay>
-        <Button
-          size="small"
-          style={{ backgroundColor: '#fbbc04', margin: 0 }}
-          icon={<img src="https://img.icons8.com/ios/344/menu--v2.png" />}
-          onClick={() => toggle()}
-        />
-      </Overlay>
-      {visible ? (
-        <SubOverlay>
-          <Button type="primary" size="small" onClick={logout}>
-            로그아웃
-          </Button>
-          <p />
-          <Button type="primary" size="small" onClick={historyHandler}>
-            이용 내역
-          </Button>
-        </SubOverlay>
-      ) : null}
-    </>
+    <Overlay>
+      <Button type="primary" onClick={toggle} style={{ marginBottom: 16 }}>
+        {React.createElement(foldable ? MenuFoldOutlined : MenuUnfoldOutlined)}
+      </Button>
+      <Menu mode="inline" inlineCollapsed={foldable}>
+        <Menu.Item key="1" icon={<LogoutOutlined />} onClick={logout}>
+          로그아웃
+        </Menu.Item>
+        <Menu.Item key="2" icon={<HistoryOutlined />} onClick={historyHandler}>
+          이용 내역
+        </Menu.Item>
+      </Menu>
+    </Overlay>
   );
 };
 
 const Overlay = styled.div`
   position: absolute;
-  top: 120px;
-  right: 10px;
-  margin: 10px;
-  & .am-button > .am-button-icon {
-    margin: 0;
-  }
+  top: 200px;
+  left: 0px;
   z-index: 999;
 `;
 
-const SubOverlay = styled.div`
-  position: absolute;
-  top: 170px;
-  right: 10px;
-  margin: 10px;
-  z-index: 999;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 4px;
-  border: 1px solid #eeeeee;
-`;
-export default Menu;
+export default MenuButton;
