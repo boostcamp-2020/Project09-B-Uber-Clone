@@ -10,6 +10,7 @@ import {
   UserMatchingPage,
   UserSigninPage,
   UserSignupPage,
+  UserHistoryPage,
   DriverAuthPage,
   DriverMainPage,
   DriverMatchingPage,
@@ -46,6 +47,7 @@ const App: React.FC = () => {
               <AuthRouter path="/user/signin" component={UserSigninPage} />
               <UserRouter path="/user/map" component={UserMainPage} />
               <UserRouter path="/user/matching" component={UserMatchingPage} />
+              <UserRouter path="/user/history" component={UserHistoryPage} />
               <AuthRouter exact path="/driver" component={DriverAuthPage} />
               <AuthRouter path="/driver/signup" component={DriverSignupPage} />
               <AuthRouter path="/driver/signin" component={DriverSigninPage} />
