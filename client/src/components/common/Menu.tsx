@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Toast } from 'antd-mobile';
 import { useMutation, gql } from '@apollo/client';
@@ -18,6 +19,7 @@ const SIGNOUT = gql`
 `;
 
 const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
+  const history = useHistory();
   const [foldable, setFoldable] = useState(true);
 
   const toggle = () => {
@@ -40,7 +42,7 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
   };
 
   const historyHandler = () => {
-    Toast.show('개발 중입니다. 🙏', Toast.SHORT);
+    history.push('/user/history');
   };
 
   return (
