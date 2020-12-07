@@ -211,7 +211,6 @@ const Mutation = {
   userOnBoard: async (_, { uid }, { pubsub }) => {
     try {
       await pubsub.publish(USER_ON_BOARD, { uid, driverLocationSub: { board: true } });
-      console.log(uid);
       return { success: true };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다' };
