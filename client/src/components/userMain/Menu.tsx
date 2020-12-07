@@ -1,13 +1,45 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from 'antd-mobile';
+import { useMutation, gql } from '@apollo/client';
 
-const Menu: React.FC = () => {
+interface MenuPropsType {
+  type: string;
+}
+const SIGNOUT = gql`
+  mutation Signout($type: String!) {
+    signout(type: $type) {
+      success
+      message
+    }
+  }
+`;
+
+const Menu: React.FC<MenuPropsType> = ({ type }) => {
   const [visible, setVisible] = useState(false);
 
   const toggle = () => {
     if (visible) setVisible(false);
     else setVisible(true);
+  };
+
+  const [signout] = useMutation(SIGNOUT);
+
+  const logout = async () => {
+    const variables = { type: `${type}` };
+    const {
+      data: {
+        signout: { success, message },
+      },
+    } = await signout({ variables });
+    if (success) {
+      alert('로그아웃 되었습니다.');
+      window.location.replace('/');
+    } else alert(message);
+  };
+
+  const historyHandler = () => {
+    alert('개발 중입니다. 🙏');
   };
 
   return (
@@ -22,11 +54,11 @@ const Menu: React.FC = () => {
       </Overlay>
       {visible ? (
         <SubOverlay>
-          <Button type="primary" size="small">
+          <Button type="primary" size="small" onClick={logout}>
             로그아웃
           </Button>
           <p />
-          <Button type="primary" size="small">
+          <Button type="primary" size="small" onClick={historyHandler}>
             이용 내역
           </Button>
         </SubOverlay>
@@ -40,6 +72,9 @@ const Overlay = styled.div`
   top: 100px;
   right: 0;
   margin: 10px;
+  & .am-button > .am-button-icon {
+    margin: 0;
+  }
 `;
 
 const SubOverlay = styled.div`
@@ -47,8 +82,5 @@ const SubOverlay = styled.div`
   top: 140px;
   right: 0;
   margin: 10px;
-  & .am-button {
-    margin: 0;
-  }
 `;
 export default Menu;
