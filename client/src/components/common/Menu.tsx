@@ -1,22 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Toast } from 'antd-mobile';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Menu, Button } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined, HistoryOutlined } from '@ant-design/icons';
-
+import { SIGNOUT } from '@queries/signout';
 interface MenuPropsType {
   type: string;
 }
-const SIGNOUT = gql`
-  mutation Signout($type: String!) {
-    signout(type: $type) {
-      success
-      message
-    }
-  }
-`;
 
 const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
   const history = useHistory();
