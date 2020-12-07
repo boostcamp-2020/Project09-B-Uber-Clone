@@ -31,7 +31,13 @@ const DriverMainBody: React.FC<{ isWorking: boolean }> = ({ isWorking }) => {
       }, 2000);
       return () => {
         clearInterval(updateLocation);
-        stopService();
+        (async () => {
+          try {
+            await stopService();
+          } catch (error) {
+            console.log(error);
+          }
+        })();
       };
     }
   }, [isWorking]);
