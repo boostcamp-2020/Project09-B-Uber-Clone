@@ -29,7 +29,7 @@ const UserMatchingPage: React.FC = () => {
   const [stopMatching] = useMutation(STOP_MATCHING);
   const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
-  const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
@@ -40,19 +40,6 @@ const UserMatchingPage: React.FC = () => {
   const [boarding, setBoarding] = useState(false);
   const [modal, setModal] = useState(false);
 
-  // TODO : DELETE THIS METHOD
-  const setBoardingAfterTenSecToTest = () => {
-    setTimeout(() => {
-      setBoarding(true);
-      setMatchState(false);
-    }, 3000);
-  };
-
-  // const initialScriptLoad = async () => {
-  //   await loader.load();
-  //   setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer({ suppressMarkers: true }) });
-  // };
-
   useEffect(() => {
     (async () => await registMatchingList())();
   }, []);
@@ -61,7 +48,6 @@ const UserMatchingPage: React.FC = () => {
     if (taxiData?.userMatchingSub) {
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
-      setBoardingAfterTenSecToTest();
     }
   }, [taxiData]);
 
@@ -70,10 +56,12 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiDataError]);
 
   useEffect(() => {
-    if (taxiLatlng?.driverLocationSub) {
-      setTaxiLocation(taxiLatlng);
+    if (taxiLocationData?.driverLocationSub) {
+      const taxiLocationSubData = taxiLocationData.driverLocationSub;
+      setTaxiLocation(taxiLocationSubData.taxiLatlng);
+      if (taxiLocationSubData.board) setBoarding(true);
     }
-  }, [taxiLatlng]);
+  }, [taxiLocationData]);
 
   useEffect(() => {
     if (taxiData && taxiLatlngError) Toast.fail('택시 위치를 확인할 수 없습니다.');
@@ -169,7 +157,6 @@ const UserMatchingPage: React.FC = () => {
         },
       } = await stopMatching();
       if (!success) console.error(message);
-      console.log(success, message);
     } catch (error) {
       console.error(error);
     } finally {
@@ -189,7 +176,6 @@ const UserMatchingPage: React.FC = () => {
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
-          {/* {data && onMatchSuccess()} */}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>

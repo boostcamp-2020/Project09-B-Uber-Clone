@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
-import { gql, useSubscription } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { USER_ON_BOARD } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
-import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { useSelector } from 'react-redux';
@@ -18,6 +16,7 @@ import { DriverMatchingInfo } from '@custom-types';
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
   const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
+  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
   const { loaded } = useGoogleMapApiState();
@@ -30,12 +29,15 @@ const DriverMatchingPage: React.FC = () => {
     // TODO: 도착 완료 처리
   };
 
-  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
-
   const takeUser = async () => {
-    const { success, message }: Response = (await setUserOnBoard({
-      variables: { uid: 'USER_ID_FROM_STORE' },
-    })) as Response;
+    const { uid } = userRequest;
+    const {
+      data: {
+        userOnBoard: { success, message },
+      },
+    } = await setUserOnBoard({
+      variables: { uid },
+    });
     if (success) setBoarding(true);
     else Toast.show(message);
   };
@@ -60,11 +62,10 @@ const DriverMatchingPage: React.FC = () => {
             <>
               <PaymentModal visible={visible} />
               <BottomOverlay>
-                <Button type="primary" onClick={() => arrive()}>
+                <Button type="primary" onClick={arrive}>
                   목적지 도착
                 </Button>
               </BottomOverlay>
-              return (
             </>
           ) : (
             <>
