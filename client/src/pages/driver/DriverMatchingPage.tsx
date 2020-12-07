@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import { USER_ON_BOARD } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
@@ -12,18 +12,7 @@ import { Button, Toast } from 'antd-mobile';
 import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
-
-const MATCHED_USER = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      request {
-        startLocation
-        endLocation
-      }
-    }
-  }
-`;
+import { MATCHED_USER } from '@queries/driver/driverMatching';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -31,14 +20,17 @@ const DriverMatchingPage: React.FC = () => {
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
   const { loaded } = useGoogleMapApiState();
+  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
+  const [userRequest, setUserRequest] = useState({
+    uid: '',
+    startLocation: { name: '', Latlng: { lat: '', lng: '' } },
+    endLocation: { name: '', Latlng: { lat: '', lng: '' } },
+  });
 
-  const arrive = () => {
+  const arrive = useCallback(() => {
     setVisible(true);
     // TODO: 도착 완료 처리
-  };
-
-  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
-
+  }, []);
   const takeUser = async () => {
     const { success, message }: Response = (await setUserOnBoard({
       variables: { uid: 'USER_ID_FROM_STORE' },
@@ -46,11 +38,7 @@ const DriverMatchingPage: React.FC = () => {
     if (success) setBoarding(true);
     else Toast.show(message);
   };
-  const [userRequest, setUserRequest] = useState({
-    uid: '',
-    startLocation: { name: '', Latlng: { lat: '', lng: '' } },
-    endLocation: { name: '', Latlng: { lat: '', lng: '' } },
-  });
+
   useEffect(() => {
     if (data?.driverServiceSub) {
       const requsetData = data.userMatchingSub;
@@ -60,7 +48,6 @@ const DriverMatchingPage: React.FC = () => {
       dispatch(updateEndPoint(endLocation.Latlng));
     }
   }, [data]);
-
   useEffect(() => {
     if (error) Toast.fail('유저 정보를 확인할 수 없습니다.');
   }, [error]);

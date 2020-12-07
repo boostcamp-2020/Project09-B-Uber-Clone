@@ -8,3 +8,15 @@ export const USER_ON_BOARD = gql`
     }
   }
 `;
+
+export const MATCHED_USER = gql`
+  subscription {
+    driverServiceSub {
+      uid
+      request {
+        startLocation
+        endLocation
+      }
+    }
+  }
+`;

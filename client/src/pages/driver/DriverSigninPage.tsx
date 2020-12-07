@@ -1,16 +1,9 @@
 import React from 'react';
 import LoginForm from '@components/signin/SigninForm';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import { SIGNIN_DRIVER } from '@queries/driver/driverSignin';
 
-const SIGNIN_DRIVER = gql`
-  mutation DriverSignin($id: String!, $password: String!) {
-    driverSignin(id: $id, password: $password) {
-      success
-      message
-    }
-  }
-`;
 const DriverSigninPage: React.FC = () => {
   const [signinDriver] = useMutation(SIGNIN_DRIVER);
   const history = useHistory();
