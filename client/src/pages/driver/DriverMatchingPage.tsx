@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { gql, useSubscription } from '@apollo/client';
-import { Loader } from '@googlemaps/js-api-loader';
 import { USER_ON_BOARD } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
@@ -12,11 +11,7 @@ import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
 import { Response } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
-
-const loader = new Loader({
-  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY || '',
-  libraries: ['places'],
-});
+import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const MATCHED_USER = gql`
   subscription {
@@ -33,9 +28,9 @@ const MATCHED_USER = gql`
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
   const { data, error } = useSubscription(MATCHED_USER);
-  const [googleMapApi, setGoogleMapApi]: any = useState({ loaded: false, directionRenderer: null });
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
+  const { loaded } = useGoogleMapApiState();
 
   const arrive = () => {
     setVisible(true);
@@ -56,16 +51,6 @@ const DriverMatchingPage: React.FC = () => {
     startLocation: { name: '', Latlng: { lat: '', lng: '' } },
     endLocation: { name: '', Latlng: { lat: '', lng: '' } },
   });
-
-  const initialScriptLoad = async () => {
-    await loader.load();
-    setGoogleMapApi({ loaded: true, directionRenderer: new google.maps.DirectionsRenderer() });
-  };
-
-  useEffect(() => {
-    initialScriptLoad();
-  }, []);
-
   useEffect(() => {
     if (data?.driverServiceSub) {
       const requsetData = data.userMatchingSub;
@@ -82,9 +67,9 @@ const DriverMatchingPage: React.FC = () => {
 
   return (
     <>
-      {googleMapApi.loaded && (
+      {loaded && (
         <>
-          <MapContainer directionRenderer={googleMapApi.directionRenderer} />
+          <MapContainer />
           {boarding ? (
             <>
               <PaymentModal visible={visible} />
