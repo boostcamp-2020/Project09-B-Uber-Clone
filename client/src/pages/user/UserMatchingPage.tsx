@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { gql, useSubscription, useMutation } from '@apollo/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
 import { Toast } from 'antd-mobile';
@@ -9,30 +9,16 @@ import { PathPoint } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import {
+  MATCHED_TAXI,
+  TAXI_LOCATION,
+  REQUEST_MATCH,
+  MATCHING_SUBSCRIPTION,
+  STOP_MATCHING,
+} from '@queries/user/userMatching';
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 10000;
-
-const MATCHED_TAXI = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const TAXI_LOCATION = gql`
-  subscription {
-    driverLocationSub {
-      lat
-      lng
-    }
-  }
-`;
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
@@ -124,10 +110,10 @@ const UserMatchingPage: React.FC = () => {
     if (error) onErrorHandler();
   }, [error]);
 
-  const onErrorHandler = () => {
+  const onErrorHandler = useCallback(() => {
     Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
     history.push('/user/map');
-  };
+  }, []);
 
   const cancelMatching = async () => {
     try {
@@ -164,35 +150,5 @@ const UserMatchingPage: React.FC = () => {
     </>
   );
 };
-
-const REQUEST_MATCH = gql`
-  mutation requestMatching($request: UserRequestInput) {
-    requestMatching(request: $request) {
-      success
-      message
-    }
-  }
-`;
-
-const MATCHING_SUBSCRIPTION = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const STOP_MATCHING = gql`
-  mutation {
-    stopMatching {
-      success
-      message
-    }
-  }
-`;
 
 export default UserMatchingPage;

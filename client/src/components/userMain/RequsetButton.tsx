@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -8,10 +8,10 @@ const MatchingReqBtn: React.FC = () => {
   const history = useHistory();
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
 
-  const handlClick = async () => {
+  const handlClick = useCallback(async () => {
     if (!pathPoint.isSetStartPoint || !pathPoint.isSetEndPoint) return;
     history.push('/user/matching');
-  };
+  }, [pathPoint]);
 
   return (
     <Button onClick={handlClick} type="primary" disabled={!pathPoint.isSetStartPoint || !pathPoint.isSetEndPoint}>

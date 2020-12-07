@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -19,7 +19,7 @@ const DriverWorkingContent: React.FC = () => {
   const [acceptRequest] = useMutation(ACCEPT_REQUEST);
   const { data, error } = useSubscription(NEW_REQUEST);
 
-  const onAccept = async () => {
+  const onAccept = useCallback(async () => {
     const { uid, request } = currentRequest;
     const {
       data: {
@@ -32,27 +32,30 @@ const DriverWorkingContent: React.FC = () => {
       clearCurrentStatus();
       history.push('/driver/map');
     }
-  };
-  const onReject = () => {
+  }, [currentRequest]);
+  const onReject = useCallback(() => {
     setCurrentRequest(undefined);
-  };
-  const clearCurrentStatus = () => {
+  }, []);
+  const clearCurrentStatus = useCallback(() => {
     clearInterval(timers.percentInterval);
     clearTimeout(timers.requestTimeout);
     setProgressPercent(0);
-  };
-  const changeCurrentRequest = (newIndex: number) => {
-    const newRequest = requestQueue[newIndex];
-    setCurrentRequest(newRequest);
-    const expire = parseInt(newRequest.expirationTime, 10);
-    const percentInterval = setInterval(() => {
-      setProgressPercent(100 - (expire - new Date().getTime()) / 100);
-    }, 100);
-    const requestTimeout = setTimeout(() => {
-      setCurrentRequest(undefined);
-    }, expire - new Date().getTime());
-    setTimers({ percentInterval, requestTimeout });
-  };
+  }, [timers]);
+  const changeCurrentRequest = useCallback(
+    (newIndex: number) => {
+      const newRequest = requestQueue[newIndex];
+      setCurrentRequest(newRequest);
+      const expire = parseInt(newRequest.expirationTime, 10);
+      const percentInterval = setInterval(() => {
+        setProgressPercent(100 - (expire - new Date().getTime()) / 100);
+      }, 100);
+      const requestTimeout = setTimeout(() => {
+        setCurrentRequest(undefined);
+      }, expire - new Date().getTime());
+      setTimers({ percentInterval, requestTimeout });
+    },
+    [requestQueue],
+  );
 
   useEffect(() => {
     if (data?.driverServiceSub) setRequestQueue([...requestQueue, data.driverServiceSub]);

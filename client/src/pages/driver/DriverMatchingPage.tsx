@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
@@ -20,14 +20,13 @@ const DriverMatchingPage: React.FC = () => {
   const { loaded } = useGoogleMapApiState();
   const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
   const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
-
-  const arrive = () => {
-    setVisible(true);
-    // TODO: 도착 완료 처리
-  };
-
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
+
+  const arrive = useCallback(() => {
+    setVisible(true);
+    // TODO: 도착 완료 처리
+  }, []);
 
   const takeUser = async () => {
     try {
@@ -44,6 +43,7 @@ const DriverMatchingPage: React.FC = () => {
       console.error(error);
     }
   };
+
   // const [userRequest, setUserRequest] = useState({
   //   uid: '',
   //   startLocation: { name: '', Latlng: { lat: '', lng: '' } },
