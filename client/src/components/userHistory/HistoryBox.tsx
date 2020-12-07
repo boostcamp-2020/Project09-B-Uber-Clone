@@ -3,9 +3,6 @@ import moment from 'moment';
 import { Card, WhiteSpace, List } from 'antd-mobile';
 import { LocationWithName } from '@custom-types';
 import styled from 'styled-components';
-import 'antd-mobile/lib/card/style/css';
-import 'antd-mobile/lib/white-space/style/css';
-import 'antd-mobile/lib/list/style/css';
 
 const Item = List.Item;
 

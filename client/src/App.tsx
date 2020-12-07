@@ -2,7 +2,6 @@ import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import client from '@utils/apolloClient';
-import 'antd-mobile/lib/button/style/css';
 import {
   UserDriverSelectPage,
   UserAuthPage,
@@ -31,6 +30,8 @@ import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
 import 'antd-mobile/lib/activity-indicator/style/css';
+import 'antd-mobile/lib/card/style/css';
+import 'antd-mobile/lib/white-space/style/css';
 import 'antd/lib/switch/style/css';
 import 'antd/lib/progress/style/css';
 
