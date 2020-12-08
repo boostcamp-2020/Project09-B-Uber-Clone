@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { gql, useSubscription } from '@apollo/client';
