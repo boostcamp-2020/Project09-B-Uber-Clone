@@ -25,11 +25,6 @@ const DriverMatchingPage: React.FC = () => {
   const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
   const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
 
-  const arrive = useCallback(() => {
-    setVisible(true);
-    // TODO: 도착 완료 처리
-  }, []);
-
   const takeUser = useCallback(async () => {
     try {
       const {
@@ -85,7 +80,7 @@ const DriverMatchingPage: React.FC = () => {
             <>
               <PaymentModal visible={visible} />
               <BottomOverlay>
-                <Button type="primary" onClick={arrive}>
+                <Button type="primary" onClick={() => setVisible(true)}>
                   목적지 도착
                 </Button>
               </BottomOverlay>

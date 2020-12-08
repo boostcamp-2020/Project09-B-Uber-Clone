@@ -229,17 +229,16 @@ const Mutation = {
       return { success: false, message: '오류가 발생했습니다' };
     }
   },
-
-  arriveDestination: async (_, { dataSources, uid }) => {
+  arriveDestination: async (_, __, { dataSources, uid }) => {
     try {
-      const waitingDriver = await dataSources.model('WaitingDriver');
-      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
-      if (existingWaitingDriver) return { success: true };
-      const newWaitingDriver = new waitingDriver({ driver: uid });
-      const result = await newWaitingDriver.save();
-
+      const waitingDriverSchema = await dataSources.model('WaitingDriver');
+      const result = await waitingDriverSchema.findOneAndUpdate(
+        { driver: mongoose.Types.ObjectId(uid) },
+        { isWorking: false },
+      );
       logger.info(`${uid} arrived destination: ${result}`);
       if (result) return { success: true };
+      logger.error(`${uid} DRIVER ARRIVE ERROR`);
       return { success: false, message: '운행을 종료 할 수 없습니다.' };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다.' };
