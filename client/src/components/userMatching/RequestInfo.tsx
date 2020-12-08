@@ -28,7 +28,7 @@ const CenterDiv = styled.div`
   z-index: 2;
   top: 8%;
   left: 50%;
-  max-width: 80%;
+  width: 80%;
   transform: translateX(-50%);
   display: inline-flex;
   justify-content: space-between;
