@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
+import cookieParser from 'cookie-parser';
 import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
@@ -71,13 +72,18 @@ const Mutation = {
       return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
-  signout: async (_, args, { __, res }) => {
+  signout: async (_, { type }, { dataSources, req, res }) => {
     try {
-      const result = res.clearCookie(`${args.type}Token`);
+      if (type === 'driver') {
+        const id = jwt.verify(req.signedCookies.driverToken, Config.JWT_SECRET).id;
+        const waitingDriver = await dataSources.model('WaitingDriver');
+        await waitingDriver.findOneAndRemove({ driver: id });
+      }
+      const result = res.clearCookie(`${type}Token`);
       if (result) return { success: true };
       return { success: false, message: '잘못된 접근입니다.' };
     } catch (err) {
-      logger.info('Logout error!');
+      logger.error('Logout error!');
       return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
