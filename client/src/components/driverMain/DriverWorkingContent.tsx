@@ -26,7 +26,7 @@ const DriverWorkingContent: React.FC = () => {
   }, [timers]);
 
   const onAccept = useCallback(async () => {
-    const { uid, request } = currentRequest;
+    const { uid, request, tel } = currentRequest;
     const {
       data: {
         approveMatching: { success, message },
@@ -34,7 +34,7 @@ const DriverWorkingContent: React.FC = () => {
     } = await acceptRequest({ variables: { uid } });
     if (!success) Toast.show(message);
     else {
-      dispatch(setDriverMatchingInfo({ uid, request }));
+      dispatch(setDriverMatchingInfo({ uid, request, tel }));
       clearCurrentStatus();
       history.push('/driver/map');
     }
