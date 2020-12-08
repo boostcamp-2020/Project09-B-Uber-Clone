@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
 import { Menu, Button } from 'antd';
+import { Modal } from 'antd-mobile';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined, HistoryOutlined } from '@ant-design/icons';
 import { SIGNOUT } from '@queries/signout';
 
@@ -12,6 +13,7 @@ interface MenuPropsType {
 
 const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
   const history = useHistory();
+  const modalAlert = Modal.alert;
   const [visible, setVisible] = useState(false);
 
   const toggle = useCallback(() => {
@@ -33,6 +35,13 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
     } else alert(message);
   }, []);
 
+  const showAlert = useCallback(() => {
+    modalAlert('Logout', '로그아웃을 하시겠습니까?', [
+      { text: 'Cancel', style: 'default' },
+      { text: 'OK', onPress: () => logout() },
+    ]);
+  }, []);
+
   const historyHandler = () => {
     history.push('/user/history');
   };
@@ -45,7 +54,7 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
       <>
         {visible ? (
           <Menu mode="inline" inlineCollapsed={visible}>
-            <Menu.Item key="1" icon={<LogoutOutlined />} onClick={logout} />
+            <Menu.Item key="1" icon={<LogoutOutlined />} onClick={showAlert} />
             <Menu.Item key="2" icon={<HistoryOutlined />} onClick={historyHandler} />
           </Menu>
         ) : null}
