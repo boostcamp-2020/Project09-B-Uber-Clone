@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import moment from 'moment';
 import { Card, List } from 'antd-mobile';
 import { LocationWithName } from '@custom-types';
@@ -15,11 +15,13 @@ const HistoryBox: React.FC<HistoryType> = ({
   carModel,
   plateNumber,
 }) => {
+  const formatStartDate = useCallback(() => moment(startTime).format('YYYY/MM/DD'), [startTime]);
+
   return (
     <Wrapper>
       <Card full>
         <Card.Body>
-          <List renderHeader={() => moment(startTime).format('YYYY/MM/DD')}>
+          <List renderHeader={formatStartDate}>
             <Item extra={startLocation.name} wrap>
               출발
             </Item>

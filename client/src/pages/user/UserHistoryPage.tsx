@@ -38,12 +38,13 @@ const UserHistoryPage: React.FC = () => {
     }
   }, [data]);
 
-  if (loading)
+  if (loading) {
     return (
       <LoadingWrapper>
         <ActivityIndicator animating text="로딩 중입니다" />
       </LoadingWrapper>
     );
+  }
 
   return (
     <Wrapper>
