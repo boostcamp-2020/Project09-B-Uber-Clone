@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import requestLocationsShema from './requestLocationsShema';
 const userHistorySchema = new mongoose.Schema({
-  user_id: mongoose.Schema.Types.ObjectId,
+  user_id: { type: String, required: true, trim: true },
   request: requestLocationsShema,
   fee: { type: Number, required: true, trim: true },
   startTime: { type: String, required: true, trim: true },

@@ -210,7 +210,7 @@ const Mutation = {
   saveUserHistory: async (_, args, { dataSources, res }) => {
     try {
       const userHistoryShema = dataSources.model('UserHistory');
-      const newUserHistory = new userHistoryShema({ ...args });
+      const newUserHistory = new userHistoryShema({ user_id: args.uid, ...args });
       await newUserHistory.save();
       return { success: true };
     } catch (err) {
