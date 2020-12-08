@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import cookieParser from 'cookie-parser';
 import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
