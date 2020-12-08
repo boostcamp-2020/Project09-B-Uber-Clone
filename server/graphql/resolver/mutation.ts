@@ -164,7 +164,7 @@ const Mutation = {
       const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
-      return { sucess: false, message: '영업을 끝낼 수 없습니다' };
+      return { success: false, message: '영업을 끝낼 수 없습니다' };
     } catch (err) {
       logger.error(`STOP SERVICE ERROR : ${err}`);
       return { success: false, message: '영업을 끝낼 수 없습니다' };
