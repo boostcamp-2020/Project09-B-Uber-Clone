@@ -87,16 +87,15 @@ export interface Response {
   message: string;
 }
 
+export interface LocationWithName {
+  name: string;
+  latlng: Location;
+}
+
 export interface DriverMatchingInfo {
   uid?: string;
   request?: {
-    startLocation: {
-      name: string;
-      latlng: Location;
-    };
-    endLocation: {
-      name: string;
-      latlng: Location;
-    };
+    startLocation: LocationWithName;
+    endLocation: LocationWithName;
   };
 }
