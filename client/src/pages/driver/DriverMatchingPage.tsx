@@ -14,7 +14,9 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { uid, request } = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
+  const { uid, request, tel } = useSelector(
+    (state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo,
+  );
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -92,7 +94,7 @@ const DriverMatchingPage: React.FC = () => {
             <>
               <TopOverlay>
                 <StartLocationInfo startLocation={startLocationName} />
-                <CallButton phone="010-0000-0000" />
+                {tel && <CallButton phone={tel} />}
               </TopOverlay>
               <BottomOverlay>
                 <Button type="primary" onClick={takeUser}>

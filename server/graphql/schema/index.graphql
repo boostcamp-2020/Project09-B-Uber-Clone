@@ -37,6 +37,7 @@ type UserRequestToDriver {
   request: UserRequest
   uid: String
   expirationTime: String
+  tel: String
 }
 type DriverStatus {
   lat: Float
@@ -88,6 +89,7 @@ type Mutation {
     carColor: String!
   ): Response
   driverSignin(id: String!, password: String!): Response
+  signout(type: String!): Response
   requestMatching(request: UserRequestInput): Response @auth(requires: USER)
   stopMatching: Response @auth(requires: USER)
   startService: Response @auth(requires: DRIVER)
@@ -104,6 +106,7 @@ type Mutation {
     carModel: String!
     plateNumber: String!
   ): Response @auth(requires: USER)
+  arriveDestination: Response @auth(requires: DRIVER)
 }
 
 type Subscription {
