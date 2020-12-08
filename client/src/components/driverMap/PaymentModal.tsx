@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Modal } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { ARRIVE_DESTINATION } from '@queries/driver/driverMatching';
@@ -13,11 +13,11 @@ const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible }) => {
   const history = useHistory();
   const [arriveDestination] = useMutation(ARRIVE_DESTINATION);
 
-  const arrive = () => {
+  const arrive = useCallback(() => {
     arriveDestination();
     Toast.show('메인으로 돌아갑니다.');
     history.push('/driver/main');
-  };
+  }, []);
 
   return (
     <Modal
