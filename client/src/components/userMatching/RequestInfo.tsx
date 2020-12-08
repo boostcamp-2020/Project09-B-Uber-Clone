@@ -5,9 +5,9 @@ import { DownOutlined } from '@ant-design/icons';
 const Path: React.FC<{ startPoint: string; endPoint: string }> = ({ startPoint, endPoint }) => {
   return (
     <CenterDiv>
-      <FlexDiv>
+      <PointTextDiv>
         <PointText>{startPoint}</PointText>
-      </FlexDiv>
+      </PointTextDiv>
       <FlexDiv>
         <DownOutlined
           style={{
@@ -16,9 +16,9 @@ const Path: React.FC<{ startPoint: string; endPoint: string }> = ({ startPoint, 
           }}
         />
       </FlexDiv>
-      <FlexDiv>
+      <PointTextDiv>
         <PointText>{endPoint}</PointText>
-      </FlexDiv>
+      </PointTextDiv>
     </CenterDiv>
   );
 };
@@ -34,20 +34,29 @@ const CenterDiv = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
+  padding: 8px 32px;
   border-radius: 50px;
   background-color: #2e2e2e;
 `;
 
 const PointText = styled.div`
+  word-break: break-word;
+  line-break: anywhere;
   color: #f3f3f3;
 `;
 
 const FlexDiv = styled.div`
   display: flex;
-  flex: 1;
   justify-content: center;
   align-items: center;
+  max-width: 45%;
+`;
+
+const PointTextDiv = styled(FlexDiv)`
+  flex: 2;
+  width: max-content;
+  text-align: center;
+  line-height: 1rem;
 `;
 
 export default Path;

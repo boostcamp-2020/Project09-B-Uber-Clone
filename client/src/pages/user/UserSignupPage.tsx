@@ -8,7 +8,7 @@ const UserSignupPage: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
 
-  const setNextPage = useCallback(() => setPage(page + 1), []);
+  const setNextPage = useCallback(() => setPage(page + 1), [page]);
 
   return (
     <Div>

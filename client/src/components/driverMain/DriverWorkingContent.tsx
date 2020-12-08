@@ -19,8 +19,14 @@ const DriverWorkingContent: React.FC = () => {
   const [acceptRequest] = useMutation(ACCEPT_REQUEST);
   const { data, error } = useSubscription(NEW_REQUEST);
 
+  const clearCurrentStatus = useCallback(() => {
+    clearInterval(timers.percentInterval);
+    clearTimeout(timers.requestTimeout);
+    setProgressPercent(0);
+  }, [timers]);
+
   const onAccept = useCallback(async () => {
-    const { uid, request } = currentRequest;
+    const { uid, request, tel } = currentRequest;
     const {
       data: {
         approveMatching: { success, message },
@@ -28,19 +34,15 @@ const DriverWorkingContent: React.FC = () => {
     } = await acceptRequest({ variables: { uid } });
     if (!success) Toast.show(message);
     else {
-      dispatch(setDriverMatchingInfo({ uid, request }));
+      dispatch(setDriverMatchingInfo({ uid, request, tel }));
       clearCurrentStatus();
       history.push('/driver/map');
     }
-  }, [currentRequest]);
+  }, [currentRequest, clearCurrentStatus]);
   const onReject = useCallback(() => {
     setCurrentRequest(undefined);
   }, []);
-  const clearCurrentStatus = useCallback(() => {
-    clearInterval(timers.percentInterval);
-    clearTimeout(timers.requestTimeout);
-    setProgressPercent(0);
-  }, [timers]);
+
   const changeCurrentRequest = useCallback(
     (newIndex: number) => {
       const newRequest = requestQueue[newIndex];

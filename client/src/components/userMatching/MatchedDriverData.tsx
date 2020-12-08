@@ -15,7 +15,7 @@ const MatchedDriverData: React.FC<Props> = ({ taxiInfo }) => {
       <>
         <H2>승차 전 차량 정보를 확인하세요</H2>
         <Container>
-          <Taxi size="70" />
+          <Taxi size="60" />
           <InnerContainer>
             <Div>
               <Pt>차종</Pt>
@@ -56,6 +56,7 @@ const Container = styled(Flex)`
 
 const InnerContainer = styled(Flex)`
   flex-direction: column;
+  flex: 1;
   width: 55%;
   align-items: none;
 `;
@@ -72,7 +73,7 @@ const Pt = styled.p`
   font-weight: 300px;
 `;
 const P = styled.p`
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 export default MatchedDriverData;
