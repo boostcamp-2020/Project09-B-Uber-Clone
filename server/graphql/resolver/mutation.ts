@@ -146,7 +146,7 @@ const Mutation = {
   stopService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorkng: false });
+      const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
       return { sucess: false, message: '영업을 끝낼 수 없습니다' };
