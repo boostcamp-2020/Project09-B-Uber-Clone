@@ -5,7 +5,7 @@ import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
-import { useGoogleMapApiState, useGoogleMapApiDispatch } from 'src/contexts/GoogleMapProvider';
+import { useGoogleMapApiState, useGoogleMapApiDispatch } from '../../contexts/GoogleMapProvider';
 
 const Map: React.FC<{
   center: Location;

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
+import driverSchema from '../../models/driverSchema';
 import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
@@ -99,7 +100,11 @@ const Mutation = {
         unique: true,
         spherical: true,
       };
-      const possibleDrivers = await waitingDriverSchema.find().where('location').within().circle(area);
+      const possibleDrivers = await waitingDriverSchema
+        .find({ isWorking: false })
+        .where('location')
+        .within()
+        .circle(area);
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
@@ -156,7 +161,7 @@ const Mutation = {
   stopService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const result = await waitingDriver.findOneAndRemove({ driver: uid });
+      const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
       return { sucess: false, message: '영업을 끝낼 수 없습니다' };
@@ -173,7 +178,7 @@ const Mutation = {
         { driver: driverId },
         { location: { coordinates: [lng, lat] } },
       );
-      if (uid) await pubsub(UPDATE_LOCATION, { uid, driverLocationSub: { location } });
+      if (uid) await pubsub.publish(UPDATE_LOCATION, { uid, driverLocationSub: { ...location } });
       if (result) return { success: true };
 
       logger.error(`UPDATE DRIVER LOCATION ERROR: 해당 드라이버를 찾을 수 없습니다.`);
@@ -198,6 +203,8 @@ const Mutation = {
         },
       });
 
+      const waitingDriverModel = dataSources.model('WaitingDriver');
+      await waitingDriverModel.findOneAndUpdate({ driver: mongoose.Types.ObjectId(driverId) }, { isWorking: true });
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);

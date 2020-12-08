@@ -1,53 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { gql, useSubscription, useMutation } from '@apollo/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
-import { Toast } from 'antd-mobile';
+import { Modal, Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PathPoint } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import {
+  MATCHED_TAXI,
+  TAXI_LOCATION,
+  REQUEST_MATCH,
+  MATCHING_SUBSCRIPTION,
+  STOP_MATCHING,
+} from '@queries/user/userMatching';
+
+const alertModal = Modal.alert;
 
 const MAX_REQUEST_COUNT = 6;
 const MATCHING_INTERVAL = 10000;
 
-const MATCHED_TAXI = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const TAXI_LOCATION = gql`
-  subscription($id: string) {
-    driverLocationSub(taxiId: $id) {
-      lat
-      lng
-    }
-  }
-`;
-
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
-  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
   const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
-  const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const [isMatchCanceled, setMatchCancel] = useState(false);
   const { loaded } = useGoogleMapApiState();
+  const [boarding, setBoarding] = useState(false);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -65,10 +55,12 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiDataError]);
 
   useEffect(() => {
-    if (taxiLatlng?.driverLocationSub) {
-      setTaxiLocation(taxiLatlng);
+    if (taxiLocationData?.driverLocationSub) {
+      const taxiLocationSubData = taxiLocationData.driverLocationSub;
+      setTaxiLocation(taxiLocationSubData.taxiLatlng);
+      if (taxiLocationSubData.board) setBoarding(true);
     }
-  }, [taxiLatlng]);
+  }, [taxiLocationData]);
 
   useEffect(() => {
     if (taxiData && taxiLatlngError) Toast.fail('택시 위치를 확인할 수 없습니다.');
@@ -79,7 +71,8 @@ const UserMatchingPage: React.FC = () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
-    if (!loading || isMatchCanceled) clearInterval(timer);
+
+    if (!loading || isMatchCanceled || boarding) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -90,6 +83,10 @@ const UserMatchingPage: React.FC = () => {
       }
     };
   }, [requestCount]);
+
+  useEffect(() => {
+    if (!modal && boarding) showAlert();
+  }, [modal, boarding]);
 
   const registMatchingList = async () => {
     const request = {
@@ -124,16 +121,30 @@ const UserMatchingPage: React.FC = () => {
     if (error) onErrorHandler();
   }, [error]);
 
-  const onErrorHandler = () => {
+  const onErrorHandler = useCallback(() => {
     Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
     history.push('/user/map');
-  };
+  }, []);
 
-  const onMatchSuccess = () => {
-    return <p>매칭성공</p>;
-  };
+  const showAlert = useCallback(() => {
+    setModal(true);
+    const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
+      {
+        text: '홈으로',
+        onPress: () => {
+          history.push('/user');
+        },
+        style: 'default',
+      },
+    ]);
 
-  const cancelMatching = async () => {
+    setTimeout(() => {
+      alertInstance.close();
+      history.push('/user');
+    }, 5000);
+  }, []);
+
+  const cancelMatching = useCallback(async () => {
     try {
       const {
         data: {
@@ -141,19 +152,18 @@ const UserMatchingPage: React.FC = () => {
         },
       } = await stopMatching();
       if (!success) console.error(message);
-      console.log(success, message);
     } catch (error) {
       console.error(error);
     } finally {
       setMatchCancel(true);
       history.push('/user/map');
     }
-  };
+  }, []);
 
-  const onClickHandler = async () => {
+  const onClickHandler = useCallback(async () => {
     await cancelMatching();
     Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  };
+  }, [cancelMatching]);
 
   return (
     <>
@@ -161,7 +171,6 @@ const UserMatchingPage: React.FC = () => {
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
-          {data && onMatchSuccess()}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
@@ -169,35 +178,5 @@ const UserMatchingPage: React.FC = () => {
     </>
   );
 };
-
-const REQUEST_MATCH = gql`
-  mutation requestMatching($request: UserRequestInput) {
-    requestMatching(request: $request) {
-      success
-      message
-    }
-  }
-`;
-
-const MATCHING_SUBSCRIPTION = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const STOP_MATCHING = gql`
-  mutation {
-    stopMatching {
-      success
-      message
-    }
-  }
-`;
 
 export default UserMatchingPage;

@@ -7,6 +7,7 @@ type Query {
   users: String
   isAuthorizedUser: Boolean @auth(requires: USER)
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
+  userHistory(page: Int): [UserHistoryResult] @auth(requires: USER)
 }
 
 type Response {
@@ -41,6 +42,15 @@ type DriverStatus {
   lat: Float
   lng: Float
   board: Boolean
+}
+type UserHistoryResult {
+  id: String
+  request: UserRequest
+  fee: Int
+  startTime: String
+  endTime: String
+  carModel: String
+  plateNumber: String
 }
 
 input LatLngInput {
