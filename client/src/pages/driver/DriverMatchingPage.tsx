@@ -38,8 +38,12 @@ const DriverMatchingPage: React.FC = () => {
       } = await setUserOnBoard({
         variables: { uid },
       });
-      if (success) setBoarding(true);
-      else Toast.show(message);
+      if (success && request) {
+        setBoarding(true);
+        const { startLocation, endLocation } = request;
+        dispatch(updateStartPoint(startLocation.latlng));
+        dispatch(updateEndPoint(endLocation.latlng));
+      } else Toast.show(message);
     } catch (error) {
       console.error(error);
     }
