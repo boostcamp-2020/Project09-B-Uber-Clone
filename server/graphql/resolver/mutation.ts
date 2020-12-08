@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import driverSchema from '../../models/driverSchema';
 import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
@@ -76,6 +75,7 @@ const Mutation = {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
       const waitingDriverSchema = dataSources.model('WaitingDriver');
+      const userModel = dataSources.model('User');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
       const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
@@ -90,10 +90,11 @@ const Mutation = {
         .where('location')
         .within()
         .circle(area);
+      const user = await userModel.findById({ _id: uid });
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
+        driverServiceSub: { uid, request, expirationTime: result.expireTime, tel: user.phone }, // requestTime을 DB에 insert할 때로 변경
       });
       if (result) {
         logger.info(
