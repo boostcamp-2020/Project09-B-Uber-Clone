@@ -14,7 +14,7 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
-  const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
+  const { uid, request } = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -35,14 +35,14 @@ const DriverMatchingPage: React.FC = () => {
           userOnBoard: { success, message },
         },
       } = await setUserOnBoard({
-        variables: { uid: matchingInfo.uid },
+        variables: { uid },
       });
       if (success) setBoarding(true);
       else Toast.show(message);
     } catch (error) {
       console.error(error);
     }
-  }, [matchingInfo.uid]);
+  }, [uid]);
 
   useEffect(() => {
     (async () => {
@@ -52,7 +52,7 @@ const DriverMatchingPage: React.FC = () => {
             updateDriverLocation: { success, message },
           },
         } = await updateDriverLocation({
-          variables: { location, uid: matchingInfo.uid },
+          variables: { location, uid },
         });
         if (!success) {
           console.error(message);
@@ -66,8 +66,8 @@ const DriverMatchingPage: React.FC = () => {
   }, [location]);
 
   useEffect(() => {
-    if (matchingInfo.request) {
-      const { startLocation, endLocation } = matchingInfo.request;
+    if (request) {
+      const { startLocation, endLocation } = request;
       dispatch(updateStartPoint(startLocation.latlng));
       dispatch(updateEndPoint(endLocation.latlng));
       setStartLocation(startLocation.name);

@@ -163,7 +163,7 @@ const UserMatchingPage: React.FC = () => {
   const onClickHandler = useCallback(async () => {
     await cancelMatching();
     Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  }, []);
+  }, [cancelMatching]);
 
   return (
     <>
