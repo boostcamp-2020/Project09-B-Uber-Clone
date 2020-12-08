@@ -208,6 +208,17 @@ const Mutation = {
       return { success: false, message: '오류가 발생했습니다' };
     }
   },
+  saveUserHistory: async (_, args, { dataSources, res }) => {
+    try {
+      const userHistoryShema = dataSources.model('UserHistory');
+      const newUserHistory = new userHistoryShema({ ...args });
+      await newUserHistory.save();
+      return { success: true };
+    } catch (err) {
+      logger.error(`SAVE USER HISTORY ERROR : ${err}`);
+      return { success: false, message: `유저 사용내역 저장에 실패했습니다 : ${err}` };
+    }
+  },
 };
 
 export default Mutation;
