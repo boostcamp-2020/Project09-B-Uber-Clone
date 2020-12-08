@@ -33,6 +33,8 @@ import 'antd-mobile/lib/activity-indicator/style/css';
 import 'antd-mobile/lib/card/style/css';
 import 'antd/lib/switch/style/css';
 import 'antd/lib/progress/style/css';
+import 'antd/lib/menu/style/css';
+import 'antd/dist/antd.css';
 import 'antd/lib/button/style/css';
 
 const App: React.FC = () => {

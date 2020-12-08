@@ -72,6 +72,21 @@ const Mutation = {
       return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
+  signout: async (_, { type }, { dataSources, req, res }) => {
+    try {
+      if (type === 'driver') {
+        const id = jwt.verify(req.signedCookies.driverToken, Config.JWT_SECRET).id;
+        const waitingDriver = await dataSources.model('WaitingDriver');
+        await waitingDriver.findOneAndRemove({ driver: id });
+      }
+      const result = res.clearCookie(`${type}Token`);
+      if (result) return { success: true };
+      return { success: false, message: '잘못된 접근입니다.' };
+    } catch (err) {
+      logger.error('Logout error!');
+      return { success: false, message: '유효하지 않은 접근입니다.' };
+    }
+  },
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
@@ -193,7 +208,12 @@ const Mutation = {
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
-      if (result) return { success: true };
+      if (result) {
+        const waitingDriver = dataSources.model('WaitingDriver');
+        const res = await waitingDriver.deleteOne({ _id: driverId });
+        if (res) return { success: true };
+        return { success: false, message: '대기 중인 드라이버 정보를 찾을 수 없습니다.' };
+      }
       return { success: false, message: '이미 배차가 완료된 요청입니다.' };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
@@ -206,6 +226,22 @@ const Mutation = {
       return { success: true };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다' };
+    }
+  },
+
+  arriveDestination: async (_, { dataSources, uid }) => {
+    try {
+      const waitingDriver = await dataSources.model('WaitingDriver');
+      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
+      if (existingWaitingDriver) return { success: true };
+      const newWaitingDriver = new waitingDriver({ driver: uid });
+      const result = await newWaitingDriver.save();
+
+      logger.info(`${uid} arrived destination: ${result}`);
+      if (result) return { success: true };
+      return { success: false, message: '운행을 종료 할 수 없습니다.' };
+    } catch (err) {
+      return { success: false, message: '오류가 발생했습니다.' };
     }
   },
 };
