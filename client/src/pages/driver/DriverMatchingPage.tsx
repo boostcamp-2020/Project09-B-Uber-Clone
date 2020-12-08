@@ -25,8 +25,7 @@ const DriverMatchingPage: React.FC = () => {
 
   const arrive = useCallback(() => {
     setVisible(true);
-    // TODO: 도착 완료 처리
-  }, []);
+  }, [visible]);
 
   const takeUser = useCallback(async () => {
     try {
