@@ -5,10 +5,12 @@ import MapContainer from '@containers/MapContainer';
 import { Modal, Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { PathPoint } from '@custom-types';
+import { PathPoint, PreData } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
+
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -38,6 +40,9 @@ const UserMatchingPage: React.FC = () => {
   const { loaded } = useGoogleMapApiState();
   const [boarding, setBoarding] = useState(false);
   const [modal, setModal] = useState(false);
+  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
+  const preData = useSelector((state: { preData: PreData }) => state.preData);
+  const [request, setRequest] = useState({});
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -48,7 +53,7 @@ const UserMatchingPage: React.FC = () => {
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
     }
-  }, [taxiData]);
+  }, [taxiData, taxiInfo]);
 
   useEffect(() => {
     if (taxiDataError && !taxiLatlngError) Toast.fail('택시 정보를 확인할 수 없습니다.');
@@ -89,7 +94,7 @@ const UserMatchingPage: React.FC = () => {
   }, [modal, boarding]);
 
   const registMatchingList = async () => {
-    const request = {
+    setRequest({
       startLocation: {
         name: pathPoint.startPointName,
         latlng: {
@@ -102,7 +107,7 @@ const UserMatchingPage: React.FC = () => {
           ...pathPoint.endPoint,
         },
       },
-    };
+    });
 
     try {
       const {
@@ -126,23 +131,41 @@ const UserMatchingPage: React.FC = () => {
     history.push('/user/map');
   }, []);
 
-  const showAlert = useCallback(() => {
+  const showAlert = useCallback(async () => {
     setModal(true);
-    const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
-      {
-        text: '홈으로',
-        onPress: () => {
-          history.push('/user');
-        },
-        style: 'default',
-      },
-    ]);
 
-    setTimeout(() => {
-      alertInstance.close();
-      history.push('/user');
-    }, 5000);
-  }, []);
+    const variables = {
+      // TODO: 스키마 수정 후 반영
+      uid: '5fcd8f5939f30f57802c6531',
+      request: request,
+      fee: preData.info.fee,
+      carModel: taxiInfo.carModel,
+      plateNumber: taxiInfo.plateNumber,
+      startTime: 'test5 end time',
+      endTime: 'test5 end time',
+    };
+    const {
+      data: {
+        saveUserHistory: { success, message },
+      },
+    } = await saveUserHistory({ variables });
+
+    if (success) {
+      const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
+        {
+          text: '홈으로',
+          onPress: () => {
+            history.push('/user');
+          },
+          style: 'default',
+        },
+      ]);
+      setTimeout(() => {
+        alertInstance.close();
+        history.push('/user');
+      }, 5000);
+    } else alert(message);
+  }, [modal, taxiInfo]);
 
   const cancelMatching = useCallback(async () => {
     try {
