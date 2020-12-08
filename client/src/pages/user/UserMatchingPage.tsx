@@ -126,7 +126,7 @@ const UserMatchingPage: React.FC = () => {
     history.push('/user/map');
   }, []);
 
-  const showAlert = () => {
+  const showAlert = useCallback(() => {
     setModal(true);
     const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
       {
@@ -142,9 +142,9 @@ const UserMatchingPage: React.FC = () => {
       alertInstance.close();
       history.push('/user');
     }, 5000);
-  };
+  }, []);
 
-  const cancelMatching = async () => {
+  const cancelMatching = useCallback(async () => {
     try {
       const {
         data: {
@@ -158,12 +158,12 @@ const UserMatchingPage: React.FC = () => {
       setMatchCancel(true);
       history.push('/user/map');
     }
-  };
+  }, []);
 
-  const onClickHandler = async () => {
+  const onClickHandler = useCallback(async () => {
     await cancelMatching();
     Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  };
+  }, []);
 
   return (
     <>

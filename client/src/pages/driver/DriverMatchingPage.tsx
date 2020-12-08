@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { USER_ON_BOARD } from '@queries/driver/driverMatching';
+import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
+import { USER_ON_BOARD, UPDATE_DRIVER_LOCATION } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
+import { DriverMatchingInfo } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
-import { useSelector } from 'react-redux';
-import { DriverMatchingInfo } from '@custom-types';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -19,39 +18,61 @@ const DriverMatchingPage: React.FC = () => {
   const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [startLocationName, setStartLocation] = useState('');
   const { loaded } = useGoogleMapApiState();
-  const [userRequest, setUserRequest] = useState<DriverMatchingInfo>({
-    uid: undefined,
-    request: undefined,
-  });
+  const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
+  const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
+
   const arrive = useCallback(() => {
     setVisible(true);
     // TODO: 도착 완료 처리
   }, []);
 
-  const takeUser = async () => {
-    const { uid } = userRequest;
-    const {
-      data: {
-        userOnBoard: { success, message },
-      },
-    } = await setUserOnBoard({
-      variables: { uid },
-    });
-    if (success) setBoarding(true);
-    else Toast.show(message);
-  };
+  const takeUser = useCallback(async () => {
+    try {
+      const {
+        data: {
+          userOnBoard: { success, message },
+        },
+      } = await setUserOnBoard({
+        variables: { uid: matchingInfo.uid },
+      });
+      if (success) setBoarding(true);
+      else Toast.show(message);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [matchingInfo.uid]);
 
   useEffect(() => {
-    if (matchingInfo) {
-      const { uid, request } = matchingInfo;
-      setUserRequest({ uid, request });
-      if (request) {
-        dispatch(updateStartPoint(request.startLocation.latlng));
-        dispatch(updateEndPoint(request.endLocation.latlng));
+    (async () => {
+      try {
+        const {
+          data: {
+            updateDriverLocation: { success, message },
+          },
+        } = await updateDriverLocation({
+          variables: { location, uid: matchingInfo.uid },
+        });
+        if (!success) {
+          console.error(message);
+          Toast.show('네트워크를 확인 해주세요.', Toast.SHORT);
+        }
+      } catch (error) {
+        console.error(error);
+        Toast.show('네트워크를 확인 해주세요.', Toast.SHORT);
       }
-    } else Toast.fail('유저 정보를 확인할 수 없습니다.');
-  }, [matchingInfo]);
+    })();
+  }, [location]);
+
+  useEffect(() => {
+    if (matchingInfo.request) {
+      const { startLocation, endLocation } = matchingInfo.request;
+      dispatch(updateStartPoint(startLocation.latlng));
+      dispatch(updateEndPoint(endLocation.latlng));
+      setStartLocation(startLocation.name);
+    }
+  }, []);
 
   return (
     <>
@@ -70,7 +91,7 @@ const DriverMatchingPage: React.FC = () => {
           ) : (
             <>
               <TopOverlay>
-                <StartLocationInfo startLocation={userRequest.request ? userRequest.request.startLocation.name : ''} />
+                <StartLocationInfo startLocation={startLocationName} />
                 <CallButton phone="010-0000-0000" />
               </TopOverlay>
               <BottomOverlay>

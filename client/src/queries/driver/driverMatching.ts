@@ -9,14 +9,11 @@ export const USER_ON_BOARD = gql`
   }
 `;
 
-export const MATCHED_USER = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      request {
-        startLocation
-        endLocation
-      }
+export const UPDATE_DRIVER_LOCATION = gql`
+  mutation UpdateDriverLocation($location: LatLngInput, $uid: String) {
+    updateDriverLocation(location: $location, uid: $uid) {
+      success
+      message
     }
   }
 `;
