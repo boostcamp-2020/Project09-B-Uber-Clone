@@ -37,6 +37,7 @@ type UserRequestToDriver {
   request: UserRequest
   uid: String
   expirationTime: String
+  tel: String
 }
 type DriverStatus {
   lat: Float
