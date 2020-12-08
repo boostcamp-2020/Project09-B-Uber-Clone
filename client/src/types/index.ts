@@ -94,8 +94,10 @@ export interface LocationWithName {
 
 export interface DriverMatchingInfo {
   uid?: string;
-  request?: {
-    startLocation: LocationWithName;
-    endLocation: LocationWithName;
-  };
+  request?: Request;
+}
+
+export interface Request {
+  startLocation: LocationWithName;
+  endLocation: LocationWithName;
 }
