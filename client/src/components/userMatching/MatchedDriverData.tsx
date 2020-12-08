@@ -67,13 +67,17 @@ const Div = styled(Flex)`
   justify-content: space-between;
 `;
 
-const Pt = styled.p`
+const Pt = styled.div`
   width: 30%;
   font-size: 12px;
   font-weight: 300px;
 `;
-const P = styled.p`
+const P = styled.div`
   font-size: 14px;
+  max-width: 70%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export default MatchedDriverData;
