@@ -40,8 +40,6 @@ const CenterDiv = styled.div`
 `;
 
 const PointText = styled.div`
-  word-break: break-word;
-  line-break: anywhere;
   color: #f3f3f3;
 `;
 
@@ -54,9 +52,12 @@ const FlexDiv = styled.div`
 
 const PointTextDiv = styled(FlexDiv)`
   flex: 2;
-  width: max-content;
   text-align: center;
   line-height: 1rem;
+  min-width: 80%;
+  max-width: 90%;
+  overflow: scroll;
+  white-space: nowrap;
 `;
 
 export default Path;
