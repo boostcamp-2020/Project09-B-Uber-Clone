@@ -14,13 +14,13 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
+  const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
+  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
   const [startLocationName, setStartLocation] = useState('');
   const { loaded } = useGoogleMapApiState();
   const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
-  const matchingInfo = useSelector((state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo);
-  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
 
   const arrive = useCallback(() => {
@@ -28,7 +28,7 @@ const DriverMatchingPage: React.FC = () => {
     // TODO: 도착 완료 처리
   }, []);
 
-  const takeUser = async () => {
+  const takeUser = useCallback(async () => {
     try {
       const {
         data: {
@@ -42,13 +42,7 @@ const DriverMatchingPage: React.FC = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  // const [userRequest, setUserRequest] = useState({
-  //   uid: '',
-  //   startLocation: { name: '', Latlng: { lat: '', lng: '' } },
-  //   endLocation: { name: '', Latlng: { lat: '', lng: '' } },
-  // });
+  }, [matchingInfo.uid]);
 
   useEffect(() => {
     (async () => {
@@ -89,11 +83,10 @@ const DriverMatchingPage: React.FC = () => {
             <>
               <PaymentModal visible={visible} />
               <BottomOverlay>
-                <Button type="primary" onClick={() => arrive()}>
+                <Button type="primary" onClick={arrive}>
                   목적지 도착
                 </Button>
               </BottomOverlay>
-              return (
             </>
           ) : (
             <>

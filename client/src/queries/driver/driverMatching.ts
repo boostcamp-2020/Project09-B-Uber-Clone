@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const USER_ON_BOARD = gql`
-  mutation userOnBoard($uid: String) {
+  mutation UserOnBoard($uid: String) {
     userOnBoard(uid: $uid) {
       success
       message
@@ -10,7 +10,7 @@ export const USER_ON_BOARD = gql`
 `;
 
 export const UPDATE_DRIVER_LOCATION = gql`
-  mutation updateDriverLocation($location: LatLngInput, $uid: String) {
+  mutation UpdateDriverLocation($location: LatLngInput, $uid: String) {
     updateDriverLocation(location: $location, uid: $uid) {
       success
       message
