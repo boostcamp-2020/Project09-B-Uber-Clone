@@ -125,7 +125,6 @@ const RequestDisplay = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding-top: 15%;
   > p {
     margin: 1.5rem 0;
     font-size: 3rem;
