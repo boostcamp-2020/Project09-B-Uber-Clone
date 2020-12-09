@@ -2,6 +2,7 @@ import { Location, PathPoint } from '@custom-types';
 
 const UPDATE_START_POINT = 'pathPoint/UPDATE_START' as const;
 const UPDATE_END_POINT = 'pathPoint/UPDATE_END' as const;
+const CLEAR_PATH_POINT = 'pathPoint/CLEAR_ALL' as const;
 
 export const updateStartPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_START_POINT,
@@ -10,6 +11,9 @@ export const updateStartPoint = (location: Location, placeName?: string, placeId
 export const updateEndPoint = (location: Location, placeName?: string, placeId?: string) => ({
   type: UPDATE_END_POINT,
   payload: { location, endPointName: placeName, endPlaceId: placeId },
+});
+export const clearPathPoint = () => ({
+  type: CLEAR_PATH_POINT,
 });
 
 const initialState: PathPoint = {
@@ -25,7 +29,10 @@ const initialState: PathPoint = {
   },
 };
 
-type ActionType = ReturnType<typeof updateStartPoint> | ReturnType<typeof updateEndPoint>;
+type ActionType =
+  | ReturnType<typeof updateStartPoint>
+  | ReturnType<typeof updateEndPoint>
+  | ReturnType<typeof clearPathPoint>;
 
 const startPoint = (state = initialState, action: ActionType): PathPoint => {
   switch (action.type) {
@@ -45,6 +52,8 @@ const startPoint = (state = initialState, action: ActionType): PathPoint => {
         endPointName: action.payload.endPointName,
         endPlaceId: action.payload.endPlaceId,
       };
+    case CLEAR_PATH_POINT:
+      return initialState;
     default:
       return state;
   }

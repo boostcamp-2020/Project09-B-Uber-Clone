@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
+import { updateStartPoint, updateEndPoint, clearPathPoint } from '@stores/modules/pathPoint';
 import { USER_ON_BOARD, UPDATE_DRIVER_LOCATION } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
@@ -38,6 +38,7 @@ const DriverMatchingPage: React.FC = () => {
       if (success && request) {
         setBoarding(true);
         const { startLocation, endLocation } = request;
+        dispatch(clearPathPoint());
         dispatch(updateStartPoint(startLocation.latlng));
         dispatch(updateEndPoint(endLocation.latlng));
       } else Toast.show(message);
@@ -45,6 +46,18 @@ const DriverMatchingPage: React.FC = () => {
       console.error(error);
     }
   }, [uid]);
+
+  useEffect(() => {
+    if (request) {
+      (async () => {
+        const { startLocation } = request;
+        const location = await getLocation();
+        dispatch(updateStartPoint(location));
+        dispatch(updateEndPoint(startLocation.latlng));
+        setStartLocation(startLocation.name);
+      })();
+    }
+  }, [request]);
 
   useEffect(() => {
     (async () => {
@@ -66,18 +79,6 @@ const DriverMatchingPage: React.FC = () => {
       }
     })();
   }, [location]);
-
-  useEffect(() => {
-    if (request) {
-      (async () => {
-        const { startLocation } = request;
-        const location = await getLocation();
-        dispatch(updateStartPoint(location));
-        dispatch(updateEndPoint(startLocation.latlng));
-        setStartLocation(startLocation.name);
-      })();
-    }
-  }, [request, location]);
 
   return (
     <>
