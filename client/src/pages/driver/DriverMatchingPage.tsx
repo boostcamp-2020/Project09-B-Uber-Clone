@@ -8,9 +8,10 @@ import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
-import { DriverMatchingInfo } from '@custom-types';
+import { DriverMatchingInfo, Location } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
+import getLocation from '@utils/getLocation';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -34,8 +35,12 @@ const DriverMatchingPage: React.FC = () => {
       } = await setUserOnBoard({
         variables: { uid },
       });
-      if (success) setBoarding(true);
-      else Toast.show(message);
+      if (success && request) {
+        setBoarding(true);
+        const { startLocation, endLocation } = request;
+        dispatch(updateStartPoint(startLocation.latlng));
+        dispatch(updateEndPoint(endLocation.latlng));
+      } else Toast.show(message);
     } catch (error) {
       console.error(error);
     }
@@ -64,12 +69,15 @@ const DriverMatchingPage: React.FC = () => {
 
   useEffect(() => {
     if (request) {
-      const { startLocation, endLocation } = request;
-      dispatch(updateStartPoint(startLocation.latlng));
-      dispatch(updateEndPoint(endLocation.latlng));
-      setStartLocation(startLocation.name);
+      (async () => {
+        const { startLocation } = request;
+        const location = await getLocation();
+        dispatch(updateStartPoint(location));
+        dispatch(updateEndPoint(startLocation.latlng));
+        setStartLocation(startLocation.name);
+      })();
     }
-  }, []);
+  }, [request, location]);
 
   return (
     <>
