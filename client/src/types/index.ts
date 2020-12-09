@@ -100,3 +100,8 @@ export interface DriverMatchingInfo {
     endLocation: LocationWithName;
   };
 }
+
+export interface Request {
+  startLocation: LocationWithName;
+  endLocation: LocationWithName;
+}
