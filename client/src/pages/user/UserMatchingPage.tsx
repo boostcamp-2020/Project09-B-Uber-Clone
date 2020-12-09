@@ -135,14 +135,11 @@ const UserMatchingPage: React.FC = () => {
     setModal(true);
 
     const variables = {
-      // TODO: 스키마 수정 후 반영
-      uid: '5fcd8f5939f30f57802c6531',
       request: request,
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
       plateNumber: taxiInfo.plateNumber,
-      startTime: 'test5 end time',
-      endTime: 'test5 end time',
+      startTime: new Date().toString(),
     };
     const {
       data: {
