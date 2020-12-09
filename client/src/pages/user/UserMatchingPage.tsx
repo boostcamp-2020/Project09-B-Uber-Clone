@@ -45,6 +45,7 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     if (taxiData?.userMatchingSub) {
+      setTaxiLocation(taxiData.userMatchingSub.location);
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
     }
