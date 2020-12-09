@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
-import { Menu, Button } from 'antd';
+import { Button } from 'antd';
 import { Modal } from 'antd-mobile';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined, HistoryOutlined } from '@ant-design/icons';
 import { SIGNOUT } from '@queries/signout';
@@ -46,31 +46,19 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
     history.push('/user/history');
   };
 
+  const bigBtnStyle = { width: '45px', height: '45px', fontSize: '23px' };
+  const smallBtnStyle = { width: '40px', height: '40px', fontSize: '20px' };
+
   return (
     <Overlay>
-      <Button
-        type="primary"
-        onClick={toggle}
-        style={{ width: '45px', height: '45px', fontSize: '23px' }}
-        shape="circle"
-      >
+      <Button type="primary" onClick={toggle} style={bigBtnStyle} shape="circle">
         {React.createElement(visible ? MenuFoldOutlined : MenuUnfoldOutlined)}
       </Button>
       <>
         {visible ? (
           <ButtonGroup>
-            <Button
-              style={{ width: '40px', height: '40px', fontSize: '20px' }}
-              shape="circle"
-              icon={<LogoutOutlined />}
-              onClick={showAlert}
-            />
-            <Button
-              style={{ width: '40px', height: '40px', fontSize: '20px' }}
-              shape="circle"
-              icon={<HistoryOutlined />}
-              onClick={historyHandler}
-            />
+            <Button style={smallBtnStyle} shape="circle" icon={<LogoutOutlined />} onClick={showAlert} />
+            <Button style={smallBtnStyle} shape="circle" icon={<HistoryOutlined />} onClick={historyHandler} />
           </ButtonGroup>
         ) : null}
       </>
