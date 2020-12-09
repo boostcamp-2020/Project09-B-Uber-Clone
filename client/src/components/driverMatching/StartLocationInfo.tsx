@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NoticeBar } from 'antd-mobile';
 
 interface Props {
   startLocation: string;
@@ -9,7 +10,9 @@ const StartLocationInfo: React.FC<Props> = ({ startLocation }) => {
   return (
     <Div>
       <p> 출발지 </p>
-      <div>{startLocation}</div>
+      <NoticeBar icon={null} marqueeProps={{ loop: true, style: { padding: '0 50px' } }}>
+        {startLocation}
+      </NoticeBar>
     </Div>
   );
 };
