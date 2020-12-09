@@ -191,21 +191,25 @@ const Mutation = {
   },
   approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
-      const driverModel = dataSources.model('Driver');
-      const driverInfo = await driverModel.findOne({ _id: driverId });
+      const waitingDriverModel = dataSources.model('WaitingDriver');
+      const matchedDriver = await waitingDriverModel
+        .findOne({ driver: mongoose.Types.ObjectId(driverId) })
+        .populate('driver');
+      const [lng, lat] = matchedDriver.location.coordinates;
       await pubsub.publish(USER_MATCHED, {
         uid,
         userMatchingSub: {
-          id: driverInfo._id,
-          name: driverInfo.name,
-          carModel: driverInfo.carModel,
-          carColor: driverInfo.carColor,
-          plateNumber: driverInfo.plateNumber,
+          id: matchedDriver.driver._id,
+          name: matchedDriver.driver.name,
+          carModel: matchedDriver.driver.carModel,
+          carColor: matchedDriver.driver.carColor,
+          plateNumber: matchedDriver.driver.plateNumber,
+          location: { lng, lat },
         },
       });
+      matchedDriver.isWorking = true;
+      matchedDriver.save();
 
-      const waitingDriverModel = dataSources.model('WaitingDriver');
-      await waitingDriverModel.findOneAndUpdate({ driver: mongoose.Types.ObjectId(driverId) }, { isWorking: true });
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
