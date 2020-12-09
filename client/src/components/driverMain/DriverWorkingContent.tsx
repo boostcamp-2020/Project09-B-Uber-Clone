@@ -32,8 +32,10 @@ const DriverWorkingContent: React.FC = () => {
         approveMatching: { success, message },
       },
     } = await acceptRequest({ variables: { uid } });
-    if (!success) Toast.show(message);
-    else {
+    if (!success) {
+      Toast.show(message);
+      onReject();
+    } else {
       dispatch(setDriverMatchingInfo({ uid, request, tel }));
       clearCurrentStatus();
       history.push('/driver/map');
