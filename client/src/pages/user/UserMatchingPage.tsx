@@ -10,7 +10,6 @@ import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
-
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
