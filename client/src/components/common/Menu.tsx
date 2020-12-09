@@ -48,15 +48,30 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
 
   return (
     <Overlay>
-      <Button type="primary" onClick={toggle} style={{ marginBottom: 16 }} shape="circle">
+      <Button
+        type="primary"
+        onClick={toggle}
+        style={{ width: '45px', height: '45px', fontSize: '23px' }}
+        shape="circle"
+      >
         {React.createElement(visible ? MenuFoldOutlined : MenuUnfoldOutlined)}
       </Button>
       <>
         {visible ? (
-          <Menu mode="inline" inlineCollapsed={visible}>
-            <Menu.Item key="1" icon={<LogoutOutlined />} onClick={showAlert} />
-            <Menu.Item key="2" icon={<HistoryOutlined />} onClick={historyHandler} />
-          </Menu>
+          <ButtonGroup>
+            <Button
+              style={{ width: '40px', height: '40px', fontSize: '20px' }}
+              shape="circle"
+              icon={<LogoutOutlined />}
+              onClick={showAlert}
+            />
+            <Button
+              style={{ width: '40px', height: '40px', fontSize: '20px' }}
+              shape="circle"
+              icon={<HistoryOutlined />}
+              onClick={historyHandler}
+            />
+          </ButtonGroup>
         ) : null}
       </>
     </Overlay>
@@ -65,9 +80,19 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
 
 const Overlay = styled.div`
   position: absolute;
-  top: 200px;
-  left: 10px;
+  display: flex;
+  flex-direction: column;
+  top: 140px;
+  right: 12%;
   z-index: 999;
 `;
 
+const ButtonGroup = styled.div`
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100px;
+  justify-content: space-evenly;
+`;
 export default MenuButton;
