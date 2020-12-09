@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import pointSchema from './pointSchema';
+mongoose.set('useCreateIndex', true);
 
 const waitingDriver = new mongoose.Schema({
   driver: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver' },

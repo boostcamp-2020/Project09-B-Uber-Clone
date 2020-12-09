@@ -46,7 +46,7 @@ const Map: React.FC<{
         renderDirection,
       );
     }
-  }, [pathPoint]);
+  }, [pathPoint, maps]);
 
   const onGoogleApiLoaded = ({ map }: any) => {
     mapDispatch({ type: 'setMaps', maps: map });

@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import driverSchema from '../../models/driverSchema';
 import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
 
 const Mutation = {
@@ -91,6 +90,7 @@ const Mutation = {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
       const waitingDriverSchema = dataSources.model('WaitingDriver');
+      const userSchema = dataSources.model('User');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
       const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
@@ -105,10 +105,11 @@ const Mutation = {
         .where('location')
         .within()
         .circle(area);
+      const user = await userSchema.findById({ _id: uid });
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
+        driverServiceSub: { uid, request, expirationTime: result.expireTime, tel: user.phone },
       });
       if (result) {
         logger.info(
@@ -164,7 +165,7 @@ const Mutation = {
       const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
-      return { sucess: false, message: '영업을 끝낼 수 없습니다' };
+      return { success: false, message: '영업을 끝낼 수 없습니다' };
     } catch (err) {
       logger.error(`STOP SERVICE ERROR : ${err}`);
       return { success: false, message: '영업을 끝낼 수 없습니다' };
@@ -226,6 +227,17 @@ const Mutation = {
       return { success: true };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다' };
+    }
+  },
+  saveUserHistory: async (_, args, { dataSources, res, uid }) => {
+    try {
+      const userHistoryShema = dataSources.model('UserHistory');
+      const newUserHistory = new userHistoryShema({ user_id: uid, ...args });
+      await newUserHistory.save();
+      return { success: true };
+    } catch (err) {
+      logger.error(`SAVE USER HISTORY ERROR : ${err}`);
+      return { success: false, message: `유저 사용내역 저장에 실패했습니다 : ${err}` };
     }
   },
   arriveDestination: async (_, __, { dataSources, uid }) => {
