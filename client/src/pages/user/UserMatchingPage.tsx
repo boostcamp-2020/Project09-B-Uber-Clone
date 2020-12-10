@@ -4,12 +4,13 @@ import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
 import { Modal, Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PathPoint, PreData } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
+import { clearPathPoint } from '@stores/modules/pathPoint';
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -42,6 +43,7 @@ const UserMatchingPage: React.FC = () => {
   const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
   const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [request, setRequest] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -146,7 +148,7 @@ const UserMatchingPage: React.FC = () => {
         saveUserHistory: { success, message },
       },
     } = await saveUserHistory({ variables });
-
+    dispatch(clearPathPoint());
     if (success) {
       const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
         {
