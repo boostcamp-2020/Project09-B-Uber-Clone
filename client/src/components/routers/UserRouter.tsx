@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { ActivityIndicator } from 'antd-mobile';
 import styled from 'styled-components';
-import { IS_USER_AUTHORIZED } from '@utils/authGQLString';
+import { IS_USER_AUTHORIZED } from '@queries/authQueries';
 
 const UserRouter: React.FC<any> = ({ component, ...rest }) => {
   const { loading, error, data } = useQuery(IS_USER_AUTHORIZED);

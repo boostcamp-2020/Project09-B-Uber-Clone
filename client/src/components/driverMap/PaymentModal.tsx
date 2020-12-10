@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Modal } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
+import { ARRIVE_DESTINATION } from '@queries/driver/driverMatching';
+import { useMutation } from '@apollo/client';
+import { Toast } from 'antd-mobile';
 
 interface PaymentModalPropsType {
   visible: boolean;
@@ -8,6 +11,13 @@ interface PaymentModalPropsType {
 
 const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible }) => {
   const history = useHistory();
+  const [arriveDestination] = useMutation(ARRIVE_DESTINATION);
+
+  const arrive = useCallback(() => {
+    arriveDestination();
+    Toast.show('메인으로 돌아갑니다.');
+    history.push('/driver/main');
+  }, []);
 
   return (
     <Modal
@@ -18,7 +28,7 @@ const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible }) => {
       footer={[
         {
           text: '결제 완료',
-          onPress: () => history.push('/driver/main'),
+          onPress: () => arrive(),
         },
       ]}
     />

@@ -2,7 +2,6 @@ import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import client from '@utils/apolloClient';
-import 'antd-mobile/lib/button/style/css';
 import {
   UserDriverSelectPage,
   UserAuthPage,
@@ -10,6 +9,7 @@ import {
   UserMatchingPage,
   UserSigninPage,
   UserSignupPage,
+  UserHistoryPage,
   DriverAuthPage,
   DriverMainPage,
   DriverMatchingPage,
@@ -30,8 +30,12 @@ import 'antd-mobile/lib/input-item/style/css';
 import 'antd-mobile/lib/toast/style/css';
 import 'antd-mobile/lib/modal/style/css';
 import 'antd-mobile/lib/activity-indicator/style/css';
+import 'antd-mobile/lib/card/style/css';
 import 'antd/lib/switch/style/css';
 import 'antd/lib/progress/style/css';
+import 'antd/lib/menu/style/css';
+import 'antd/dist/antd.css';
+import 'antd/lib/button/style/css';
 
 const App: React.FC = () => {
   return (
@@ -46,6 +50,7 @@ const App: React.FC = () => {
               <AuthRouter path="/user/signin" component={UserSigninPage} />
               <UserRouter path="/user/map" component={UserMainPage} />
               <UserRouter path="/user/matching" component={UserMatchingPage} />
+              <UserRouter path="/user/history" component={UserHistoryPage} />
               <AuthRouter exact path="/driver" component={DriverAuthPage} />
               <AuthRouter path="/driver/signup" component={DriverSignupPage} />
               <AuthRouter path="/driver/signin" component={DriverSigninPage} />

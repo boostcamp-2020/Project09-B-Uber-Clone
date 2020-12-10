@@ -71,10 +71,26 @@ const Mutation = {
       return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
+  signout: async (_, { type }, { dataSources, req, res }) => {
+    try {
+      if (type === 'driver') {
+        const id = jwt.verify(req.signedCookies.driverToken, Config.JWT_SECRET).id;
+        const waitingDriver = await dataSources.model('WaitingDriver');
+        await waitingDriver.findOneAndRemove({ driver: id });
+      }
+      const result = res.clearCookie(`${type}Token`);
+      if (result) return { success: true };
+      return { success: false, message: '잘못된 접근입니다.' };
+    } catch (err) {
+      logger.error('Logout error!');
+      return { success: false, message: '유효하지 않은 접근입니다.' };
+    }
+  },
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
       const waitingDriverSchema = dataSources.model('WaitingDriver');
+      const userSchema = dataSources.model('User');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
       const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
@@ -84,11 +100,16 @@ const Mutation = {
         unique: true,
         spherical: true,
       };
-      const possibleDrivers = await waitingDriverSchema.find().where('location').within().circle(area);
+      const possibleDrivers = await waitingDriverSchema
+        .find({ isWorking: false })
+        .where('location')
+        .within()
+        .circle(area);
+      const user = await userSchema.findById({ _id: uid });
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, expirationTime: result.expireTime }, // requestTime을 DB에 insert할 때로 변경
+        driverServiceSub: { uid, request, expirationTime: result.expireTime, tel: user.phone },
       });
       if (result) {
         logger.info(
@@ -125,9 +146,9 @@ const Mutation = {
   startService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
+      const existingWaitingDriver = await waitingDriver.findOneAndUpdate({ driver: uid }, { isWorking: false });
       if (existingWaitingDriver) return { success: true };
-      const newWaitingDriver = new waitingDriver({ driver: uid });
+      const newWaitingDriver = new waitingDriver({ driver: uid, isWorking: false });
       const result = await newWaitingDriver.save();
 
       logger.info(`${uid} start service: ${result}`);
@@ -141,10 +162,10 @@ const Mutation = {
   stopService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const result = await waitingDriver.findOneAndRemove({ driver: uid });
+      const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
-      return { sucess: false, message: '영업을 끝낼 수 없습니다' };
+      return { success: false, message: '영업을 끝낼 수 없습니다' };
     } catch (err) {
       logger.error(`STOP SERVICE ERROR : ${err}`);
       return { success: false, message: '영업을 끝낼 수 없습니다' };
@@ -158,7 +179,7 @@ const Mutation = {
         { driver: driverId },
         { location: { coordinates: [lng, lat] } },
       );
-      if (uid) await pubsub(UPDATE_LOCATION, { uid, driverLocationSub: { location } });
+      if (uid) await pubsub.publish(UPDATE_LOCATION, { uid, driverLocationSub: { ...location } });
       if (result) return { success: true };
 
       logger.error(`UPDATE DRIVER LOCATION ERROR: 해당 드라이버를 찾을 수 없습니다.`);
@@ -170,27 +191,34 @@ const Mutation = {
   },
   approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
-      const driverModel = dataSources.model('Driver');
-      const driverInfo = await driverModel.findOne({ _id: driverId });
+      const requestingUserModel = dataSources.model('RequestingUser');
+      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
+      if (!result.deletedCount) return { success: false, message: '이미 배차가 완료된 요청입니다.' };
+      
+      const waitingDriverModel = dataSources.model('WaitingDriver');
+      const matchedDriver = await waitingDriverModel
+        .findOne({ driver: mongoose.Types.ObjectId(driverId) })
+        .populate('driver');
+      const [lng, lat] = matchedDriver.location.coordinates;
+
       await pubsub.publish(USER_MATCHED, {
         uid,
         userMatchingSub: {
-          id: driverInfo._id,
-          name: driverInfo.name,
-          carModel: driverInfo.carModel,
-          carColor: driverInfo.carColor,
-          plateNumber: driverInfo.plateNumber,
+          id: matchedDriver.driver._id,
+          name: matchedDriver.driver.name,
+          carModel: matchedDriver.driver.carModel,
+          carColor: matchedDriver.driver.carColor,
+          plateNumber: matchedDriver.driver.plateNumber,
+          location: { lng, lat },
         },
       });
-
-      const requestingUserModel = dataSources.model('RequestingUser');
-      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
+      matchedDriver.isWorking = true;
+      matchedDriver.save();
       logger.info(`${uid} matched with driver: ${result}`);
-      if (result) return { success: true };
-      return { success: false, message: '이미 배차가 완료된 요청입니다.' };
+      return { success: true };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
-      return { sucess: false, message: '매칭에 실패했습니다.' };
+      return { success: false, message: '매칭에 실패했습니다.' };
     }
   },
   userOnBoard: async (_, { uid }, { pubsub }) => {
@@ -199,6 +227,32 @@ const Mutation = {
       return { success: true };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다' };
+    }
+  },
+  saveUserHistory: async (_, args, { dataSources, res, uid }) => {
+    try {
+      const userHistoryShema = dataSources.model('UserHistory');
+      const newUserHistory = new userHistoryShema({ user_id: uid, ...args });
+      await newUserHistory.save();
+      return { success: true };
+    } catch (err) {
+      logger.error(`SAVE USER HISTORY ERROR : ${err}`);
+      return { success: false, message: `유저 사용내역 저장에 실패했습니다 : ${err}` };
+    }
+  },
+  arriveDestination: async (_, __, { dataSources, uid }) => {
+    try {
+      const waitingDriverSchema = await dataSources.model('WaitingDriver');
+      const result = await waitingDriverSchema.findOneAndUpdate(
+        { driver: mongoose.Types.ObjectId(uid) },
+        { isWorking: false },
+      );
+      logger.info(`${uid} arrived destination: ${result}`);
+      if (result) return { success: true };
+      logger.error(`${uid} DRIVER ARRIVE ERROR`);
+      return { success: false, message: '운행을 종료 할 수 없습니다.' };
+    } catch (err) {
+      return { success: false, message: '오류가 발생했습니다.' };
     }
   },
 };

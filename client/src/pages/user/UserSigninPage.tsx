@@ -1,16 +1,8 @@
 import React from 'react';
 import LoginForm from '@components/signin/SigninForm';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-
-const SIGNIN_USER = gql`
-  mutation UserSignin($id: String!, $password: String!) {
-    userSignin(id: $id, password: $password) {
-      success
-      message
-    }
-  }
-`;
+import { SIGNIN_USER } from '@queries/user/userSignin';
 
 const UserSigninPage: React.FC = () => {
   const [signinUser] = useMutation(SIGNIN_USER);

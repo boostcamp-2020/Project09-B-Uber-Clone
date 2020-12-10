@@ -12,17 +12,19 @@ const Matching: React.FC = () => {
 };
 
 const BackgroundDiv = styled.div`
+  margin: 15px 0;
+  width: 65%;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   padding: 10px 25px;
   border-radius: 50px;
-  background-color: #181818;
+  background-color: #95a5a6;
 `;
 
 const TextWrap = styled.span`
-  margin-left: 15px;
   color: #f3f3f3;
+  margin-left: 10px;
 `;
 
 export default Matching;
