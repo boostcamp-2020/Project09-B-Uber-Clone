@@ -32,8 +32,10 @@ const DriverWorkingContent: React.FC = () => {
         approveMatching: { success, message },
       },
     } = await acceptRequest({ variables: { uid } });
-    if (!success) Toast.show(message);
-    else {
+    if (!success) {
+      Toast.show(message);
+      onReject();
+    } else {
       dispatch(setDriverMatchingInfo({ uid, request, tel }));
       clearCurrentStatus();
       history.push('/driver/map');
@@ -125,7 +127,6 @@ const RequestDisplay = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding-top: 15%;
   > p {
     margin: 1.5rem 0;
     font-size: 3rem;
