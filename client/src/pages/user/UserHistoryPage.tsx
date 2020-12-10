@@ -32,7 +32,7 @@ const UserHistoryPage: React.FC = () => {
     if (data?.userHistory.length) {
       setShowingHistory(data.userHistory);
       if (data.userHistory.length < RESULT_PER_PAGE) setButtonDisabled({ ...buttonDisabled, next: true });
-    } else if (data?.userHistory.length === 0) {
+    } else if (data?.userHistory.length === 0 && page > 1) {
       setPage(page - 1);
       setButtonDisabled({ ...buttonDisabled, next: true });
     }
