@@ -37,7 +37,11 @@ const Div = styled.div`
     overflow: scroll;
     white-space: nowrap;
     text-overflow: scroll;
-    font-size: 22px;
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 `;
 
