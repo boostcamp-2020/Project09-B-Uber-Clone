@@ -5,12 +5,10 @@ const Query = {
   isAuthorizedDriver: () => true,
   userHistory: async (_, { page }, { dataSources, uid }) => {
     const UserHistory = await dataSources.model('UserHistory');
-    const userHistoryAll = await UserHistory.find({ user_id: uid })
+    const userHistoryOnPage = await UserHistory.find({ user_id: uid })
       .sort({ startTime: 'desc' })
       .skip((page - 1) * 10)
       .limit(10);
-    const [firstDataIdx, endDataIdx] = [(page - 1) * 10, page * 10];
-    const userHistoryOnPage = userHistoryAll.slice(firstDataIdx, endDataIdx);
     return userHistoryOnPage;
   },
   isDriverWaiting: async (_, __, { dataSources, uid }) => {
