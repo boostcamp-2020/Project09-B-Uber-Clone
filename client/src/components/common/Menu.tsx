@@ -70,7 +70,7 @@ const Overlay = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 140px;
+  top: 125px;
   right: 12%;
   z-index: 999;
 `;
