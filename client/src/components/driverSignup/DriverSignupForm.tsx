@@ -4,6 +4,7 @@ import { withFormik, FormikProps } from 'formik';
 import SignupLabelInput from '@components/driverSignup/SignupLabelInput';
 import driverSignupValidation from '@utils/driverSignupValidation';
 import { driverSignupFormValues } from '@custom-types';
+import styled from 'styled-components';
 
 const InnerForm: React.ElementType = ({
   values,
@@ -20,86 +21,96 @@ const InnerForm: React.ElementType = ({
   }, [values]);
 
   return (
-    <form>
-      <SignupLabelInput
-        title="아이디"
-        name="id"
-        placeholder="아이디를 입력해주세요(6자 이상)"
-        value={values.id}
-        setFieldValue={setFieldValue}
-        error={errors.id}
-      />
-      <SignupLabelInput
-        title="비밀번호"
-        name="password"
-        placeholder="비밀번호를 입력해주세요(6자 이상)"
-        type="password"
-        value={values.password}
-        setFieldValue={setFieldValue}
-        error={errors.password}
-      />
-      <SignupLabelInput
-        title="이름"
-        name="userName"
-        placeholder="성함을 입력해주세요"
-        value={values.userName}
-        setFieldValue={setFieldValue}
-        error={errors.userName}
-      />
-      <SignupLabelInput
-        title="전화번호"
-        name="phone"
-        placeholder="전화번호를 입력해주세요"
-        value={values.phone}
-        setFieldValue={setFieldValue}
-        error={errors.phone}
-      />
-      <SignupLabelInput
-        title="면허번호"
-        name="licenseNumber"
-        placeholder="면허번호를 입력해주세요"
-        value={values.licenseNumber}
-        setFieldValue={setFieldValue}
-        error={errors.licenseNumber}
-      />
-      <SignupLabelInput
-        title="차종"
-        name="carModel"
-        placeholder="차종을 입력해주세요"
-        value={values.carModel}
-        setFieldValue={setFieldValue}
-        error={errors.carModel}
-      />
-      <SignupLabelInput
-        title="차량 번호"
-        name="plateNumber"
-        placeholder="차량 번호를 입력해주세요"
-        value={values.plateNumber}
-        setFieldValue={setFieldValue}
-        error={errors.plateNumber}
-      />
-      <SignupLabelInput
-        title="차량 색상"
-        name="carColor"
-        placeholder="차량 색상을 입력해주세요"
-        value={values.carColor}
-        setFieldValue={setFieldValue}
-        error={errors.carColor}
-      />
-      <Button
-        type="primary"
-        loading={isSubmitting}
-        style={{ margin: '40px 20px' }}
-        onClick={(e: any) => {
-          handleSubmit(e);
-        }}
-        disabled={disabled || isSubmitting}
-      >
-        회원가입
-      </Button>
-    </form>
+    <Div>
+      <h2>회원가입</h2>
+      <form>
+        <SignupLabelInput
+          title="아이디"
+          name="id"
+          placeholder="아이디를 입력해주세요(6자 이상)"
+          value={values.id}
+          setFieldValue={setFieldValue}
+          error={errors.id}
+        />
+        <SignupLabelInput
+          title="비밀번호"
+          name="password"
+          placeholder="비밀번호를 입력해주세요(6자 이상)"
+          type="password"
+          value={values.password}
+          setFieldValue={setFieldValue}
+          error={errors.password}
+        />
+        <SignupLabelInput
+          title="이름"
+          name="userName"
+          placeholder="성함을 입력해주세요"
+          value={values.userName}
+          setFieldValue={setFieldValue}
+          error={errors.userName}
+        />
+        <SignupLabelInput
+          title="전화번호"
+          name="phone"
+          placeholder="전화번호를 입력해주세요"
+          value={values.phone}
+          setFieldValue={setFieldValue}
+          error={errors.phone}
+        />
+        <SignupLabelInput
+          title="면허번호"
+          name="licenseNumber"
+          placeholder="면허번호를 입력해주세요"
+          value={values.licenseNumber}
+          setFieldValue={setFieldValue}
+          error={errors.licenseNumber}
+        />
+        <SignupLabelInput
+          title="차종"
+          name="carModel"
+          placeholder="차종을 입력해주세요"
+          value={values.carModel}
+          setFieldValue={setFieldValue}
+          error={errors.carModel}
+        />
+        <SignupLabelInput
+          title="차량 번호"
+          name="plateNumber"
+          placeholder="차량 번호를 입력해주세요"
+          value={values.plateNumber}
+          setFieldValue={setFieldValue}
+          error={errors.plateNumber}
+        />
+        <SignupLabelInput
+          title="차량 색상"
+          name="carColor"
+          placeholder="차량 색상을 입력해주세요"
+          value={values.carColor}
+          setFieldValue={setFieldValue}
+          error={errors.carColor}
+        />
+        <Button
+          type="primary"
+          loading={isSubmitting}
+          style={{ margin: '40px 20px' }}
+          onClick={(e: any) => {
+            handleSubmit(e);
+          }}
+          disabled={disabled || isSubmitting}
+        >
+          회원가입 완료
+        </Button>
+      </form>
+    </Div>
   );
 };
+const Div = styled.div`
+  padding: 10px 0;
+  & h2 {
+    margin-top: 10px;
+    margin-left: 25px;
+  }
+`;
 
 const DriverSignupForm = withFormik({
   mapPropsToValues: () => ({
