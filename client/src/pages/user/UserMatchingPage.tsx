@@ -36,6 +36,7 @@ const UserMatchingPage: React.FC = () => {
   const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [request, setRequest] = useState({});
   const [startTime, setStartTime] = useState<string>('');
+  const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -140,13 +141,13 @@ const UserMatchingPage: React.FC = () => {
   const showOnBoardAlert = useCallback(() => {
     setStartTime(new Date().toString());
     const alertInstance = alertModal('탑승 완료', '5초 후 창이 닫힙니다.', modalButton(alertModal('', '').close));
+    setCurrentAlert(alertInstance);
     setTimeout(alertInstance.close, 5000);
   }, []);
 
   const showArriveAlert = useCallback(async () => {
-    alertModal('', '').close();
+    if (currentAlert) currentAlert.close();
     const onClose = () => {
-      alertModal('', '').close();
       history.push('/user');
     };
     const { success, message } = await saveHistory();
@@ -157,7 +158,7 @@ const UserMatchingPage: React.FC = () => {
         history.push('/user');
       }, 5000);
     } else Toast.show(message);
-  }, [saveHistory]);
+  }, [currentAlert, saveHistory]);
 
   const cancelMatching = useCallback(async () => {
     try {
