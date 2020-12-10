@@ -7,6 +7,7 @@ type Query {
   users: String
   isAuthorizedUser: Boolean @auth(requires: USER)
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
+  isDriverWaiting: Boolean @auth(requires: DRIVER)
   userHistory(page: Int): [UserHistoryResult] @auth(requires: USER)
 }
 
