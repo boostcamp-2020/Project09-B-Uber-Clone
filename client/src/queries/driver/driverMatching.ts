@@ -26,3 +26,9 @@ export const ARRIVE_DESTINATION = gql`
     }
   }
 `;
+
+export const CHECK_IS_WAITING = gql`
+  query {
+    isDriverWaiting
+  }
+`;
