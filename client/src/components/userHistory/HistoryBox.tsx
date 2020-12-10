@@ -6,15 +6,7 @@ import styled from 'styled-components';
 
 const Item = List.Item;
 
-const HistoryBox: React.FC<HistoryType> = ({
-  startLocation,
-  endLocation,
-  startTime,
-  endTime,
-  fee,
-  carModel,
-  plateNumber,
-}) => {
+const HistoryBox: React.FC<HistoryType> = ({ startLocation, endLocation, startTime, fee, carModel, plateNumber }) => {
   const formatStartDate = useCallback(() => moment(startTime).format('YYYY/MM/DD'), [startTime]);
 
   return (
@@ -28,8 +20,8 @@ const HistoryBox: React.FC<HistoryType> = ({
             <Item extra={endLocation.name} wrap>
               도착
             </Item>
-            <Item extra={`${moment(startTime).format('HH:mm')} - ${moment(endTime).format('HH:mm')}`} wrap>
-              운행 시간
+            <Item extra={`${moment(startTime).format('HH:mm')}}`} wrap>
+              탑승 시간
             </Item>
             <Item extra={`${fee}원`}>요금</Item>
             <Item extra={`${carModel} | ${plateNumber}`} wrap>
