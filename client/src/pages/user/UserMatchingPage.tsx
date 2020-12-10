@@ -11,6 +11,7 @@ import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
 import { clearPathPoint } from '@stores/modules/pathPoint';
+import { clearPreData } from '@stores/modules/preData';
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -149,6 +150,7 @@ const UserMatchingPage: React.FC = () => {
       },
     } = await saveUserHistory({ variables });
     dispatch(clearPathPoint());
+    dispatch(clearPreData());
     if (success) {
       const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
         {
