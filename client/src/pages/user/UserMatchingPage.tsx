@@ -111,19 +111,23 @@ const UserMatchingPage: React.FC = () => {
         },
       },
     });
-
-    try {
-      const {
-        data: {
-          requestMatching: { success, message },
-        },
-      } = await requestMatch({ variables: { request } });
-      return [success, message];
-    } catch (error) {
-      console.error(error);
-      return [false, '알 수 없는 오류가 발생했습니다.'];
-    }
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const {
+          data: {
+            requestMatching: { success, message },
+          },
+        } = await requestMatch({ variables: { request } });
+        return [success, message];
+      } catch (error) {
+        console.error(error);
+        return [false, '알 수 없는 오류가 발생했습니다.'];
+      }
+    })();
+  }, [request]);
 
   useEffect(() => {
     if (error) onErrorHandler();
@@ -152,19 +156,21 @@ const UserMatchingPage: React.FC = () => {
     dispatch(clearPathPoint());
     dispatch(clearPreData());
     if (success) {
+      const goToMainTimeout = setTimeout(() => {
+        alertInstance.close();
+        history.push('/user');
+      }, 5000);
+
       const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
         {
           text: '홈으로',
           onPress: () => {
+            clearTimeout(goToMainTimeout);
             history.push('/user');
           },
           style: 'default',
         },
       ]);
-      setTimeout(() => {
-        alertInstance.close();
-        history.push('/user');
-      }, 5000);
     } else alert(message);
   }, [modal, taxiInfo]);
 
