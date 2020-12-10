@@ -7,6 +7,7 @@ const userHistorySchema = new mongoose.Schema({
   request: requestLocationsShema,
   fee: { type: Number, required: true, trim: true },
   startTime: { type: String, required: true, trim: true },
+  endTime: { type: String, required: true, trim: true },
   carModel: { type: String, required: true, trim: true },
   plateNumber: { type: String, required: true, trim: true },
 });
