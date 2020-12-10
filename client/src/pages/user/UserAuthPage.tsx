@@ -4,14 +4,16 @@ import AuthButtonGroup from '@components/userAuthPage/AuthButtonGroup';
 
 const UserAuthPage: React.FC = () => {
   return (
-    <Div>
-      <H1>택시자버</H1>
-      <div>
-        <p>안녕하세요,</p>
-        <p>택시를 잡으려면 로그인 해주세요.</p>
-      </div>
-      <AuthButtonGroup userType={'user'} />
-    </Div>
+    <>
+      <Div>
+        <H1>택시자버</H1>
+        <div>
+          <p>안녕하세요,</p>
+          <p>택시를 잡으려면 로그인 해주세요.</p>
+        </div>
+        <AuthButtonGroup userType={'user'} />
+      </Div>
+    </>
   );
 };
 
@@ -24,8 +26,8 @@ const Div = styled.div`
 `;
 
 const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 4em;
+  font-weight: 800;
 `;
 
 export default UserAuthPage;
