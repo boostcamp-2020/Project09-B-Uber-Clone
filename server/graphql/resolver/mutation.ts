@@ -194,7 +194,7 @@ const Mutation = {
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       if (!result.deletedCount) return { success: false, message: '이미 배차가 완료된 요청입니다.' };
-      
+
       const waitingDriverModel = dataSources.model('WaitingDriver');
       const matchedDriver = await waitingDriverModel
         .findOne({ driver: mongoose.Types.ObjectId(driverId) })
