@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../../config';
 import { logger } from '../../config/winston';
-import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION } from './subscriptionType';
+import { REQUEST_ADDED, USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION, ARRIVE_DESTINATION } from './subscriptionType';
 
 const Mutation = {
   userSignup: async (_, args, { dataSources, res }) => {
@@ -194,7 +194,7 @@ const Mutation = {
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       if (!result.deletedCount) return { success: false, message: '이미 배차가 완료된 요청입니다.' };
-      
+
       const waitingDriverModel = dataSources.model('WaitingDriver');
       const matchedDriver = await waitingDriverModel
         .findOne({ driver: mongoose.Types.ObjectId(driverId) })
@@ -229,7 +229,7 @@ const Mutation = {
       return { success: false, message: '오류가 발생했습니다' };
     }
   },
-  saveUserHistory: async (_, args, { dataSources, res, uid }) => {
+  saveUserHistory: async (_, args, { dataSources, uid }) => {
     try {
       const userHistoryShema = dataSources.model('UserHistory');
       const newUserHistory = new userHistoryShema({ user_id: uid, ...args });
@@ -240,16 +240,20 @@ const Mutation = {
       return { success: false, message: `유저 사용내역 저장에 실패했습니다 : ${err}` };
     }
   },
-  arriveDestination: async (_, __, { dataSources, uid }) => {
+  arriveDestination: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
+      await pubsub.publish(ARRIVE_DESTINATION, { uid, driverLocationSub: { arrive: true } });
       const waitingDriverSchema = await dataSources.model('WaitingDriver');
       const result = await waitingDriverSchema.findOneAndUpdate(
-        { driver: mongoose.Types.ObjectId(uid) },
+        { driver: mongoose.Types.ObjectId(driverId) },
         { isWorking: false },
       );
-      logger.info(`${uid} arrived destination: ${result}`);
-      if (result) return { success: true };
-      logger.error(`${uid} DRIVER ARRIVE ERROR`);
+
+      if (result) {
+        logger.info(`${driverId} arrived destination: ${result}`);
+        return { success: true };
+      }
+      logger.error(`${driverId} DRIVER ARRIVE ERROR`);
       return { success: false, message: '운행을 종료 할 수 없습니다.' };
     } catch (err) {
       return { success: false, message: '오류가 발생했습니다.' };
