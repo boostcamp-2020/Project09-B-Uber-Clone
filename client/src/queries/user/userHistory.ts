@@ -14,7 +14,7 @@ export const GET_USER_HISTORY = gql`
       }
       fee
       startTime
-      # endTime
+      endTime
       carModel
       plateNumber
     }
@@ -28,11 +28,13 @@ export const SAVE_USER_HISTORY = gql`
     $carModel: String!
     $plateNumber: String!
     $startTime: String!
+    $endTime: String!
   ) {
     saveUserHistory(
       request: $request
       fee: $fee
       startTime: $startTime
+      endTime: $endTime
       carModel: $carModel
       plateNumber: $plateNumber
     ) {

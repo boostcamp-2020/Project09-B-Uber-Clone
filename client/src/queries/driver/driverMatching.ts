@@ -19,8 +19,8 @@ export const UPDATE_DRIVER_LOCATION = gql`
 `;
 
 export const ARRIVE_DESTINATION = gql`
-  mutation ArriveDestination {
-    arriveDestination {
+  mutation ArriveDestination($uid: String) {
+    arriveDestination(uid: $uid) {
       success
       message
     }
