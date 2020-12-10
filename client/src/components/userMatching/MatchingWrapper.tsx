@@ -20,14 +20,13 @@ const CenterDiv = styled.div`
   bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
+  width: 100%;
 `;
 
 const ColumnDiv = styled.div`
   display: flex;
   flex-direction: column;
-  & > div {
-    margin: 20px;
-  }
+  align-items: center;
 `;
 
 export default MatchingWrapper;

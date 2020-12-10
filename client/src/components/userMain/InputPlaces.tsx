@@ -46,6 +46,7 @@ const InputPlaces: React.FC = () => {
 const Div = styled.div`
   display: flex;
   justify-content: center;
+  align-items: baseline;
   color: #181818;
   font-weight: 300;
 `;
