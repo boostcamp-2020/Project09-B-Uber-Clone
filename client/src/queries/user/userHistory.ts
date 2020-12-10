@@ -20,3 +20,24 @@ export const GET_USER_HISTORY = gql`
     }
   }
 `;
+
+export const SAVE_USER_HISTORY = gql`
+  mutation saveUserHistory(
+    $request: UserRequestInput!
+    $fee: Int!
+    $carModel: String!
+    $plateNumber: String!
+    $startTime: String!
+  ) {
+    saveUserHistory(
+      request: $request
+      fee: $fee
+      startTime: $startTime
+      carModel: $carModel
+      plateNumber: $plateNumber
+    ) {
+      success
+      message
+    }
+  }
+`;
