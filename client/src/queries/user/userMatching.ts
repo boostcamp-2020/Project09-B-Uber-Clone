@@ -26,6 +26,10 @@ export const MATCHED_TAXI = gql`
       carModel
       carColor
       plateNumber
+      location {
+        lat
+        lng
+      }
     }
   }
 `;

@@ -25,6 +25,7 @@ type MatchedTaxi {
   carModel: String
   carColor: String
   plateNumber: String
+  location: LatLng
 }
 type LocationInfo {
   name: String

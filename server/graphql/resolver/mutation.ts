@@ -194,21 +194,26 @@ const Mutation = {
       const requestingUserModel = dataSources.model('RequestingUser');
       const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       if (!result.deletedCount) return { success: false, message: '이미 배차가 완료된 요청입니다.' };
+      
       const waitingDriverModel = dataSources.model('WaitingDriver');
-      await waitingDriverModel.findOneAndUpdate({ driver: mongoose.Types.ObjectId(driverId) }, { isWorking: true });
+      const matchedDriver = await waitingDriverModel
+        .findOne({ driver: mongoose.Types.ObjectId(driverId) })
+        .populate('driver');
+      const [lng, lat] = matchedDriver.location.coordinates;
 
-      const driverModel = dataSources.model('Driver');
-      const driverInfo = await driverModel.findOne({ _id: driverId });
       await pubsub.publish(USER_MATCHED, {
         uid,
         userMatchingSub: {
-          id: driverInfo._id,
-          name: driverInfo.name,
-          carModel: driverInfo.carModel,
-          carColor: driverInfo.carColor,
-          plateNumber: driverInfo.plateNumber,
+          id: matchedDriver.driver._id,
+          name: matchedDriver.driver.name,
+          carModel: matchedDriver.driver.carModel,
+          carColor: matchedDriver.driver.carColor,
+          plateNumber: matchedDriver.driver.plateNumber,
+          location: { lng, lat },
         },
       });
+      matchedDriver.isWorking = true;
+      matchedDriver.save();
       logger.info(`${uid} matched with driver: ${result}`);
       return { success: true };
     } catch (err) {

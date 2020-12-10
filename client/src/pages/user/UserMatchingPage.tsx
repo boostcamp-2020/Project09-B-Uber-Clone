@@ -49,6 +49,7 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     if (taxiData?.userMatchingSub) {
+      setTaxiLocation(taxiData.userMatchingSub.location);
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
     }
@@ -61,7 +62,7 @@ const UserMatchingPage: React.FC = () => {
   useEffect(() => {
     if (taxiLocationData?.driverLocationSub) {
       const taxiLocationSubData = taxiLocationData.driverLocationSub;
-      setTaxiLocation(taxiLocationSubData.taxiLatlng);
+      setTaxiLocation(taxiLocationSubData);
       if (taxiLocationSubData.board) setBoarding(true);
     }
   }, [taxiLocationData]);
