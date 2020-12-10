@@ -63,7 +63,9 @@ const WorkingFinished = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: 3rem;
+  font-size: 5em;
+  font-weight: 800;
+  color: #adadad;
 `;
 
 export default DriverMainBody;
