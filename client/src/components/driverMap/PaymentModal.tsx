@@ -24,9 +24,13 @@ const PaymentModal: React.FC<PaymentModalPropsType> = ({ visible }) => {
     } = await arriveDestination({ variables: { uid } });
 
     if (success) {
-      Toast.show('메인 페이지로 이동합니다.');
-      history.push('/driver/main');
-    } else Toast.show(message);
+      Toast.info('메인 페이지로 이동합니다.', 2, () => {
+        history.push('/driver/main');
+      });
+    } else
+      Toast.fail(`${message} 메인 페이지로 이동합니다.`, 2, () => {
+        history.push('/driver/main');
+      });
   }, [uid]);
 
   return (
