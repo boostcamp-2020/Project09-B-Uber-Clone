@@ -147,16 +147,21 @@ const UserMatchingPage: React.FC = () => {
 
   const showArriveAlert = useCallback(async () => {
     if (currentAlert) currentAlert.close();
-    const onClose = () => {
+    const onClose = (goToMainTimeout: number) => () => {
+      clearTimeout(goToMainTimeout);
       history.push('/user');
     };
     const { success, message } = await saveHistory();
     if (success) {
-      const alertInstance = alertModal('목적지 도착', '5초 후 메인화면으로 이동합니다.', modalButton(onClose));
-      setTimeout(() => {
+      const goToMainTimeout = setTimeout(() => {
         alertInstance.close();
         history.push('/user');
       }, 5000);
+      const alertInstance = alertModal(
+        '목적지 도착',
+        '5초 후 메인화면으로 이동합니다.',
+        modalButton(onClose(goToMainTimeout)),
+      );
     } else Toast.show(message);
   }, [currentAlert, saveHistory]);
 
