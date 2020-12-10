@@ -7,7 +7,7 @@ import { START_SERVICE, STOP_SERVICE, UPDATE_LOCATION } from '@queries/driver/dr
 import { ActivityIndicator, Toast } from 'antd-mobile';
 import DriverWorkingContent from './DriverWorkingContent';
 
-const DriverMainBody: React.FC<{ isWorking: boolean }> = ({ isWorking }) => {
+const DriverMainBody: React.FC<{ isWaiting: boolean }> = ({ isWaiting }) => {
   const history = useHistory();
   const [updateDriverLocation] = useMutation(UPDATE_LOCATION);
   const [startService, { loading: updateStartServiceLoading, error: updateStartServiceError }] = useMutation(
@@ -23,7 +23,7 @@ const DriverMainBody: React.FC<{ isWorking: boolean }> = ({ isWorking }) => {
   }, [updateStartServiceError, updateStopServiceError]);
 
   useEffect(() => {
-    if (isWorking) {
+    if (isWaiting) {
       startService();
       const updateLocation = setInterval(async () => {
         const location = await getLocation();
@@ -40,12 +40,12 @@ const DriverMainBody: React.FC<{ isWorking: boolean }> = ({ isWorking }) => {
         })();
       };
     }
-  }, [isWorking]);
+  }, [isWaiting]);
 
   return (
     <Wrapper>
       {(updateStartServiceLoading || updateStopServiceLoading) && <ActivityIndicator toast text="로딩중..." />}
-      <>{isWorking ? <DriverWorkingContent /> : <WorkingFinished>영업종료</WorkingFinished>}</>
+      <>{isWaiting ? <DriverWorkingContent /> : <WorkingFinished>영업종료</WorkingFinished>}</>
     </Wrapper>
   );
 };
