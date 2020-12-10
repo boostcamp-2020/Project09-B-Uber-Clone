@@ -146,9 +146,9 @@ const Mutation = {
   startService: async (_, __, { dataSources, uid }) => {
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
-      const existingWaitingDriver = await waitingDriver.findOne({ driver: uid });
+      const existingWaitingDriver = await waitingDriver.findOneAndUpdate({ driver: uid }, { isWorking: false });
       if (existingWaitingDriver) return { success: true };
-      const newWaitingDriver = new waitingDriver({ driver: uid });
+      const newWaitingDriver = new waitingDriver({ driver: uid, isWorking: false });
       const result = await newWaitingDriver.save();
 
       logger.info(`${uid} start service: ${result}`);
@@ -191,6 +191,12 @@ const Mutation = {
   },
   approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
     try {
+      const requestingUserModel = dataSources.model('RequestingUser');
+      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
+      if (!result.deletedCount) return { success: false, message: '이미 배차가 완료된 요청입니다.' };
+      const waitingDriverModel = dataSources.model('WaitingDriver');
+      await waitingDriverModel.findOneAndUpdate({ driver: mongoose.Types.ObjectId(driverId) }, { isWorking: true });
+
       const driverModel = dataSources.model('Driver');
       const driverInfo = await driverModel.findOne({ _id: driverId });
       await pubsub.publish(USER_MATCHED, {
@@ -203,22 +209,11 @@ const Mutation = {
           plateNumber: driverInfo.plateNumber,
         },
       });
-
-      const waitingDriverModel = dataSources.model('WaitingDriver');
-      await waitingDriverModel.findOneAndUpdate({ driver: mongoose.Types.ObjectId(driverId) }, { isWorking: true });
-      const requestingUserModel = dataSources.model('RequestingUser');
-      const result = await requestingUserModel.deleteOne({ user_id: mongoose.Types.ObjectId(uid) });
       logger.info(`${uid} matched with driver: ${result}`);
-      if (result) {
-        const waitingDriver = dataSources.model('WaitingDriver');
-        const res = await waitingDriver.deleteOne({ _id: driverId });
-        if (res) return { success: true };
-        return { success: false, message: '대기 중인 드라이버 정보를 찾을 수 없습니다.' };
-      }
-      return { success: false, message: '이미 배차가 완료된 요청입니다.' };
+      return { success: true };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
-      return { sucess: false, message: '매칭에 실패했습니다.' };
+      return { success: false, message: '매칭에 실패했습니다.' };
     }
   },
   userOnBoard: async (_, { uid }, { pubsub }) => {
