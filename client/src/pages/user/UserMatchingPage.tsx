@@ -142,8 +142,6 @@ const UserMatchingPage: React.FC = () => {
     const {
       data: { saveUserHistory: result },
     } = await saveUserHistory({ variables });
-    dispatch(clearPathPoint());
-    dispatch(clearPreData());
     return result;
   }, [request, preData, taxiInfo, startTime]);
 
@@ -161,7 +159,10 @@ const UserMatchingPage: React.FC = () => {
       history.push('/user');
     };
     const { success, message } = await saveHistory();
+
     if (success) {
+      dispatch(clearPathPoint());
+      dispatch(clearPreData());
       const goToMainTimeout = setTimeout(() => {
         alertInstance.close();
         history.push('/user');
