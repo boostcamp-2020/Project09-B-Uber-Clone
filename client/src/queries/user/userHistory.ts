@@ -14,6 +14,7 @@ export const GET_USER_HISTORY = gql`
       }
       fee
       startTime
+      # endTime
       carModel
       plateNumber
     }
