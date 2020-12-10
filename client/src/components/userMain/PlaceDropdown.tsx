@@ -37,7 +37,7 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
   const customStyle = {
     placeholder: (provided: any) => ({
       ...provided,
-      color: 'black',
+      color: placeValue.length ? 'black' : 'gray',
     }),
   };
 
@@ -48,7 +48,7 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
         selectProps={{
           onChange: onSelect,
           maxMenuHeight: 100,
-          placeholder: placeValue,
+          placeholder: placeValue.length ? placeValue : '장소를 입력하세요',
           styles: customStyle,
         }}
       />
