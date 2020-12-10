@@ -9,18 +9,18 @@ import Loading from '@components/common/Loading';
 
 const DriverMainPage: React.FC = () => {
   const { loading, error, data } = useQuery(CHECK_IS_WAITING);
-  const [isWorking, setIsWorking] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   useEffect(() => {
-    if (!loading && data) setIsWorking(data.isDriverWaiting);
+    if (!loading && data) setIsWaiting(data.isDriverWaiting);
   }, [loading, data]);
 
   return loading ? (
     <Loading />
   ) : (
     <Wrapper>
-      <WorkingToggle onChange={setIsWorking} checked={isWorking} />
-      <DriverMainBody isWorking={isWorking} />
+      <WorkingToggle onChange={setIsWaiting} checked={isWaiting} />
+      <DriverMainBody isWaiting={isWaiting} />
       <Menu type="driver" />
     </Wrapper>
   );
