@@ -156,21 +156,19 @@ const UserMatchingPage: React.FC = () => {
     dispatch(clearPathPoint());
     dispatch(clearPreData());
     if (success) {
-      const goToMainTimeout = setTimeout(() => {
-        alertInstance.close();
-        history.push('/user');
-      }, 5000);
-
       const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
         {
           text: '홈으로',
           onPress: () => {
-            clearTimeout(goToMainTimeout);
             history.push('/user');
           },
           style: 'default',
         },
       ]);
+      setTimeout(() => {
+        alertInstance.close();
+        history.push('/user');
+      }, 5000);
     } else alert(message);
   }, [modal, taxiInfo]);
 
