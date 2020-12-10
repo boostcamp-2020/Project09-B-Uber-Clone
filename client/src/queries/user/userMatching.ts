@@ -40,6 +40,7 @@ export const TAXI_LOCATION = gql`
       lat
       lng
       board
+      arrive
     }
   }
 `;
