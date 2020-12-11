@@ -23,14 +23,7 @@ type Mutation {
   updateDriverLocation(location: LatLngInput, uid: String): Response @auth(requires: DRIVER)
   approveMatching(uid: String): Response @auth(requires: DRIVER)
   userOnBoard(uid: String): Response @auth(requires: DRIVER)
-  saveUserHistory(
-    request: UserRequestInput!
-    fee: Int!
-    startTime: String!
-    endTime: String!
-    carModel: String!
-    plateNumber: String!
-  ): Response @auth(requires: USER)
+  saveUserHistory(info: HistoryInfo!): Response @auth(requires: USER)
   arriveDestination(uid: String): Response @auth(requires: DRIVER)
 }
 
@@ -114,6 +107,14 @@ input LocationInfoInput {
 input UserRequestInput {
   startLocation: LocationInfoInput
   endLocation: LocationInfoInput
+}
+input HistoryInfo {
+  request: UserRequestInput!
+  fee: Int!
+  startTime: String!
+  endTime: String!
+  carModel: String!
+  plateNumber: String!
 }
 
 directive @auth(requires: Role!) on FIELD_DEFINITION

@@ -62,10 +62,10 @@ export default {
       return SERVER_ERROR;
     }
   },
-  saveUserHistory: async (_, args, { dataSources, uid }) => {
+  saveUserHistory: async (_, { info }, { dataSources, uid }) => {
     try {
       const userHistoryShema = dataSources.model('UserHistory');
-      const newUserHistory = new userHistoryShema({ user_id: uid, ...args });
+      const newUserHistory = new userHistoryShema({ user_id: uid, ...info });
       await newUserHistory.save();
       return { success: true };
     } catch (err) {
