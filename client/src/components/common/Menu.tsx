@@ -72,7 +72,7 @@ const Overlay = styled.div`
   flex-direction: column;
   top: 125px;
   right: 12%;
-  z-index: 999;
+  z-index: 1;
 `;
 
 const ButtonGroup = styled.div`
