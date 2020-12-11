@@ -5,6 +5,7 @@ export default {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
+      await requestingUserSchema.find({ user_id: uid }).remove().exec();
       const waitingDriverSchema = dataSources.model('WaitingDriver');
       const userSchema = dataSources.model('User');
       const newRequest = new requestingUserSchema({ ...request, user_id: uid });
@@ -21,7 +22,7 @@ export default {
         .where('location')
         .within()
         .circle(area);
-      const user = await userSchema.findById({ _id: uid });
+      const user = await userSchema.findById(uid);
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
