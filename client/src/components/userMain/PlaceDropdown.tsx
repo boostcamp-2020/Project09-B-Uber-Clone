@@ -30,6 +30,13 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
     [selectHandler],
   );
 
+  const customStyle = {
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: placeValue.length ? 'black' : 'gray',
+    }),
+  };
+
   return (
     <GooglePlacesAutocomplete
       debounce={800}

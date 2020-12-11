@@ -18,17 +18,12 @@ import {
   STOP_MATCHING,
 } from '@queries/user/userMatching';
 
-const alertModal = Modal.alert;
-
-const MAX_REQUEST_COUNT = 6;
-const MATCHING_INTERVAL = 10000;
-
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
-  const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
+  const { loading, error } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
@@ -37,11 +32,11 @@ const UserMatchingPage: React.FC = () => {
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const [isMatchCanceled, setMatchCancel] = useState(false);
   const { loaded } = useGoogleMapApiState();
-  const [boarding, setBoarding] = useState(false);
-  const [modal, setModal] = useState(false);
   const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
   const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [request, setRequest] = useState({});
+  const [startTime, setStartTime] = useState<string>('');
+  const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -63,7 +58,8 @@ const UserMatchingPage: React.FC = () => {
     if (taxiLocationData?.driverLocationSub) {
       const taxiLocationSubData = taxiLocationData.driverLocationSub;
       setTaxiLocation(taxiLocationSubData);
-      if (taxiLocationSubData.board) setBoarding(true);
+      if (taxiLocationSubData.board) showOnBoardAlert();
+      else if (taxiLocationSubData.arrive) showArriveAlert();
     }
   }, [taxiLocationData]);
 
@@ -77,7 +73,7 @@ const UserMatchingPage: React.FC = () => {
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
 
-    if (!loading || isMatchCanceled || boarding) clearInterval(timer);
+    if (!loading || isMatchCanceled) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -88,10 +84,6 @@ const UserMatchingPage: React.FC = () => {
       }
     };
   }, [requestCount]);
-
-  useEffect(() => {
-    if (!modal && boarding) showAlert();
-  }, [modal, boarding]);
 
   const registMatchingList = async () => {
     setRequest({
@@ -131,38 +123,47 @@ const UserMatchingPage: React.FC = () => {
     history.push('/user/map');
   }, []);
 
-  const showAlert = useCallback(async () => {
-    setModal(true);
-
+  const saveHistory = useCallback(async () => {
     const variables = {
       request: request,
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
       plateNumber: taxiInfo.plateNumber,
-      startTime: new Date().toString(),
+      startTime: startTime,
+      endTime: new Date().toString(),
     };
     const {
-      data: {
-        saveUserHistory: { success, message },
-      },
+      data: { saveUserHistory: result },
     } = await saveUserHistory({ variables });
+    return result;
+  }, [request, preData, taxiInfo, startTime]);
 
+  const showOnBoardAlert = useCallback(() => {
+    setStartTime(new Date().toString());
+    const alertInstance = alertModal('탑승 완료', '5초 후 창이 닫힙니다.', modalButton(alertModal('', '').close));
+    setCurrentAlert(alertInstance);
+    setTimeout(alertInstance.close, 5000);
+  }, []);
+
+  const showArriveAlert = useCallback(async () => {
+    if (currentAlert) currentAlert.close();
+    const onClose = (goToMainTimeout: number) => () => {
+      clearTimeout(goToMainTimeout);
+      history.push('/user');
+    };
+    const { success, message } = await saveHistory();
     if (success) {
-      const alertInstance = alertModal('탑승 완료', '5초 후 홈으로 돌아갑니다.', [
-        {
-          text: '홈으로',
-          onPress: () => {
-            history.push('/user');
-          },
-          style: 'default',
-        },
-      ]);
-      setTimeout(() => {
+      const goToMainTimeout = setTimeout(() => {
         alertInstance.close();
         history.push('/user');
       }, 5000);
-    } else alert(message);
-  }, [modal, taxiInfo]);
+      const alertInstance = alertModal(
+        '목적지 도착',
+        '5초 후 메인화면으로 이동합니다.',
+        modalButton(onClose(goToMainTimeout)),
+      );
+    } else Toast.show(message);
+  }, [currentAlert, saveHistory]);
 
   const cancelMatching = useCallback(async () => {
     try {
@@ -198,5 +199,19 @@ const UserMatchingPage: React.FC = () => {
     </>
   );
 };
+
+const alertModal = Modal.alert;
+const modalButton = (cb: any) => {
+  return [
+    {
+      text: '확인',
+      onPress: cb,
+      style: 'default',
+    },
+  ];
+};
+
+const MAX_REQUEST_COUNT = 6;
+const MATCHING_INTERVAL = 10000;
 
 export default UserMatchingPage;

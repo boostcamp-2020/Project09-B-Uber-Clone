@@ -45,6 +45,7 @@ type DriverStatus {
   lat: Float
   lng: Float
   board: Boolean
+  arrive: Boolean
 }
 type UserHistoryResult {
   id: String
@@ -103,10 +104,11 @@ type Mutation {
     request: UserRequestInput!
     fee: Int!
     startTime: String!
+    endTime: String!
     carModel: String!
     plateNumber: String!
   ): Response @auth(requires: USER)
-  arriveDestination: Response @auth(requires: DRIVER)
+  arriveDestination(uid: String): Response @auth(requires: DRIVER)
 }
 
 type Subscription {
