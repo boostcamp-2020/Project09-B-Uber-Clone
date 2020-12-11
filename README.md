@@ -16,14 +16,14 @@
 
 ![GraphQL](https://img.shields.io/badge/grapqhql-v15.4.0-e10098?logo=graphql) ![MongoDB](https://img.shields.io/badge/mongodb-v4.4.1-13aa52?logo=mongodb)
 
-[![GitHub Open PR](https://img.shields.io/github/issues-pr-raw/boostcamp-2020/Project09-B-Uber-Clone?color=green)](https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues) [![GitHub Closed PR](https://img.shields.io/github/issues-pr-closed-raw/boostcamp-2020/Project09-B-Uber-Clone?color=red)](https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues)
+[![GitHub Open PR](https://img.shields.io/github/issues-pr-raw/boostcamp-2020/Project09-B-Uber-Clone?color=green)](https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues) [![GitHub Closed PR](https://img.shields.io/github/issues-pr-closed-raw/boostcamp-2020/Project09-B-Uber-Clone?color=red)](https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues) [![Build Status](https://travis-ci.org/boostcamp-2020/Project09-B-Uber-Clone.svg?branch=master)](https://travis-ci.org/boostcamp-2020/Project09-B-Uber-Clone)
 
 [![GitHub Open Issues](https://img.shields.io/github/issues-raw/boostcamp-2020/Project09-B-Uber-Clone?color=green)](https://https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues) [![GitHub Closed Issues](https://img.shields.io/github/issues-closed-raw/boostcamp-2020/Project09-B-Uber-Clone?color=red)](https://https://github.com/boostcamp-2020/Project09-B-Uber-Clone/issues) <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/boostcamp-2020/Project09-B-Uber-Clone">
 
 </div>
 <br>
 
-## 🌈 [배포 링크](http://101.101.218.57/)
+## 🌈 [배포 링크](https://hoyoung.me/)
 
 ## 👨‍👨‍👧‍👧 팀원 소개
 
