@@ -1,6 +1,8 @@
 import { REQUEST_ADDED } from '../subscriptionType';
 import { logger } from '../../../config/winston';
 
+const SERVER_ERROR = { success: false, message: '오류가 발생했습니다' };
+
 export default {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
@@ -42,7 +44,7 @@ export default {
       return { success: false, message: 'Database error' };
     } catch (err) {
       logger.error(`REQUEST MATCHING ERROR : ${err}`);
-      return { success: false, message: 'Internal server error' };
+      return SERVER_ERROR;
     }
   },
   stopMatching: async (_, __, { dataSources, uid }) => {
@@ -57,7 +59,7 @@ export default {
       return { success: false, message: '해당 요청이 존재하지 않습니다.' };
     } catch (err) {
       logger.error(`STOP MATCHING ERROR : ${err}`);
-      return { success: false, message: '알 수 없는 오류가 발생했습니다.' };
+      return SERVER_ERROR;
     }
   },
   saveUserHistory: async (_, args, { dataSources, uid }) => {

@@ -2,8 +2,12 @@ import mongoose from 'mongoose';
 import { logger } from '../../../config/winston';
 import { USER_MATCHED, USER_ON_BOARD, UPDATE_LOCATION, ARRIVE_DESTINATION } from '../subscriptionType';
 
+const SERVER_ERROR = { success: false, message: '오류가 발생했습니다' };
+const MATCHING_FAILED = { success: false, message: '매칭에 실패했습니다.' };
+
 export default {
   startService: async (_, __, { dataSources, uid }) => {
+    const errorMessage = { success: false, message: '영업을 시작 할 수 없습니다.' };
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
       const existingWaitingDriver = await waitingDriver.findOneAndUpdate({ driver: uid }, { isWorking: false });
@@ -13,22 +17,23 @@ export default {
 
       logger.info(`${uid} start service: ${result}`);
       if (result) return { success: true };
-      return { success: false, message: '영업을 시작 할 수 없습니다.' };
+      return errorMessage;
     } catch (err) {
       logger.error(`START SERVICE ERROR : ${err}`);
-      return { success: false, message: '영업을 시작 할 수 없습니다' };
+      return errorMessage;
     }
   },
   stopService: async (_, __, { dataSources, uid }) => {
+    const errorMessage = { success: false, message: '영업을 끝낼 수 없습니다' };
     try {
       const waitingDriver = await dataSources.model('WaitingDriver');
       const result = await waitingDriver.findOneAndRemove({ driver: uid, isWorking: false });
       logger.info(`${uid} stop service: ${result}`);
       if (result) return { success: true };
-      return { success: false, message: '영업을 끝낼 수 없습니다' };
+      return errorMessage;
     } catch (err) {
       logger.error(`STOP SERVICE ERROR : ${err}`);
-      return { success: false, message: '영업을 끝낼 수 없습니다' };
+      return errorMessage;
     }
   },
   updateDriverLocation: async (_, { location, uid }, { dataSources, uid: driverId, pubsub }) => {
@@ -46,7 +51,7 @@ export default {
       return { success: false, message: '해당 드라이버를 찾을 수 없습니다.' };
     } catch (err) {
       logger.error(`UPDATE DRIVER LOCATION ERROR: ${err}`);
-      return { success: false, message: '매칭에 실패했습니다.' };
+      return MATCHING_FAILED;
     }
   },
   approveMatching: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
@@ -78,7 +83,7 @@ export default {
       return { success: true };
     } catch (err) {
       logger.error(`APPROVE MATCHING ERROR: ${err}`);
-      return { success: false, message: '매칭에 실패했습니다.' };
+      return MATCHING_FAILED;
     }
   },
   userOnBoard: async (_, { uid }, { pubsub }) => {
@@ -86,7 +91,7 @@ export default {
       await pubsub.publish(USER_ON_BOARD, { uid, driverLocationSub: { board: true } });
       return { success: true };
     } catch (err) {
-      return { success: false, message: '오류가 발생했습니다' };
+      return SERVER_ERROR;
     }
   },
   arriveDestination: async (_, { uid }, { dataSources, uid: driverId, pubsub }) => {
@@ -105,7 +110,7 @@ export default {
       logger.error(`${driverId} DRIVER ARRIVE ERROR`);
       return { success: false, message: '운행을 종료 할 수 없습니다.' };
     } catch (err) {
-      return { success: false, message: '오류가 발생했습니다.' };
+      return SERVER_ERROR;
     }
   },
 };
