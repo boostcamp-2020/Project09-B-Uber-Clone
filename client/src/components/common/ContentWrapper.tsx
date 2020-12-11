@@ -33,6 +33,6 @@ const Div = styled.div<{ putOnDevice: string }>`
 const ChildContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
 `;
 export default ContentWrapper;

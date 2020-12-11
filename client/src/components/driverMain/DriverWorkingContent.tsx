@@ -138,7 +138,8 @@ const WaitingRequest = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 3rem;
+  font-size: 5em;
+  font-weight: 800;
 `;
 
 const BottomLayout = styled.div`

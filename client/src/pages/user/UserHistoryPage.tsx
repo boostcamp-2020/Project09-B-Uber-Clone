@@ -48,7 +48,7 @@ const UserHistoryPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <Title>택시자버 이용내역</Title>
+      <Title>🚖 택시자버 이용내역 </Title>
       {showingHistory.length ? (
         showingHistory.map(({ id, request, ...info }: any) => <HistoryBox key={id} {...request} {...info} />)
       ) : (
@@ -62,28 +62,37 @@ const UserHistoryPage: React.FC = () => {
           이전내역
         </Button>
       </PaginationButtonGrup>
-      <Button
-        shape="circle"
-        icon={<HomeFilled />}
-        size="large"
-        type="primary"
-        style={{ position: 'fixed', bottom: '0', right: '0', margin: '25px' }}
-        onClick={() => {
-          history.push('/user/map');
-        }}
-      />
+      <ButtonDiv>
+        <Button
+          shape="circle"
+          icon={<HomeFilled />}
+          size="large"
+          type="primary"
+          style={{ width: '45px', height: '45px', position: 'fixed', bottom: '0', right: '0', margin: '25px' }}
+          onClick={() => {
+            history.push('/user/map');
+          }}
+        />
+      </ButtonDiv>
     </Wrapper>
   );
 };
+
+const ButtonDiv = styled.div`
+  z-index: 2;
+`;
 
 const Wrapper = styled.div`
   position: absolute;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Title = styled.h1`
-  margin: 25px 0 10px 25px;
+  margin: 25px 0 10px 0;
 `;
 
 const PaginationButtonGrup = styled.div`

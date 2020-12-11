@@ -24,8 +24,8 @@ const Div = styled.div`
 `;
 
 const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 4em;
+  font-weight: 800;
 `;
 
 export default DriverAuthPage;
