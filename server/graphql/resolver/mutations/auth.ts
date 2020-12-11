@@ -47,15 +47,16 @@ export default {
       return SIGNUP_ERROR;
     }
   },
-  userSignin: async (_, args, { dataSources, res }) => {
+  userSignin: async (_, { info }, { dataSources, res }) => {
+    const { id, password } = info;
     try {
       const userSchema = dataSources.model('User');
-      const user = await userSchema.findOne({ id: args.id });
+      const user = await userSchema.findOne({ id });
       if (user) {
-        if (await bcrypt.compare(args.password, user.password)) {
+        if (await bcrypt.compare(password, user.password)) {
           const token = jwt.sign({ id: user._id }, Config.JWT_SECRET);
           res.cookie('userToken', token, { httpOnly: true, signed: true });
-          logger.info(`${args.id} user logined!`);
+          logger.info(`${id} user logined!`);
           return { success: true };
         }
         return WRONG_PASSWORD;
@@ -66,15 +67,16 @@ export default {
       return WRONG_ACCESS;
     }
   },
-  driverSignin: async (_, args, { dataSources, res }) => {
+  driverSignin: async (_, { info }, { dataSources, res }) => {
+    const { id, password } = info;
     try {
       const driverSchema = dataSources.model('Driver');
-      const driver = await driverSchema.findOne({ id: args.id });
+      const driver = await driverSchema.findOne({ id });
       if (driver) {
-        if (await bcrypt.compare(args.password, driver.password)) {
+        if (await bcrypt.compare(password, driver.password)) {
           const token = jwt.sign({ id: driver._id }, Config.JWT_SECRET);
           res.cookie('driverToken', token, { httpOnly: true, signed: true });
-          logger.info(`${args.id} driver logined!`);
+          logger.info(`${id} driver logined!`);
           return { success: true };
         }
         return WRONG_PASSWORD;
