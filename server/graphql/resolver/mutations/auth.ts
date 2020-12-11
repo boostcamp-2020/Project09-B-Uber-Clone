@@ -14,6 +14,8 @@ export default {
     try {
       const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
       const userSchema = dataSources.model('User');
+      const user = await userSchema.findOne({ id: args.id });
+      if (user) return DUPLICATION_ERROR;
       const newUser = new userSchema({ ...args, password: hashedPassword });
       const result = await newUser.save();
 
