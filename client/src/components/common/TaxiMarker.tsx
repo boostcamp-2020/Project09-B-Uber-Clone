@@ -8,7 +8,7 @@ const TaxiMarker: React.FC<MarkerType> = () => {
       <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="44" height="44" viewBox="0 0 172 172">
         <g
           fill="none"
-          fill-rule="nonzero"
+          fillRule="nonzero"
           stroke="none"
           strokeWidth="1"
           strokeLinecap="butt"
