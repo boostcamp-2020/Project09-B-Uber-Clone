@@ -42,8 +42,9 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
       debounce={800}
       selectProps={{
         onChange: onSelect,
-        defaultInputValue: placeValue,
         maxMenuHeight: 100,
+        placeholder: placeValue.length ? placeValue : '장소를 입력하세요',
+        styles: customStyle,
       }}
     />
   );
