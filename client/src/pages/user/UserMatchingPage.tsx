@@ -4,12 +4,14 @@ import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
 import { Modal, Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PathPoint, PreData } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
+import { clearPathPoint } from '@stores/modules/pathPoint';
+import { clearPreData } from '@stores/modules/preData';
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -35,6 +37,7 @@ const UserMatchingPage: React.FC = () => {
   const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
   const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [request, setRequest] = useState({});
+  const dispatch = useDispatch();
   const [startTime, setStartTime] = useState<string>('');
   const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
@@ -100,19 +103,22 @@ const UserMatchingPage: React.FC = () => {
         },
       },
     });
-
-    try {
-      const {
-        data: {
-          requestMatching: { success, message },
-        },
-      } = await requestMatch({ variables: { request } });
-      return [success, message];
-    } catch (error) {
-      console.error(error);
-      return [false, '알 수 없는 오류가 발생했습니다.'];
-    }
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const {
+          data: {
+            requestMatching: { _, __ },
+          },
+        } = await requestMatch({ variables: { request } });
+      } catch (error) {
+        console.error(error);
+        Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
+      }
+    })();
+  }, [request]);
 
   useEffect(() => {
     if (error) onErrorHandler();
@@ -152,7 +158,10 @@ const UserMatchingPage: React.FC = () => {
       history.push('/user');
     };
     const { success, message } = await saveHistory();
+
     if (success) {
+      dispatch(clearPathPoint());
+      dispatch(clearPreData());
       const goToMainTimeout = setTimeout(() => {
         alertInstance.close();
         history.push('/user');
