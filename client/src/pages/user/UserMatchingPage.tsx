@@ -110,13 +110,12 @@ const UserMatchingPage: React.FC = () => {
       try {
         const {
           data: {
-            requestMatching: { success, message },
+            requestMatching: { _, __ },
           },
         } = await requestMatch({ variables: { request } });
-        return [success, message];
       } catch (error) {
         console.error(error);
-        return [false, '알 수 없는 오류가 발생했습니다.'];
+        Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
       }
     })();
   }, [request]);
