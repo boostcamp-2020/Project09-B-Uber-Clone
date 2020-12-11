@@ -2,10 +2,14 @@ import React from 'react';
 import { Switch } from 'antd';
 import styled from 'styled-components';
 
-const WorkingToggle: React.FC<{ onChange: (checked: boolean, event: Event) => void }> = ({ onChange }) => {
+const WorkingToggle: React.FC<{ onChange: (checked: boolean, event: Event) => void; checked: boolean }> = ({
+  onChange,
+  checked,
+}) => {
   return (
     <Wrapper>
       <Switch
+        checked={checked}
         onChange={onChange}
         style={{ height: '70px', width: '85%', borderRadius: '20px' }}
         checkedChildren="영업 종료하기"

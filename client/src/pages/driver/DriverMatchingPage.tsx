@@ -1,69 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
-import { gql, useSubscription } from '@apollo/client';
-import { USER_ON_BOARD } from '@queries/driver/driverMatching';
+import { updateStartPoint, updateEndPoint, clearPathPoint } from '@stores/modules/pathPoint';
+import { USER_ON_BOARD, UPDATE_DRIVER_LOCATION } from '@queries/driver/driverMatching';
 import MapContainer from '@containers/MapContainer';
 import CallButton from '@components/common/CallButton';
 import StartLocationInfo from '@components/driverMatching/StartLocationInfo';
 import styled from 'styled-components';
 import { Button, Toast } from 'antd-mobile';
-import { Response } from '@custom-types';
+import { DriverMatchingInfo, Location } from '@custom-types';
 import PaymentModal from '@components/driverMap/PaymentModal';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
-
-const MATCHED_USER = gql`
-  subscription {
-    driverServiceSub {
-      uid
-      request {
-        startLocation
-        endLocation
-      }
-    }
-  }
-`;
+import getLocation from '@utils/getLocation';
 
 const DriverMatchingPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { data, error } = useSubscription(MATCHED_USER);
+  const { uid, request, tel } = useSelector(
+    (state: { driverMatchingInfo: DriverMatchingInfo }) => state.driverMatchingInfo,
+  );
+  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
   const [boarding, setBoarding] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [startLocationName, setStartLocation] = useState('');
   const { loaded } = useGoogleMapApiState();
+  const location = useSelector((state: { location: Location }) => state.location, shallowEqual);
+  const [updateDriverLocation] = useMutation(UPDATE_DRIVER_LOCATION);
 
-  const arrive = () => {
-    setVisible(true);
-    // TODO: 도착 완료 처리
-  };
-
-  const [setUserOnBoard] = useMutation(USER_ON_BOARD);
-
-  const takeUser = async () => {
-    const { success, message }: Response = (await setUserOnBoard({
-      variables: { uid: 'USER_ID_FROM_STORE' },
-    })) as Response;
-    if (success) setBoarding(true);
-    else Toast.show(message);
-  };
-  const [userRequest, setUserRequest] = useState({
-    uid: '',
-    startLocation: { name: '', Latlng: { lat: '', lng: '' } },
-    endLocation: { name: '', Latlng: { lat: '', lng: '' } },
-  });
-  useEffect(() => {
-    if (data?.driverServiceSub) {
-      const requsetData = data.userMatchingSub;
-      const { startLocation, endLocation } = requsetData.request;
-      setUserRequest({ uid: requsetData.uid, startLocation: startLocation, endLocation: endLocation });
-      dispatch(updateStartPoint(startLocation.Latlng));
-      dispatch(updateEndPoint(endLocation.Latlng));
+  const takeUser = useCallback(async () => {
+    try {
+      const {
+        data: {
+          userOnBoard: { success, message },
+        },
+      } = await setUserOnBoard({
+        variables: { uid },
+      });
+      if (success && request) {
+        setBoarding(true);
+        const { startLocation, endLocation } = request;
+        dispatch(clearPathPoint());
+        dispatch(updateStartPoint(startLocation.latlng));
+        dispatch(updateEndPoint(endLocation.latlng));
+      } else Toast.show(message);
+    } catch (error) {
+      console.error(error);
     }
-  }, [data]);
+  }, [uid]);
 
   useEffect(() => {
-    if (error) Toast.fail('유저 정보를 확인할 수 없습니다.');
-  }, [error]);
+    if (request) {
+      (async () => {
+        const { startLocation } = request;
+        const location = await getLocation();
+        dispatch(updateStartPoint(location));
+        dispatch(updateEndPoint(startLocation.latlng));
+        setStartLocation(startLocation.name);
+      })();
+    }
+  }, [request]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const {
+          data: {
+            updateDriverLocation: { success, message },
+          },
+        } = await updateDriverLocation({
+          variables: { location, uid },
+        });
+        if (!success) {
+          console.error(message);
+          Toast.show('네트워크를 확인 해주세요.', Toast.SHORT);
+        }
+      } catch (error) {
+        console.error(error);
+        Toast.show('네트워크를 확인 해주세요.', Toast.SHORT);
+      }
+    })();
+  }, [location]);
 
   return (
     <>
@@ -74,17 +89,16 @@ const DriverMatchingPage: React.FC = () => {
             <>
               <PaymentModal visible={visible} />
               <BottomOverlay>
-                <Button type="primary" onClick={() => arrive()}>
+                <Button type="primary" onClick={() => setVisible(true)}>
                   목적지 도착
                 </Button>
               </BottomOverlay>
-              return (
             </>
           ) : (
             <>
               <TopOverlay>
-                <StartLocationInfo startLocation={userRequest.startLocation.name} />
-                <CallButton phone="010-0000-0000" />
+                <StartLocationInfo startLocation={startLocationName} />
+                {tel && <CallButton phone={tel} />}
               </TopOverlay>
               <BottomOverlay>
                 <Button type="primary" onClick={takeUser}>

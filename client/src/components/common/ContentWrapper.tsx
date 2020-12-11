@@ -25,7 +25,7 @@ const Div = styled.div<{ putOnDevice: string }>`
   height: fit-content;
   border: 1px solid #f3f3f3;
   border-radius: 10px;
-  padding: ${(props) => (props.putOnDevice === 'top' ? '20px 0 10px 0' : '10px 0 20px 0')};
+  padding: ${(props) => (props.putOnDevice === 'top' ? '20px 0 10px 0' : '20px 0')};
   background-color: rgba(255, 255, 255, 0.83);
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.4);
 `;
@@ -33,6 +33,6 @@ const Div = styled.div<{ putOnDevice: string }>`
 const ChildContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
 `;
 export default ContentWrapper;

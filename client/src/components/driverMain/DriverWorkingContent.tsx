@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -19,40 +19,47 @@ const DriverWorkingContent: React.FC = () => {
   const [acceptRequest] = useMutation(ACCEPT_REQUEST);
   const { data, error } = useSubscription(NEW_REQUEST);
 
-  const onAccept = async () => {
-    const { uid, request } = currentRequest;
+  const clearCurrentStatus = useCallback(() => {
+    clearInterval(timers.percentInterval);
+    clearTimeout(timers.requestTimeout);
+    setProgressPercent(0);
+  }, [timers]);
+
+  const onAccept = useCallback(async () => {
+    const { uid, request, tel } = currentRequest;
     const {
       data: {
         approveMatching: { success, message },
       },
     } = await acceptRequest({ variables: { uid } });
-    if (!success) Toast.show(message);
-    else {
-      dispatch(setDriverMatchingInfo({ uid, request }));
+    if (!success) {
+      Toast.show(message);
+      onReject();
+    } else {
+      dispatch(setDriverMatchingInfo({ uid, request, tel }));
       clearCurrentStatus();
       history.push('/driver/map');
     }
-  };
-  const onReject = () => {
+  }, [currentRequest, clearCurrentStatus]);
+  const onReject = useCallback(() => {
     setCurrentRequest(undefined);
-  };
-  const clearCurrentStatus = () => {
-    clearInterval(timers.percentInterval);
-    clearTimeout(timers.requestTimeout);
-    setProgressPercent(0);
-  };
-  const changeCurrentRequest = (newIndex: number) => {
-    const newRequest = requestQueue[newIndex];
-    setCurrentRequest(newRequest);
-    const expire = parseInt(newRequest.expirationTime, 10);
-    const percentInterval = setInterval(() => {
-      setProgressPercent(100 - (expire - new Date().getTime()) / 100);
-    }, 100);
-    const requestTimeout = setTimeout(() => {
-      setCurrentRequest(undefined);
-    }, expire - new Date().getTime());
-    setTimers({ percentInterval, requestTimeout });
-  };
+  }, []);
+
+  const changeCurrentRequest = useCallback(
+    (newIndex: number) => {
+      const newRequest = requestQueue[newIndex];
+      setCurrentRequest(newRequest);
+      const expire = parseInt(newRequest.expirationTime, 10);
+      const percentInterval = setInterval(() => {
+        setProgressPercent(100 - (expire - new Date().getTime()) / 100);
+      }, 100);
+      const requestTimeout = setTimeout(() => {
+        setCurrentRequest(undefined);
+      }, expire - new Date().getTime());
+      setTimers({ percentInterval, requestTimeout });
+    },
+    [requestQueue],
+  );
 
   useEffect(() => {
     if (data?.driverServiceSub) setRequestQueue([...requestQueue, data.driverServiceSub]);
@@ -120,7 +127,6 @@ const RequestDisplay = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding-top: 15%;
   > p {
     margin: 1.5rem 0;
     font-size: 3rem;
@@ -132,7 +138,8 @@ const WaitingRequest = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 3rem;
+  font-size: 5em;
+  font-weight: 800;
 `;
 
 const BottomLayout = styled.div`

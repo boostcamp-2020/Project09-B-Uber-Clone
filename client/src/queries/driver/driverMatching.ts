@@ -1,10 +1,34 @@
 import { gql } from '@apollo/client';
 
 export const USER_ON_BOARD = gql`
-  mutation UserOnBoard($uid: string) {
+  mutation UserOnBoard($uid: String) {
     userOnBoard(uid: $uid) {
       success
       message
     }
+  }
+`;
+
+export const UPDATE_DRIVER_LOCATION = gql`
+  mutation UpdateDriverLocation($location: LatLngInput, $uid: String) {
+    updateDriverLocation(location: $location, uid: $uid) {
+      success
+      message
+    }
+  }
+`;
+
+export const ARRIVE_DESTINATION = gql`
+  mutation ArriveDestination($uid: String) {
+    arriveDestination(uid: $uid) {
+      success
+      message
+    }
+  }
+`;
+
+export const CHECK_IS_WAITING = gql`
+  query {
+    isDriverWaiting
   }
 `;

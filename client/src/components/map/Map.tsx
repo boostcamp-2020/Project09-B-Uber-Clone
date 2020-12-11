@@ -5,7 +5,7 @@ import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
 import { useDispatch } from 'react-redux';
-import { useGoogleMapApiState, useGoogleMapApiDispatch } from 'src/contexts/GoogleMapProvider';
+import { useGoogleMapApiState, useGoogleMapApiDispatch } from '../../contexts/GoogleMapProvider';
 
 const Map: React.FC<{
   center: Location;
@@ -24,8 +24,8 @@ const Map: React.FC<{
     if (status === google.maps.DirectionsStatus.OK && directionRenderer) {
       const distance = result.routes[0].legs[0].distance;
       const duration = result.routes[0].legs[0].duration;
-      const calc = 3800 + ((distance.value - 2000) / 110 + duration.value / 31) * 100;
-      dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) }));
+      const calc = 38 + ((distance.value - 2000) / 110 + duration.value / 31);
+      dispatch(updatePath({ time: duration.text, fee: Math.ceil(calc) * 100 }));
       directionRenderer.setMap(maps);
       directionRenderer.setDirections(result);
     }
@@ -46,7 +46,7 @@ const Map: React.FC<{
         renderDirection,
       );
     }
-  }, [pathPoint]);
+  }, [pathPoint, maps]);
 
   const onGoogleApiLoaded = ({ map }: any) => {
     mapDispatch({ type: 'setMaps', maps: map });

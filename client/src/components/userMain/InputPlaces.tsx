@@ -7,6 +7,7 @@ import { PathPoint, Location } from '@custom-types';
 import setStartToNearPlace from '@utils/setStartToNearPlace';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { useDispatch } from 'react-redux';
+import Circle from '@components/common/Circle';
 
 const InputPlaces: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
@@ -24,12 +25,14 @@ const InputPlaces: React.FC = () => {
     return (
       <>
         <Div>
+          <Circle color="#4285F4" />
           <p>출발</p>
           <WrapDropdown>
             <PlaceDropdown type={'start'} defalutPlace={pathPoint.startPointName} />
           </WrapDropdown>
         </Div>
         <Div>
+          <Circle color="#FBBC04" />
           <p>도착</p>
           <WrapDropdown>
             <PlaceDropdown type={'end'} defalutPlace={pathPoint.endPointName} />
@@ -45,13 +48,17 @@ const InputPlaces: React.FC = () => {
 
 const Div = styled.div`
   display: flex;
-  justify-content: center;
-  color: #181818;
+  align-items: center;
+  margin-bottom: 5px;
   font-weight: 300;
+  & p {
+    margin: 0;
+    margin-left: 5px;
+  }
 `;
 
 const WrapDropdown = styled.div`
-  width: 80%;
+  width: 75%;
   margin-left: 10px;
 `;
 

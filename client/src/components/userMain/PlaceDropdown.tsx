@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import GooglePlacesAutocomplete, { geocodeByPlaceId, getLatLng } from 'react-google-places-autocomplete';
 import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { useDispatch } from 'react-redux';
 import { Location } from '@custom-types';
-
-/**
- * https://tintef.github.io/react-google-places-autocomplete 참고
- */
 
 interface dropdownProps {
   defalutPlace?: string;
@@ -22,26 +18,35 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
     return dispatch(updateEndPoint(latLng, placeName, placeId));
   };
 
-  const onSelect = async ({ value }: any) => {
-    setPlaceValue(value);
-    const searchedGeocode = await geocodeByPlaceId(value.place_id);
-    const latLng = (await getLatLng(searchedGeocode[0])) as { lat: number; lng: number };
-    const placeName = value.terms[0].value;
-    const placeId = searchedGeocode && searchedGeocode[0].place_id;
-    selectHandler(latLng, placeName, type, placeId);
+  const onSelect = useCallback(
+    async ({ value }: any) => {
+      setPlaceValue(value);
+      const searchedGeocode = await geocodeByPlaceId(value.place_id);
+      const latLng = (await getLatLng(searchedGeocode[0])) as { lat: number; lng: number };
+      const placeName = value.terms[0].value;
+      const placeId = searchedGeocode && searchedGeocode[0].place_id;
+      selectHandler(latLng, placeName, type, placeId);
+    },
+    [selectHandler],
+  );
+
+  const customStyle = {
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: placeValue.length ? 'black' : 'gray',
+    }),
   };
 
   return (
-    <>
-      <GooglePlacesAutocomplete
-        debounce={800}
-        selectProps={{
-          onChange: onSelect,
-          defaultInputValue: placeValue,
-          maxMenuHeight: 100,
-        }}
-      />
-    </>
+    <GooglePlacesAutocomplete
+      debounce={800}
+      selectProps={{
+        onChange: onSelect,
+        maxMenuHeight: 100,
+        placeholder: placeValue.length ? placeValue : '장소를 입력하세요',
+        styles: customStyle,
+      }}
+    />
   );
 };
 

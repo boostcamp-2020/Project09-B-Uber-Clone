@@ -1,53 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { gql, useSubscription, useMutation } from '@apollo/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
-import { Toast } from 'antd-mobile';
+import { Modal, Toast } from 'antd-mobile';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { PathPoint } from '@custom-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { PathPoint, PreData } from '@custom-types';
 import MatchingWrapper from '@components/userMatching/MatchingWrapper';
 import RequestInfo from '@components/userMatching/RequestInfo';
 import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
-
-const MAX_REQUEST_COUNT = 6;
-const MATCHING_INTERVAL = 10000;
-
-const MATCHED_TAXI = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const TAXI_LOCATION = gql`
-  subscription($id: string) {
-    driverLocationSub(taxiId: $id) {
-      lat
-      lng
-    }
-  }
-`;
+import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
+import { clearPathPoint } from '@stores/modules/pathPoint';
+import { clearPreData } from '@stores/modules/preData';
+import {
+  MATCHED_TAXI,
+  TAXI_LOCATION,
+  REQUEST_MATCH,
+  MATCHING_SUBSCRIPTION,
+  STOP_MATCHING,
+} from '@queries/user/userMatching';
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
-  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const history = useHistory();
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
-  const { loading, error, data } = useSubscription(MATCHING_SUBSCRIPTION);
+  const { loading, error } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
-  const { data: taxiLatlng, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
+  const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const [isMatchCanceled, setMatchCancel] = useState(false);
   const { loaded } = useGoogleMapApiState();
+  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
+  const preData = useSelector((state: { preData: PreData }) => state.preData);
+  const [request, setRequest] = useState({});
+  const dispatch = useDispatch();
+  const [startTime, setStartTime] = useState<string>('');
+  const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
   useEffect(() => {
     (async () => await registMatchingList())();
@@ -55,20 +47,24 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     if (taxiData?.userMatchingSub) {
+      setTaxiLocation(taxiData.userMatchingSub.location);
       setMatchState(true);
       setTaxiInfo(taxiData.userMatchingSub);
     }
-  }, [taxiData]);
+  }, [taxiData, taxiInfo]);
 
   useEffect(() => {
     if (taxiDataError && !taxiLatlngError) Toast.fail('택시 정보를 확인할 수 없습니다.');
   }, [taxiDataError]);
 
   useEffect(() => {
-    if (taxiLatlng?.driverLocationSub) {
-      setTaxiLocation(taxiLatlng);
+    if (taxiLocationData?.driverLocationSub) {
+      const taxiLocationSubData = taxiLocationData.driverLocationSub;
+      setTaxiLocation(taxiLocationSubData);
+      if (taxiLocationSubData.board) showOnBoardAlert();
+      else if (taxiLocationSubData.arrive) showArriveAlert();
     }
-  }, [taxiLatlng]);
+  }, [taxiLocationData]);
 
   useEffect(() => {
     if (taxiData && taxiLatlngError) Toast.fail('택시 위치를 확인할 수 없습니다.');
@@ -79,6 +75,7 @@ const UserMatchingPage: React.FC = () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
+
     if (!loading || isMatchCanceled) clearInterval(timer);
     return () => {
       clearInterval(timer);
@@ -92,7 +89,7 @@ const UserMatchingPage: React.FC = () => {
   }, [requestCount]);
 
   const registMatchingList = async () => {
-    const request = {
+    setRequest({
       startLocation: {
         name: pathPoint.startPointName,
         latlng: {
@@ -105,35 +102,79 @@ const UserMatchingPage: React.FC = () => {
           ...pathPoint.endPoint,
         },
       },
-    };
-
-    try {
-      const {
-        data: {
-          requestMatching: { success, message },
-        },
-      } = await requestMatch({ variables: { request } });
-      return [success, message];
-    } catch (error) {
-      console.error(error);
-      return [false, '알 수 없는 오류가 발생했습니다.'];
-    }
+    });
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const {
+          data: {
+            requestMatching: { _, __ },
+          },
+        } = await requestMatch({ variables: { request } });
+      } catch (error) {
+        console.error(error);
+        Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
+      }
+    })();
+  }, [request]);
 
   useEffect(() => {
     if (error) onErrorHandler();
   }, [error]);
 
-  const onErrorHandler = () => {
+  const onErrorHandler = useCallback(() => {
     Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
     history.push('/user/map');
-  };
+  }, []);
 
-  const onMatchSuccess = () => {
-    return <p>매칭성공</p>;
-  };
+  const saveHistory = useCallback(async () => {
+    const variables = {
+      request: request,
+      fee: preData.info.fee,
+      carModel: taxiInfo.carModel,
+      plateNumber: taxiInfo.plateNumber,
+      startTime: startTime,
+      endTime: new Date().toString(),
+    };
+    const {
+      data: { saveUserHistory: result },
+    } = await saveUserHistory({ variables });
+    return result;
+  }, [request, preData, taxiInfo, startTime]);
 
-  const cancelMatching = async () => {
+  const showOnBoardAlert = useCallback(() => {
+    setStartTime(new Date().toString());
+    const alertInstance = alertModal('탑승 완료', '5초 후 창이 닫힙니다.', modalButton(alertModal('', '').close));
+    setCurrentAlert(alertInstance);
+    setTimeout(alertInstance.close, 5000);
+  }, []);
+
+  const showArriveAlert = useCallback(async () => {
+    if (currentAlert) currentAlert.close();
+    const onClose = (goToMainTimeout: number) => () => {
+      clearTimeout(goToMainTimeout);
+      history.push('/user');
+    };
+    const { success, message } = await saveHistory();
+
+    if (success) {
+      dispatch(clearPathPoint());
+      dispatch(clearPreData());
+      const goToMainTimeout = setTimeout(() => {
+        alertInstance.close();
+        history.push('/user');
+      }, 5000);
+      const alertInstance = alertModal(
+        '목적지 도착',
+        '5초 후 메인화면으로 이동합니다.',
+        modalButton(onClose(goToMainTimeout)),
+      );
+    } else Toast.show(message);
+  }, [currentAlert, saveHistory]);
+
+  const cancelMatching = useCallback(async () => {
     try {
       const {
         data: {
@@ -141,19 +182,18 @@ const UserMatchingPage: React.FC = () => {
         },
       } = await stopMatching();
       if (!success) console.error(message);
-      console.log(success, message);
     } catch (error) {
       console.error(error);
     } finally {
       setMatchCancel(true);
       history.push('/user/map');
     }
-  };
+  }, []);
 
-  const onClickHandler = async () => {
+  const onClickHandler = useCallback(async () => {
     await cancelMatching();
     Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  };
+  }, [cancelMatching]);
 
   return (
     <>
@@ -161,7 +201,6 @@ const UserMatchingPage: React.FC = () => {
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
           {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
-          {data && onMatchSuccess()}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
@@ -170,34 +209,18 @@ const UserMatchingPage: React.FC = () => {
   );
 };
 
-const REQUEST_MATCH = gql`
-  mutation requestMatching($request: UserRequestInput) {
-    requestMatching(request: $request) {
-      success
-      message
-    }
-  }
-`;
+const alertModal = Modal.alert;
+const modalButton = (cb: any) => {
+  return [
+    {
+      text: '확인',
+      onPress: cb,
+      style: 'default',
+    },
+  ];
+};
 
-const MATCHING_SUBSCRIPTION = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;
-
-const STOP_MATCHING = gql`
-  mutation {
-    stopMatching {
-      success
-      message
-    }
-  }
-`;
+const MAX_REQUEST_COUNT = 6;
+const MATCHING_INTERVAL = 10000;
 
 export default UserMatchingPage;

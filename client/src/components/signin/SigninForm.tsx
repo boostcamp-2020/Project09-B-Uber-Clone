@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import LoginLabel from './SigninLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
@@ -8,13 +8,13 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
-  const onChangeId = (value: string) => {
+  const onChangeId = useCallback((value: string) => {
     setId(value);
-  };
+  }, []);
 
-  const onChangePassword = (value: string) => {
+  const onChangePassword = useCallback((value: string) => {
     setPassword(value);
-  };
+  }, []);
 
   const onClickHandler = async () => {
     if (!id.length || !password.length) {

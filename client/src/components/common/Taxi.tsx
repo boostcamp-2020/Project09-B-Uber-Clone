@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 interface Props {
   size: string;
@@ -6,7 +7,7 @@ interface Props {
 
 const Marker: React.FC<Props> = ({ size }) => {
   return (
-    <div>
+    <Wrapper>
       <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width={size} height={size} viewBox="0 0 172 172">
         <defs>
           <linearGradient
@@ -17,8 +18,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-1_j2SfqDojO0h4_gr1"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="254.41667"
@@ -28,8 +29,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-2_j2SfqDojO0h4_gr2"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="297.41667"
@@ -39,8 +40,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-3_j2SfqDojO0h4_gr3"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="232.91667"
@@ -50,8 +51,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-4_j2SfqDojO0h4_gr4"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="275.91667"
@@ -61,8 +62,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-5_j2SfqDojO0h4_gr5"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="1999.93001"
@@ -72,8 +73,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-6_j2SfqDojO0h4_gr6"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="905.67319"
@@ -83,8 +84,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-7_j2SfqDojO0h4_gr7"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="-18.08867"
@@ -94,8 +95,8 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-8_j2SfqDojO0h4_gr8"
           >
-            <stop offset="0" stop-color="#e5c875"></stop>
-            <stop offset="1" stop-color="#fbbc04"></stop>
+            <stop offset="0" stopColor="#e5c875"></stop>
+            <stop offset="1" stopColor="#fbbc04"></stop>
           </linearGradient>
           <linearGradient
             x1="86"
@@ -105,27 +106,27 @@ const Marker: React.FC<Props> = ({ size }) => {
             gradientUnits="userSpaceOnUse"
             id="color-9_j2SfqDojO0h4_gr9"
           >
-            <stop offset="0.002" stop-color="#ffffff"></stop>
-            <stop offset="0.013" stop-color="#a0cde5"></stop>
-            <stop offset="0.874" stop-color="#ffffff"></stop>
-            <stop offset="1" stop-color="#ffffff"></stop>
+            <stop offset="0.002" stopColor="#ffffff"></stop>
+            <stop offset="0.013" stopColor="#a0cde5"></stop>
+            <stop offset="0.874" stopColor="#ffffff"></stop>
+            <stop offset="1" stopColor="#ffffff"></stop>
           </linearGradient>
         </defs>
         <g transform="">
           <g
             fill="none"
-            fill-rule="nonzero"
+            fillRule="nonzero"
             stroke="none"
-            stroke-width="1"
-            stroke-linecap="butt"
-            stroke-linejoin="miter"
-            stroke-miterlimit="10"
-            stroke-dasharray=""
-            stroke-dashoffset="0"
-            font-family="none"
-            font-weight="none"
-            font-size="none"
-            text-anchor="none"
+            strokeWidth="1"
+            strokeLinecap="butt"
+            strokeLinejoin="miter"
+            strokeMiterlimit="10"
+            strokeDasharray=""
+            strokeDashoffset="0"
+            fontFamily="none"
+            fontWeight="none"
+            fontSize="none"
+            textAnchor="none"
           >
             <path d="M0,172v-172h172v172z" fill="none"></path>
             <path d="" fill="none"></path>
@@ -207,8 +208,12 @@ const Marker: React.FC<Props> = ({ size }) => {
           </g>
         </g>
       </svg>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  margin: 0 40px 0 10px;
+`;
 
 export default Marker;

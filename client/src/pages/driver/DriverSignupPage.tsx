@@ -1,48 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Modal } from 'antd-mobile';
 import DriverSignupForm from '@components/driverSignup/DriverSignupForm';
-
-const ADD_DRIVER = gql`
-  mutation DriverSignup(
-    $id: String!
-    $password: String!
-    $name: String!
-    $phone: String!
-    $licenseNumber: String!
-    $carModel: String!
-    $plateNumber: String!
-    $carColor: String!
-  ) {
-    driverSignup(
-      id: $id
-      password: $password
-      name: $name
-      phone: $phone
-      licenseNumber: $licenseNumber
-      carModel: $carModel
-      plateNumber: $plateNumber
-      carColor: $carColor
-    ) {
-      success
-      message
-    }
-  }
-`;
+import { ADD_DRIVER } from '@queries/driver/driverSignup';
 
 const DriverSignupPage: React.FC = () => {
   const [modalStatus, setModalStatus] = useState({ visible: false, message: '' });
   const [addDriver] = useMutation(ADD_DRIVER);
   const history = useHistory();
 
-  const showAlert = (message: string) => {
+  const showAlert = useCallback((message: string) => {
     setModalStatus({ visible: true, message });
-  };
+  }, []);
 
-  const closeAlert = () => {
+  const closeAlert = useCallback(() => {
     setModalStatus({ visible: false, message: '' });
-  };
+  }, []);
 
   return (
     <>

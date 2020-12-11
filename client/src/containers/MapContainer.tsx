@@ -26,6 +26,10 @@ const MapContainer: React.FC<Props> = ({ isMatched = false, taxiLocation = { lat
     return () => clearInterval(gpsInterval);
   }, []);
 
+  useEffect(() => {
+    if (taxiLocation) setCenter(taxiLocation);
+  }, [isMatched]);
+
   const initializeLocation = async () => {
     const startLocation: Location = await getLocation();
     dispatch(updateLocation(startLocation));
