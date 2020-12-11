@@ -3,6 +3,8 @@ enum Role {
   DRIVER
 }
 
+directive @auth(requires: Role!) on FIELD_DEFINITION
+
 type Query {
   isAuthorizedUser: Boolean @auth(requires: USER)
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
@@ -32,7 +34,6 @@ type Subscription {
   driverLocationSub(taxiId: String): DriverStatus @auth(requires: USER)
   driverServiceSub: UserRequestToDriver @auth(requires: DRIVER)
 }
-
 type Response {
   success: Boolean!
   message: String
@@ -126,5 +127,3 @@ input HistoryInfo {
   carModel: String!
   plateNumber: String!
 }
-
-directive @auth(requires: Role!) on FIELD_DEFINITION
