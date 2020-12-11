@@ -43,6 +43,7 @@ const HistoryBox: React.FC<HistoryType> = ({
 };
 
 const Wrapper = styled.div`
+  min-width: 100%;
   .am-card-body {
     padding: 0 15px;
   }
