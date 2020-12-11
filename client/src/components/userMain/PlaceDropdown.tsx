@@ -4,10 +4,6 @@ import { updateStartPoint, updateEndPoint } from '@stores/modules/pathPoint';
 import { useDispatch } from 'react-redux';
 import { Location } from '@custom-types';
 
-/**
- * https://tintef.github.io/react-google-places-autocomplete 참고
- */
-
 interface dropdownProps {
   defalutPlace?: string;
   type: string;
@@ -35,16 +31,14 @@ const PlaceDropdown: React.FC<dropdownProps> = ({ defalutPlace = '', type }: dro
   );
 
   return (
-    <>
-      <GooglePlacesAutocomplete
-        debounce={800}
-        selectProps={{
-          onChange: onSelect,
-          defaultInputValue: placeValue,
-          maxMenuHeight: 100,
-        }}
-      />
-    </>
+    <GooglePlacesAutocomplete
+      debounce={800}
+      selectProps={{
+        onChange: onSelect,
+        defaultInputValue: placeValue,
+        maxMenuHeight: 100,
+      }}
+    />
   );
 };
 
