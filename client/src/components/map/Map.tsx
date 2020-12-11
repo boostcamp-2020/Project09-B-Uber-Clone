@@ -4,17 +4,17 @@ import Marker from '@components/common/Marker';
 import TaxiMarker from '@components/common/TaxiMarker';
 import { Location, PathPoint } from '@custom-types';
 import { updatePath } from '@stores/modules/preData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useGoogleMapApiState, useGoogleMapApiDispatch } from '../../contexts/GoogleMapProvider';
 
 const Map: React.FC<{
-  center: Location;
   location: Location;
   pathPoint: PathPoint;
   isMatched: boolean;
   taxiLocation: Location;
-}> = ({ center, location, pathPoint, isMatched, taxiLocation }) => {
+}> = ({ location, pathPoint, isMatched, taxiLocation }) => {
   const { directionRenderer, maps } = useGoogleMapApiState();
+  const center = useSelector((state: { center: Location }) => state.center, shallowEqual);
   const mapDispatch = useGoogleMapApiDispatch();
   const dispatch = useDispatch();
   const renderDirection: (result: google.maps.DirectionsResult, status: google.maps.DirectionsStatus) => void = (
