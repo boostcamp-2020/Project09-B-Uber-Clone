@@ -10,13 +10,14 @@ const WRONG_PASSWORD = { success: false, message: '잘못된 비밀번호입니�
 const WRONG_ACCESS = { success: false, message: '유효하지 않은 접근입니다.' };
 
 export default {
-  userSignup: async (_, args, { dataSources, res }) => {
+  userSignup: async (_, { info }, { dataSources, res }) => {
+    const { id, password } = info;
     try {
-      const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
+      const hashedPassword = await bcrypt.hash(password, Number(Config.BCRYPT_SALT_ROUNDS));
       const userSchema = dataSources.model('User');
-      const user = await userSchema.findOne({ id: args.id });
+      const user = await userSchema.findOne({ id });
       if (user) return DUPLICATION_ERROR;
-      const newUser = new userSchema({ ...args, password: hashedPassword });
+      const newUser = new userSchema({ ...info, password: hashedPassword });
       const result = await newUser.save();
 
       if (!result) return SIGNUP_ERROR;

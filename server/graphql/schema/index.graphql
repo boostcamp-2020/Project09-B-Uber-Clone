@@ -11,7 +11,7 @@ type Query {
 }
 
 type Mutation {
-  userSignup(id: String!, password: String!, name: String!, phone: String!): Response
+  userSignup(info: UserSignupInfo!): Response
   userSignin(info: SigninInfo!): Response
   driverSignup(info: DriverSignupInfo!): Response
   driverSignin(info: SigninInfo!): Response
@@ -82,6 +82,12 @@ type UserHistoryResult {
 input SigninInfo {
   id: String!
   password: String!
+}
+input UserSignupInfo {
+  id: String!
+  password: String!
+  name: String!
+  phone: String!
 }
 input DriverSignupInfo {
   id: String!

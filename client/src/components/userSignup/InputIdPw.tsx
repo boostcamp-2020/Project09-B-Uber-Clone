@@ -24,14 +24,14 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
 
   const handleSubmit = async () => {
     const [phone, name] = [props.phone, props.name];
-    const variables = { id, password, name, phone };
+    const info = { id, password, name, phone };
     try {
       const {
         data: {
           userSignup: { success, message },
         },
       } = await addUser({
-        variables,
+        variables: { info },
       });
       if (success) history.push('/user/map');
       else showAlert(message);
