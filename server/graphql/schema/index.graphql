@@ -4,7 +4,6 @@ enum Role {
 }
 
 type Query {
-  users: String
   isAuthorizedUser: Boolean @auth(requires: USER)
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
   isDriverWaiting: Boolean @auth(requires: DRIVER)
@@ -78,7 +77,6 @@ input UserRequestInput {
 }
 
 type Mutation {
-  test(text: String): Boolean
   userSignup(id: String!, password: String!, name: String!, phone: String!): Response
   userSignin(id: String!, password: String!): Response
   driverSignup(
