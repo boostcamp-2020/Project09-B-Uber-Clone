@@ -28,14 +28,14 @@ export default {
       return SIGNUP_ERROR;
     }
   },
-  driverSignup: async (_, args, { dataSources, res }) => {
+  driverSignup: async (_, { info }, { dataSources, res }) => {
     try {
-      const hashedPassword = await bcrypt.hash(args.password, Number(Config.BCRYPT_SALT_ROUNDS));
       const driverSchema = dataSources.model('Driver');
-      const driver = await driverSchema.findOne({ id: args.id });
+      const driver = await driverSchema.findOne({ id: info.id });
       if (driver) return DUPLICATION_ERROR;
 
-      const newDriver = new driverSchema({ ...args, password: hashedPassword });
+      const hashedPassword = await bcrypt.hash(info.password, Number(Config.BCRYPT_SALT_ROUNDS));
+      const newDriver = new driverSchema({ ...info, password: hashedPassword });
       const result = await newDriver.save();
       if (!result) SIGNUP_ERROR;
 
