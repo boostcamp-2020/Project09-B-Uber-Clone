@@ -80,7 +80,6 @@ input UserRequestInput {
 type Mutation {
   test(text: String): Boolean
   userSignup(id: String!, password: String!, name: String!, phone: String!): Response
-  userSignin(id: String!, password: String!): Response
   driverSignup(
     id: String!
     password: String!
@@ -91,7 +90,7 @@ type Mutation {
     plateNumber: String!
     carColor: String!
   ): Response
-  driverSignin(id: String!, password: String!): Response
+  signin(type: String!, id: String!, password: String!): Response
   signout(type: String!): Response
   requestMatching(request: UserRequestInput): Response @auth(requires: USER)
   stopMatching: Response @auth(requires: USER)
