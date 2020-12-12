@@ -70,7 +70,6 @@ export interface PathPoint {
 
 export interface LoginFormPropsType {
   signin: any;
-  history: any;
   userType: string;
 }
 export interface Info {
