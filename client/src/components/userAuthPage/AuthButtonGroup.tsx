@@ -16,6 +16,7 @@ const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, userT
           history.push(`/${userType}/signup`);
           return;
         }}
+        data-test-id={'sign-up-btn'}
       >
         회원가입
       </Button>
@@ -27,6 +28,7 @@ const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, userT
           history.push(`/${userType}/signin`);
           return;
         }}
+        data-test-id={'sign-in-btn'}
       >
         로그인
       </Button>

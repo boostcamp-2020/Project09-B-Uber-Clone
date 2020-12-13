@@ -37,10 +37,17 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
   return (
     <Form>
       <LoginLabel>아이디를 입력하세요</LoginLabel>
-      <InputItem type="text" placeholder="아이디" value={id} onChange={onChangeId} required />
+      <InputItem type="text" placeholder="아이디" value={id} onChange={onChangeId} required data-test-id={'id-input'} />
       <LoginLabel>비밀번호를 입력하세요</LoginLabel>
-      <InputItem type="password" placeholder="비밀번호" value={password} onChange={onChangePassword} required />
-      <Button type="primary" onClick={onClickHandler} {...props}>
+      <InputItem
+        type="password"
+        placeholder="비밀번호"
+        value={password}
+        onChange={onChangePassword}
+        required
+        data-test-id={'pw-input'}
+      />
+      <Button type="primary" onClick={onClickHandler} data-test-id={'sign-in-btn'} {...props}>
         로그인
       </Button>
     </Form>
