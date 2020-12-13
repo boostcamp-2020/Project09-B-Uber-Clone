@@ -3,8 +3,10 @@ import LoginLabel from './SigninLabel';
 import styled from 'styled-components';
 import { InputItem, Button } from 'antd-mobile';
 import { LoginFormPropsType } from '@custom-types';
+import { useHistory } from 'react-router-dom';
 
 const LoginForm: React.FC<LoginFormPropsType> = (props) => {
+  const history = useHistory();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,7 +31,7 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
         },
       } = await props.signin({ variables: { info } });
 
-      if (success) props.history.push(isUser ? '/user/map' : '/driver/main');
+      if (success) history.push(isUser ? '/user/map' : '/driver/main');
       else alert(message);
     }
   };
