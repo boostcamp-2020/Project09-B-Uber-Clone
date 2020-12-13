@@ -25,12 +25,12 @@ const LoginForm: React.FC<LoginFormPropsType> = ({ type }) => {
     if (!id.length || !password.length) {
       alert('아이디와 비밀번호를 모두 입력하세요');
     } else {
-      const variables = { type, id, password };
+      const info = { type, id, password };
       const {
         data: {
           signin: { success, message },
         },
-      } = await signin({ variables });
+      } = await signin({ variables: { info } });
 
       if (success) history.push(isUser ? '/user/map' : '/driver/main');
       else alert(message);
