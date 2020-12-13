@@ -48,15 +48,15 @@ export default {
       return SIGNUP_ERROR;
     }
   },
-  signin: async (_, { type, id, password }, { dataSources, res }) => {
+  signin: async (_, { info }, { dataSources, res }) => {
     try {
-      const schema = type === 'user' ? dataSources.model('User') : dataSources.model('Driver');
-      const result = await schema.findOne({ id });
+      const schema = info.type === 'user' ? dataSources.model('User') : dataSources.model('Driver');
+      const result = await schema.findOne({ id: info.id });
       if (result) {
-        if (await bcrypt.compare(password, result.password)) {
+        if (await bcrypt.compare(info.password, result.password)) {
           const token = jwt.sign({ id: result._id }, Config.JWT_SECRET);
-          res.cookie(`${type}Token`, token, { httpOnly: true, signed: true });
-          logger.info(`${id} ${type} logined!`);
+          res.cookie(`${info.type}Token`, token, { httpOnly: true, signed: true });
+          logger.info(`${info.id} ${info.type} logined!`);
           return { success: true };
         }
         return { success: false, message: '잘못된 비밀번호입니다.' };
