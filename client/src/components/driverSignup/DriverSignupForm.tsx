@@ -126,7 +126,7 @@ const DriverSignupForm = withFormik({
   handleSubmit: async (values, { props, setSubmitting }: any) => {
     try {
       const { id, password, userName: name, phone, licenseNumber, carModel, plateNumber, carColor } = values;
-      const variables = { id, password, name, phone, licenseNumber, carModel, plateNumber, carColor };
+      const info = { id, password, name, phone, licenseNumber, carModel, plateNumber, carColor };
 
       setSubmitting(true);
       const {
@@ -134,7 +134,7 @@ const DriverSignupForm = withFormik({
           driverSignup: { success, message },
         },
       } = await props.addDriver({
-        variables,
+        variables: { info },
       });
       setSubmitting(false);
 

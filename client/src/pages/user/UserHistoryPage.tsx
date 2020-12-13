@@ -54,14 +54,14 @@ const UserHistoryPage: React.FC = () => {
       ) : (
         <NoHistory>이용내역이 없습니다</NoHistory>
       )}
-      <PaginationButtonGrup>
+      <PaginationButtonGroup>
         <Button disabled={buttonDisabled.prev} onClick={onPrev}>
           최근내역
         </Button>
         <Button disabled={buttonDisabled.next} onClick={onNext}>
           이전내역
         </Button>
-      </PaginationButtonGrup>
+      </PaginationButtonGroup>
       <ButtonDiv>
         <Button
           shape="circle"
@@ -95,7 +95,7 @@ const Title = styled.h1`
   margin: 25px 0 10px 0;
 `;
 
-const PaginationButtonGrup = styled.div`
+const PaginationButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
