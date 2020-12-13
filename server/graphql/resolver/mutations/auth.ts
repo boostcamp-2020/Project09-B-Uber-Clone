@@ -48,44 +48,23 @@ export default {
       return SIGNUP_ERROR;
     }
   },
-  userSignin: async (_, { info }, { dataSources, res }) => {
-    const { id, password } = info;
+  signin: async (_, { type, id, password }, { dataSources, res }) => {
     try {
-      const userSchema = dataSources.model('User');
-      const user = await userSchema.findOne({ id });
-      if (user) {
-        if (await bcrypt.compare(password, user.password)) {
-          const token = jwt.sign({ id: user._id }, Config.JWT_SECRET);
-          res.cookie('userToken', token, { httpOnly: true, signed: true });
-          logger.info(`${id} user logined!`);
+      const schema = type === 'user' ? dataSources.model('User') : dataSources.model('Driver');
+      const result = await schema.findOne({ id });
+      if (result) {
+        if (await bcrypt.compare(password, result.password)) {
+          const token = jwt.sign({ id: result._id }, Config.JWT_SECRET);
+          res.cookie(`${type}Token`, token, { httpOnly: true, signed: true });
+          logger.info(`${id} ${type} logined!`);
           return { success: true };
         }
-        return WRONG_PASSWORD;
+        return { success: false, message: '잘못된 비밀번호입니다.' };
       }
-      return WRONG_ID;
-    } catch (err) {
-      logger.info('User login error!');
-      return WRONG_ACCESS;
-    }
-  },
-  driverSignin: async (_, { info }, { dataSources, res }) => {
-    const { id, password } = info;
-    try {
-      const driverSchema = dataSources.model('Driver');
-      const driver = await driverSchema.findOne({ id });
-      if (driver) {
-        if (await bcrypt.compare(password, driver.password)) {
-          const token = jwt.sign({ id: driver._id }, Config.JWT_SECRET);
-          res.cookie('driverToken', token, { httpOnly: true, signed: true });
-          logger.info(`${id} driver logined!`);
-          return { success: true };
-        }
-        return WRONG_PASSWORD;
-      }
-      return WRONG_PASSWORD;
+      return { success: false, message: '존재하지 않는 아이디입니다.' };
     } catch (err) {
       logger.info('Driver login error!');
-      return WRONG_ACCESS;
+      return { success: false, message: '유효하지 않은 접근입니다.' };
     }
   },
   signout: async (_, { type }, { dataSources, req, res }) => {
