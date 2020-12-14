@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Matching from './Matching';
 import MatchingCancelButton from './MatchingCancelButton';
 
-const MatchingWrapper: React.FC<{ onClickHandler: () => void }> = ({ onClickHandler }) => {
+const MatchingWrapper: React.FC<{ cancelMatching: () => Promise<void> }> = ({ cancelMatching }) => {
   return (
     <CenterDiv>
       <ColumnDiv>
         <Matching />
-        <MatchingCancelButton onClickHandler={onClickHandler} />
+        <MatchingCancelButton cancelMatching={cancelMatching} />
       </ColumnDiv>
     </CenterDiv>
   );

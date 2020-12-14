@@ -21,10 +21,13 @@ import {
 } from '@queries/user/userMatching';
 
 const UserMatchingPage: React.FC = () => {
-  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
+  const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
+  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
   const { loading, error } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
@@ -32,12 +35,8 @@ const UserMatchingPage: React.FC = () => {
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
-  const [isMatchCanceled, setMatchCancel] = useState(false);
   const { loaded } = useGoogleMapApiState();
-  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
-  const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [request, setRequest] = useState({});
-  const dispatch = useDispatch();
   const [startTime, setStartTime] = useState<string>('');
   const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
@@ -76,7 +75,7 @@ const UserMatchingPage: React.FC = () => {
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
 
-    if (!loading || isMatchCanceled) clearInterval(timer);
+    // if (!loading || isMatchCanceled) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -185,22 +184,16 @@ const UserMatchingPage: React.FC = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setMatchCancel(true);
       history.push('/user/map');
     }
   }, []);
-
-  const onClickHandler = useCallback(async () => {
-    await cancelMatching();
-    Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  }, [cancelMatching]);
 
   return (
     <>
       {loaded && (
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
-          {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
+          {loading && <MatchingWrapper cancelMatching={cancelMatching} />}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>
