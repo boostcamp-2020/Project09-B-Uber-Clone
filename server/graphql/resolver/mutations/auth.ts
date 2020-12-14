@@ -59,12 +59,12 @@ export default {
           logger.info(`${info.id} ${info.type} logined!`);
           return { success: true };
         }
-        return { success: false, message: '잘못된 비밀번호입니다.' };
+        return WRONG_PASSWORD;
       }
-      return { success: false, message: '존재하지 않는 아이디입니다.' };
+      return WRONG_ID;
     } catch (err) {
       logger.info('Driver login error!');
-      return { success: false, message: '유효하지 않은 접근입니다.' };
+      return WRONG_ACCESS;
     }
   },
   signout: async (_, { type }, { dataSources, req, res }) => {
