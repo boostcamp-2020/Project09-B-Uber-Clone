@@ -70,8 +70,8 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiLatlngError]);
 
   useEffect(() => {
-    const timer = setInterval(async () => {
-      await registMatchingList();
+    const timer = setInterval(() => {
+      registMatchingList();
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
 
@@ -87,7 +87,7 @@ const UserMatchingPage: React.FC = () => {
     };
   }, [requestCount]);
 
-  const registMatchingList = async () => {
+  const registMatchingList = () => {
     setRequest({
       startLocation: {
         name: pathPoint.startPointName,

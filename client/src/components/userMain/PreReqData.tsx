@@ -18,7 +18,7 @@ const PreRequestData: React.FC<PreRequestDataPropsType> = ({ time, fee }) => {
         </Div>
         <Div>
           <p>예상요금</p>
-          <P>{fee}원</P>
+          <P>{fee.toLocaleString()}원</P>
         </Div>
         <hr />
         <RequestButton />
