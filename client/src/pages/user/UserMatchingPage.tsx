@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
@@ -37,9 +37,8 @@ const UserMatchingPage: React.FC = () => {
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const { loaded } = useGoogleMapApiState();
-  // const [request, setRequest] = useState({});
-  const [startTime, setStartTime] = useState<string>('');
   const [currentAlert, setCurrentAlert] = useState<any>(undefined);
+  const startTime = useRef('');
 
   useEffect(() => {
     registMatchingList();
@@ -117,17 +116,17 @@ const UserMatchingPage: React.FC = () => {
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
       plateNumber: taxiInfo.plateNumber,
-      startTime: startTime,
+      startTime: startTime.current,
       endTime: new Date().toString(),
     };
     const {
       data: { saveUserHistory: result },
     } = await saveUserHistory({ variables: { info } });
     return result;
-  }, [preData, taxiInfo, startTime]);
+  }, [preData, taxiInfo]);
 
   const showOnBoardAlert = useCallback(() => {
-    setStartTime(new Date().toString());
+    startTime.current = new Date().toString();
     const alertInstance = alertModal('탑승 완료', '5초 후 창이 닫힙니다.', modalButton(alertModal('', '').close));
     setCurrentAlert(alertInstance);
     setTimeout(alertInstance.close, 5000);
