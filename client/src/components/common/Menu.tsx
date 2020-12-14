@@ -43,11 +43,9 @@ const MenuButton: React.FC<MenuPropsType> = ({ type }) => {
   }, []);
 
   const historyHandler = () => {
-    history.push('/user/history');
+    if (type === 'user') history.push('/user/history');
+    else modalAlert('기능 준비중입니다', '', [{ text: 'OK' }]);
   };
-
-  const bigBtnStyle = { width: '45px', height: '45px', fontSize: '23px' };
-  const smallBtnStyle = { width: '40px', height: '40px', fontSize: '20px' };
 
   return (
     <Overlay>
@@ -83,4 +81,8 @@ const ButtonGroup = styled.div`
   height: 100px;
   justify-content: space-evenly;
 `;
+
+const bigBtnStyle = { width: '45px', height: '45px', fontSize: '23px' };
+const smallBtnStyle = { width: '40px', height: '40px', fontSize: '20px' };
+
 export default MenuButton;
