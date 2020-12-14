@@ -22,8 +22,8 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   });
   const [addUser] = useMutation(ADD_USER);
 
-  const handleSubmit = async () => {
-    const [phone, name] = [props.phone, props.name];
+  const handleSubmit = useCallback(async () => {
+    const { phone, name } = props;
     const info = { id, password, name, phone };
     try {
       const {
@@ -38,7 +38,7 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
     } catch (e) {
       showAlert(`오류가 발생했습니다, ${e}`);
     }
-  };
+  }, [props, id, password]);
 
   return (
     <>
