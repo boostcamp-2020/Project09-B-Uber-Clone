@@ -14,9 +14,8 @@ type Query {
 
 type Mutation {
   userSignup(info: UserSignupInfo!): Response
-  userSignin(info: SigninInfo!): Response
   driverSignup(info: DriverSignupInfo!): Response
-  driverSignin(info: SigninInfo!): Response
+  signin(info: SigninInfo!): Response
   signout(type: String!): Response
   requestMatching(request: UserRequestInput): Response @auth(requires: USER)
   stopMatching: Response @auth(requires: USER)
@@ -81,6 +80,7 @@ type UserHistoryResult {
 }
 
 input SigninInfo {
+  type: String!
   id: String!
   password: String!
 }
