@@ -12,6 +12,7 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
 import { clearPathPoint } from '@stores/modules/pathPoint';
 import { clearPreData } from '@stores/modules/preData';
+import pathPointToRequest from '@utils/pathPointToRequest';
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -36,12 +37,12 @@ const UserMatchingPage: React.FC = () => {
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
   const { loaded } = useGoogleMapApiState();
-  const [request, setRequest] = useState({});
+  // const [request, setRequest] = useState({});
   const [startTime, setStartTime] = useState<string>('');
   const [currentAlert, setCurrentAlert] = useState<any>(undefined);
 
   useEffect(() => {
-    (async () => await registMatchingList())();
+    registMatchingList();
   }, []);
 
   useEffect(() => {
@@ -87,37 +88,19 @@ const UserMatchingPage: React.FC = () => {
     };
   }, [requestCount]);
 
-  const registMatchingList = () => {
-    setRequest({
-      startLocation: {
-        name: pathPoint.startPointName,
-        latlng: {
-          ...pathPoint.startPoint,
+  const registMatchingList = async () => {
+    const request = pathPointToRequest(pathPoint);
+    try {
+      const {
+        data: {
+          requestMatching: { _, __ },
         },
-      },
-      endLocation: {
-        name: pathPoint.endPointName,
-        latlng: {
-          ...pathPoint.endPoint,
-        },
-      },
-    });
+      } = await requestMatch({ variables: { request } });
+    } catch (error) {
+      console.error(error);
+      Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
+    }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const {
-          data: {
-            requestMatching: { _, __ },
-          },
-        } = await requestMatch({ variables: { request } });
-      } catch (error) {
-        console.error(error);
-        Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
-      }
-    })();
-  }, [request]);
 
   useEffect(() => {
     if (error) onErrorHandler();
@@ -130,7 +113,7 @@ const UserMatchingPage: React.FC = () => {
 
   const saveHistory = useCallback(async () => {
     const info = {
-      request: request,
+      request: pathPointToRequest(pathPoint),
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
       plateNumber: taxiInfo.plateNumber,
@@ -141,7 +124,7 @@ const UserMatchingPage: React.FC = () => {
       data: { saveUserHistory: result },
     } = await saveUserHistory({ variables: { info } });
     return result;
-  }, [request, preData, taxiInfo, startTime]);
+  }, [preData, taxiInfo, startTime]);
 
   const showOnBoardAlert = useCallback(() => {
     setStartTime(new Date().toString());
