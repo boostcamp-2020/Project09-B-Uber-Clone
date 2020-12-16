@@ -3,14 +3,36 @@ enum Role {
   DRIVER
 }
 
+directive @auth(requires: Role!) on FIELD_DEFINITION
+
 type Query {
-  users: String
   isAuthorizedUser: Boolean @auth(requires: USER)
   isAuthorizedDriver: Boolean @auth(requires: DRIVER)
   isDriverWaiting: Boolean @auth(requires: DRIVER)
   userHistory(page: Int): [UserHistoryResult] @auth(requires: USER)
 }
 
+type Mutation {
+  userSignup(info: UserSignupInfo!): Response
+  driverSignup(info: DriverSignupInfo!): Response
+  signin(info: SigninInfo!): Response
+  signout(type: String!): Response
+  requestMatching(request: UserRequestInput): Response @auth(requires: USER)
+  stopMatching: Response @auth(requires: USER)
+  startService: Response @auth(requires: DRIVER)
+  stopService: Response @auth(requires: DRIVER)
+  updateDriverLocation(location: LatLngInput, uid: String): Response @auth(requires: DRIVER)
+  approveMatching(uid: String): Response @auth(requires: DRIVER)
+  userOnBoard(uid: String): Response @auth(requires: DRIVER)
+  saveUserHistory(info: HistoryInfo!): Response @auth(requires: USER)
+  arriveDestination(uid: String): Response @auth(requires: DRIVER)
+}
+
+type Subscription {
+  userMatchingSub: MatchedTaxi @auth(requires: USER)
+  driverLocationSub(taxiId: String): DriverStatus @auth(requires: USER)
+  driverServiceSub: UserRequestToDriver @auth(requires: DRIVER)
+}
 type Response {
   success: Boolean!
   message: String
@@ -57,6 +79,27 @@ type UserHistoryResult {
   plateNumber: String
 }
 
+input SigninInfo {
+  type: String!
+  id: String!
+  password: String!
+}
+input UserSignupInfo {
+  id: String!
+  password: String!
+  name: String!
+  phone: String!
+}
+input DriverSignupInfo {
+  id: String!
+  password: String!
+  name: String!
+  phone: String!
+  licenseNumber: String!
+  carModel: String!
+  plateNumber: String!
+  carColor: String!
+}
 input LatLngInput {
   lat: Float
   lng: Float
@@ -76,45 +119,11 @@ input UserRequestInput {
   startLocation: LocationInfoInput
   endLocation: LocationInfoInput
 }
-
-type Mutation {
-  test(text: String): Boolean
-  userSignup(id: String!, password: String!, name: String!, phone: String!): Response
-  userSignin(id: String!, password: String!): Response
-  driverSignup(
-    id: String!
-    password: String!
-    name: String!
-    phone: String!
-    licenseNumber: String!
-    carModel: String!
-    plateNumber: String!
-    carColor: String!
-  ): Response
-  driverSignin(id: String!, password: String!): Response
-  signout(type: String!): Response
-  requestMatching(request: UserRequestInput): Response @auth(requires: USER)
-  stopMatching: Response @auth(requires: USER)
-  startService: Response @auth(requires: DRIVER)
-  stopService: Response @auth(requires: DRIVER)
-  updateDriverLocation(location: LatLngInput, uid: String): Response @auth(requires: DRIVER)
-  approveMatching(uid: String): Response @auth(requires: DRIVER)
-  userOnBoard(uid: String): Response @auth(requires: DRIVER)
-  saveUserHistory(
-    request: UserRequestInput!
-    fee: Int!
-    startTime: String!
-    endTime: String!
-    carModel: String!
-    plateNumber: String!
-  ): Response @auth(requires: USER)
-  arriveDestination(uid: String): Response @auth(requires: DRIVER)
+input HistoryInfo {
+  request: UserRequestInput!
+  fee: Int!
+  startTime: String!
+  endTime: String!
+  carModel: String!
+  plateNumber: String!
 }
-
-type Subscription {
-  userMatchingSub: MatchedTaxi @auth(requires: USER)
-  driverLocationSub(taxiId: String): DriverStatus @auth(requires: USER)
-  driverServiceSub: UserRequestToDriver @auth(requires: DRIVER)
-}
-
-directive @auth(requires: Role!) on FIELD_DEFINITION

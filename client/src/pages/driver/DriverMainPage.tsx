@@ -8,7 +8,7 @@ import { useQuery } from '@apollo/client';
 import Loading from '@components/common/Loading';
 
 const DriverMainPage: React.FC = () => {
-  const { loading, error, data } = useQuery(CHECK_IS_WAITING);
+  const { loading, data } = useQuery(CHECK_IS_WAITING);
   const [isWaiting, setIsWaiting] = useState(false);
 
   useEffect(() => {

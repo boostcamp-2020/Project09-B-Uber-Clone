@@ -130,7 +130,7 @@ const UserMatchingPage: React.FC = () => {
   }, []);
 
   const saveHistory = useCallback(async () => {
-    const variables = {
+    const info = {
       request: request,
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
@@ -140,7 +140,7 @@ const UserMatchingPage: React.FC = () => {
     };
     const {
       data: { saveUserHistory: result },
-    } = await saveUserHistory({ variables });
+    } = await saveUserHistory({ variables: { info } });
     return result;
   }, [request, preData, taxiInfo, startTime]);
 

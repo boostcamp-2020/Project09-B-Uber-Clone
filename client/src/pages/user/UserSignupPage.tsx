@@ -12,10 +12,9 @@ const UserSignupPage: React.FC = () => {
 
   return (
     <Div>
-      <H2>
-        환영해요,
-        <br /> 택시자버입니다.
-      </H2>
+      <h2>
+        환영해요, <br /> 택시자버입니다.
+      </h2>
       <InputPhoneNum page={page} setNextPage={setNextPage} phone={phone} setPhone={setPhone} />
       <InputName page={page} setNextPage={setNextPage} name={name} setName={setName} />
       <InputIdPw page={page} phone={phone} name={name} />
@@ -27,11 +26,10 @@ const Div = styled.div`
   flex-direction: column;
   height: 100vh;
   justify-content: space-around;
+  & h2 {
+    margin: 30% 5%;
+    font-size: 25px;
+    font-weight: 700;
+  }
 `;
-const H2 = styled.h2`
-  margin: 30% 5%;
-  font-size: 25px;
-  font-weight: 700;
-`;
-
 export default UserSignupPage;
