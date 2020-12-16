@@ -22,22 +22,8 @@ export const GET_USER_HISTORY = gql`
 `;
 
 export const SAVE_USER_HISTORY = gql`
-  mutation saveUserHistory(
-    $request: UserRequestInput!
-    $fee: Int!
-    $carModel: String!
-    $plateNumber: String!
-    $startTime: String!
-    $endTime: String!
-  ) {
-    saveUserHistory(
-      request: $request
-      fee: $fee
-      startTime: $startTime
-      endTime: $endTime
-      carModel: $carModel
-      plateNumber: $plateNumber
-    ) {
+  mutation saveUserHistory($info: HistoryInfo!) {
+    saveUserHistory(info: $info) {
       success
       message
     }

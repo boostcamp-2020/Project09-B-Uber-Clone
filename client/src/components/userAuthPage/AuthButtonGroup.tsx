@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Button, WhiteSpace } from 'antd-mobile';
+import { Button } from 'antd-mobile';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface Props {
@@ -9,33 +8,16 @@ interface Props {
 
 const AuthButtonGroup: React.FC<RouteComponentProps & Props> = ({ history, userType }) => {
   return (
-    <Div>
-      <Button
-        type="primary"
-        onClick={() => {
-          history.push(`/${userType}/signup`);
-          return;
-        }}
-      >
+    <div style={{ width: '80%' }}>
+      <Button type="primary" onClick={() => history.push(`/${userType}/signup`)}>
         회원가입
       </Button>
-      <WhiteSpace />
       <br />
-      <Button
-        type="primary"
-        onClick={() => {
-          history.push(`/${userType}/signin`);
-          return;
-        }}
-      >
+      <Button type="primary" onClick={() => history.push(`/${userType}/signin`)}>
         로그인
       </Button>
-    </Div>
+    </div>
   );
 };
-
-const Div = styled.div`
-  width: 80%;
-`;
 
 export default withRouter(AuthButtonGroup);

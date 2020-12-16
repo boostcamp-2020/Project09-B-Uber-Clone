@@ -22,23 +22,23 @@ const InputIdPw: React.FC<InputIdPwProps> = (props) => {
   });
   const [addUser] = useMutation(ADD_USER);
 
-  const handleSubmit = async () => {
-    const [phone, name] = [props.phone, props.name];
-    const variables = { id, password, name, phone };
+  const handleSubmit = useCallback(async () => {
+    const { phone, name } = props;
+    const info = { id, password, name, phone };
     try {
       const {
         data: {
           userSignup: { success, message },
         },
       } = await addUser({
-        variables,
+        variables: { info },
       });
       if (success) history.push('/user/map');
       else showAlert(message);
     } catch (e) {
       showAlert(`오류가 발생했습니다, ${e}`);
     }
-  };
+  }, [props, id, password]);
 
   return (
     <>
