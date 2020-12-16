@@ -71,6 +71,7 @@ const UserMatchingPage: React.FC = () => {
   }, [taxiLatlngError]);
 
   useEffect(() => {
+    if (isMatched) return;
     const timer = setInterval(async () => {
       await registMatchingList();
       setRequestCount(requestCount - 1);
@@ -86,7 +87,7 @@ const UserMatchingPage: React.FC = () => {
         })();
       }
     };
-  }, [requestCount]);
+  }, [requestCount, isMatched]);
 
   const registMatchingList = async () => {
     setRequest({
