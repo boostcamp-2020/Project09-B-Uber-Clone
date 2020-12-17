@@ -2,16 +2,17 @@ import { REQUEST_ADDED } from '../subscriptionType';
 import { logger } from '../../../config/winston';
 
 const SERVER_ERROR = { success: false, message: '오류가 발생했습니다' };
-
 export default {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
-      await requestingUserSchema.find({ user_id: uid }).remove().exec();
+      const result = await requestingUserSchema.findOneAndUpdate(
+        { user_id: uid },
+        { ...request, user_id: uid, expireTime: new Date().getTime() + 1000 * 10 },
+        { new: true, upsert: true, setDefaultsOnInsert: true },
+      );
       const waitingDriverSchema = dataSources.model('WaitingDriver');
       const userSchema = dataSources.model('User');
-      const newRequest = new requestingUserSchema({ ...request, user_id: uid });
-      const result = await newRequest.save();
       const startLocationLatLng = request.startLocation.latlng;
       const area = {
         center: [startLocationLatLng.lng, startLocationLatLng.lat],

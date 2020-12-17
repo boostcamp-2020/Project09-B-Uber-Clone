@@ -6,7 +6,7 @@ const requestingUser = new mongoose.Schema({
   startLocation: pointSchema,
   endLocation: pointSchema,
   phone: { type: String },
-  expireTime: { type: Date, default: () => Date.now() + 1000 * 10 },
+  expireTime: { type: Date },
   createdAt: { type: Date, expires: 60, default: Date.now },
 });
 
