@@ -107,6 +107,7 @@ const UserMatchingPage: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      if (!request) return;
       try {
         const {
           data: {

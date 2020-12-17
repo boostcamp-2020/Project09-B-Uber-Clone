@@ -45,7 +45,7 @@ export default {
       logger.error('DATABASE ERROR');
       return { success: false, message: 'Database error' };
     } catch (err) {
-      logger.error(`REQUEST MATCHING ERROR : ${err}`);
+      logger.error(`REQUEST MATCHING ERROR : ${err}\n ${JSON.stringify(request)}`);
       return SERVER_ERROR;
     }
   },
