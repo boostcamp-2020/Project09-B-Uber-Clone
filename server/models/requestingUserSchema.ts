@@ -7,6 +7,7 @@ const requestingUser = new mongoose.Schema({
   endLocation: pointSchema,
   phone: { type: String },
   expireTime: { type: Date, default: () => Date.now() + 1000 * 10 },
+  createdAt: { type: Date, expires: 60, default: Date.now },
 });
 
 requestingUser.index({ startLocation: '2dsphere' });
