@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import pointSchema from './pointSchema';
 
 const requestingUser = new mongoose.Schema({
-  user_id: mongoose.Schema.Types.ObjectId,
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   startLocation: pointSchema,
   endLocation: pointSchema,
   phone: { type: String },

@@ -6,13 +6,15 @@ export default {
   requestMatching: async (_, { request }, { dataSources, uid, pubsub }) => {
     try {
       const requestingUserSchema = dataSources.model('RequestingUser');
-      const result = await requestingUserSchema.findOneAndUpdate(
-        { user_id: uid },
-        { ...request, user_id: uid, expireTime: new Date().getTime() + 1000 * 10 },
-        { new: true, upsert: true, setDefaultsOnInsert: true },
-      );
+      const result = await requestingUserSchema
+        .findOneAndUpdate(
+          { user_id: uid },
+          { ...request, user_id: uid, expireTime: new Date().getTime() + 1000 * 10 },
+          { new: true, upsert: true, setDefaultsOnInsert: true },
+        )
+        .populate('user_id');
+
       const waitingDriverSchema = dataSources.model('WaitingDriver');
-      const userSchema = dataSources.model('User');
       const startLocationLatLng = request.startLocation.latlng;
       const area = {
         center: [startLocationLatLng.lng, startLocationLatLng.lat],
@@ -25,11 +27,10 @@ export default {
         .where('location')
         .within()
         .circle(area);
-      const user = await userSchema.findById(uid);
 
       await pubsub.publish(REQUEST_ADDED, {
         possibleDrivers,
-        driverServiceSub: { uid, request, expirationTime: result.expireTime, tel: user.phone },
+        driverServiceSub: { uid, request, expirationTime: result.expireTime, tel: result.user_id.phone },
       });
       if (result) {
         logger.info(
