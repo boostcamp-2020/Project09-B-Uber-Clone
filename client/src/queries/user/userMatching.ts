@@ -44,15 +44,3 @@ export const TAXI_LOCATION = gql`
     }
   }
 `;
-
-export const MATCHING_SUBSCRIPTION = gql`
-  subscription {
-    userMatchingSub {
-      id
-      name
-      carModel
-      carColor
-      plateNumber
-    }
-  }
-`;

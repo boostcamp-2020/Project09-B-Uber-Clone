@@ -12,22 +12,15 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
 import { clearPathPoint } from '@stores/modules/pathPoint';
 import { clearPreData } from '@stores/modules/preData';
-import {
-  MATCHED_TAXI,
-  TAXI_LOCATION,
-  REQUEST_MATCH,
-  MATCHING_SUBSCRIPTION,
-  STOP_MATCHING,
-} from '@queries/user/userMatching';
+import { MATCHED_TAXI, TAXI_LOCATION, REQUEST_MATCH, STOP_MATCHING } from '@queries/user/userMatching';
 
 const UserMatchingPage: React.FC = () => {
   const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const history = useHistory();
+  const { loading, data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
+  const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
-  const { loading, error } = useSubscription(MATCHING_SUBSCRIPTION);
-  const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
-  const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
   const [requestCount, setRequestCount] = useState(MAX_REQUEST_COUNT - 1);
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
@@ -46,6 +39,7 @@ const UserMatchingPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log(taxiData, taxiInfo);
     if (taxiData?.userMatchingSub) {
       setTaxiLocation(taxiData.userMatchingSub.location);
       setMatchState(true);
@@ -120,15 +114,6 @@ const UserMatchingPage: React.FC = () => {
       }
     })();
   }, [request]);
-
-  useEffect(() => {
-    if (error) onErrorHandler();
-  }, [error]);
-
-  const onErrorHandler = useCallback(() => {
-    Toast.show('알 수 없는 오류가 발생했습니다.', Toast.SHORT);
-    history.push('/user/map');
-  }, []);
 
   const saveHistory = useCallback(async () => {
     const info = {
