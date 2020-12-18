@@ -31,7 +31,7 @@ const HistoryBox: React.FC<HistoryType> = ({
             <Item extra={`${moment(startTime).format('HH:mm')} - ${moment(endTime).format('HH:mm')}`} wrap>
               운행 시간
             </Item>
-            <Item extra={`${fee}원`}>요금</Item>
+            <Item extra={`${fee.toLocaleString()}원`}>요금</Item>
             <Item extra={`${carModel} | ${plateNumber}`} wrap>
               택시 정보
             </Item>
