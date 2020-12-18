@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSubscription, useMutation } from '@apollo/client';
 import MatchedDriverData from '@components/userMatching/MatchedDriverData';
 import MapContainer from '@containers/MapContainer';
@@ -12,6 +12,7 @@ import { useGoogleMapApiState } from 'src/contexts/GoogleMapProvider';
 import { SAVE_USER_HISTORY } from '@queries/user/userHistory';
 import { clearPathPoint } from '@stores/modules/pathPoint';
 import { clearPreData } from '@stores/modules/preData';
+import pathPointToRequest from '@utils/pathPointToRequest';
 import {
   MATCHED_TAXI,
   TAXI_LOCATION,
@@ -21,10 +22,13 @@ import {
 } from '@queries/user/userMatching';
 
 const UserMatchingPage: React.FC = () => {
-  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const pathPoint = useSelector((state: { pathPoint: PathPoint }) => state.pathPoint);
+  const preData = useSelector((state: { preData: PreData }) => state.preData);
   const [requestMatch] = useMutation(REQUEST_MATCH);
   const [stopMatching] = useMutation(STOP_MATCHING);
+  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
   const { loading, error } = useSubscription(MATCHING_SUBSCRIPTION);
   const { data: taxiData, error: taxiDataError } = useSubscription(MATCHED_TAXI);
   const { data: taxiLocationData, error: taxiLatlngError } = useSubscription(TAXI_LOCATION);
@@ -32,17 +36,12 @@ const UserMatchingPage: React.FC = () => {
   const [isMatched, setMatchState] = useState(false);
   const [taxiInfo, setTaxiInfo] = useState({ id: '', name: '', carModel: '', carColor: '', plateNumber: '' });
   const [taxiLocation, setTaxiLocation] = useState(undefined);
-  const [isMatchCanceled, setMatchCancel] = useState(false);
   const { loaded } = useGoogleMapApiState();
-  const [saveUserHistory] = useMutation(SAVE_USER_HISTORY);
-  const preData = useSelector((state: { preData: PreData }) => state.preData);
-  const [request, setRequest] = useState({});
-  const dispatch = useDispatch();
-  const [startTime, setStartTime] = useState<string>('');
   const [currentAlert, setCurrentAlert] = useState<any>(undefined);
+  const startTime = useRef('');
 
   useEffect(() => {
-    (async () => await registMatchingList())();
+    registMatchingList();
   }, []);
 
   useEffect(() => {
@@ -77,7 +76,7 @@ const UserMatchingPage: React.FC = () => {
       setRequestCount(requestCount - 1);
     }, MATCHING_INTERVAL);
 
-    if (!loading || isMatchCanceled) clearInterval(timer);
+    // if (!loading || isMatchCanceled) clearInterval(timer);
     return () => {
       clearInterval(timer);
       if (requestCount === 0) {
@@ -90,36 +89,18 @@ const UserMatchingPage: React.FC = () => {
   }, [requestCount, isMatched]);
 
   const registMatchingList = async () => {
-    setRequest({
-      startLocation: {
-        name: pathPoint.startPointName,
-        latlng: {
-          ...pathPoint.startPoint,
+    const request = pathPointToRequest(pathPoint);
+    try {
+      const {
+        data: {
+          requestMatching: { _, __ },
         },
-      },
-      endLocation: {
-        name: pathPoint.endPointName,
-        latlng: {
-          ...pathPoint.endPoint,
-        },
-      },
-    });
+      } = await requestMatch({ variables: { request } });
+    } catch (error) {
+      console.error(error);
+      Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
+    }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const {
-          data: {
-            requestMatching: { _, __ },
-          },
-        } = await requestMatch({ variables: { request } });
-      } catch (error) {
-        console.error(error);
-        Toast.fail('매칭을 다시 시도 해주세요.', Toast.SHORT);
-      }
-    })();
-  }, [request]);
 
   useEffect(() => {
     if (error) onErrorHandler();
@@ -132,21 +113,21 @@ const UserMatchingPage: React.FC = () => {
 
   const saveHistory = useCallback(async () => {
     const info = {
-      request: request,
+      request: pathPointToRequest(pathPoint),
       fee: preData.info.fee,
       carModel: taxiInfo.carModel,
       plateNumber: taxiInfo.plateNumber,
-      startTime: startTime,
+      startTime: startTime.current,
       endTime: new Date().toString(),
     };
     const {
       data: { saveUserHistory: result },
     } = await saveUserHistory({ variables: { info } });
     return result;
-  }, [request, preData, taxiInfo, startTime]);
+  }, [preData, taxiInfo]);
 
   const showOnBoardAlert = useCallback(() => {
-    setStartTime(new Date().toString());
+    startTime.current = new Date().toString();
     const alertInstance = alertModal('탑승 완료', '5초 후 창이 닫힙니다.', modalButton(alertModal('', '').close));
     setCurrentAlert(alertInstance);
     setTimeout(alertInstance.close, 5000);
@@ -186,22 +167,16 @@ const UserMatchingPage: React.FC = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setMatchCancel(true);
       history.push('/user/map');
     }
   }, []);
-
-  const onClickHandler = useCallback(async () => {
-    await cancelMatching();
-    Toast.show('호출을 취소했습니다.', Toast.SHORT);
-  }, [cancelMatching]);
 
   return (
     <>
       {loaded && (
         <>
           <RequestInfo startPoint={pathPoint.startPointName || ''} endPoint={pathPoint.endPointName || ''} />
-          {loading && <MatchingWrapper onClickHandler={onClickHandler} />}
+          {loading && <MatchingWrapper cancelMatching={cancelMatching} />}
           <MapContainer isMatched={isMatched} taxiLocation={taxiLocation} />
           {isMatched && <MatchedDriverData taxiInfo={taxiInfo} />}
         </>

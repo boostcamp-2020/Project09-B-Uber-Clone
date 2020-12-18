@@ -80,4 +80,4 @@ const P = styled.div`
   text-overflow: ellipsis;
 `;
 
-export default MatchedDriverData;
+export default React.memo(MatchedDriverData);
